@@ -427,4 +427,11 @@ class ViessmannApi
     {
         return $this->expires_in;
     }
+
+    // get Features
+    //
+    public function getArrayFeatures()
+    {
+        return $this->features;
+    }
 }

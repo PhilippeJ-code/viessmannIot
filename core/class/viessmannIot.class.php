@@ -22,6 +22,103 @@
   class viessmannIot extends eqLogic
   {
       
+      // Supprimer les commandes
+      //
+      public function deleteAllCommands()
+      {
+          $cmds = $this->getCmd();
+          foreach ($cmds as $cmd) {
+              if ($cmd->getLogicalId() != 'refresh') {
+                  $cmd->remove();
+              }
+          }
+      }
+
+      // Créer les commandes
+      //
+      public function createCommands($viessmannApi)
+      {
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $features = $viessmannApi->getArrayFeatures();
+          $n = count($features["data"]);
+          for ($i=0; $i<$n; $i++) {
+              if ($features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
+                  $obj = $this->getCmd(null, 'outsideTemperature');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Température extérieure', __FILE__));
+                      $obj->setUnite('°C');
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('outsideTemperature');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, "circulation.pump")) {
+                  $obj = $this->getCmd(null, 'pumpStatus');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Statut circulateur', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('pumpStatus');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == "heating.dhw.sensors.temperature.hotWaterStorage") {
+                  $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Température eau chaude', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('hotWaterStorageTemperature');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == "heating.dhw.temperature.main") {
+                  $objDhw = $this->getCmd(null, 'dhwTemperature');
+                  if (!is_object($objDhw)) {
+                      $objDhw = new viessmannIotCmd();
+                      $objDhw->setName(__('Consigne eau chaude', __FILE__));
+                      $objDhw->setIsVisible(1);
+                      $objDhw->setIsHistorized(0);
+                  }
+                  $objDhw->setEqLogic_id($this->getId());
+                  $objDhw->setType('info');
+                  $objDhw->setSubType('numeric');
+                  $objDhw->setLogicalId('dhwTemperature');
+                  $objDhw->setConfiguration('minValue', 10);
+                  $objDhw->setConfiguration('maxValue', 60);
+                  $objDhw->save();
+
+                  $obj = $this->getCmd(null, 'dhwSlider');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setUnite('°C');
+                      $obj->setName(__('Slider consigne eau chaude ', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('action');
+                  $obj->setSubType('slider');
+                  $obj->setLogicalId('dhwSlider');
+                  $obj->setValue($objDhw->getId());
+                  $obj->setConfiguration('minValue', 10);
+                  $obj->setConfiguration('maxValue', 60);
+                  $obj->save();
+              }
+          }
+      }
+
       // Accès au serveur Viessmann
       //
       public function getViessmann()
@@ -69,29 +166,50 @@
           }
                         
           if ((empty($installationId)) || (empty($serial))) {
-            $installationId = $viessmannApi->getInstallationId();
-            $serial = $viessmannApi->getSerial();
-            $this->setConfiguration('installationId', $installationId);
-            $this->setConfiguration('serial', $serial)->save();
-            log::add('viessmannIot', 'debug', 'Récupération id installation ' . $installationId);
-            log::add('viessmannIot', 'debug', 'Récupération serial ' . $serial);
-            log::add('viessmannIot', 'debug', 'Récupération login id ' . $viessmannApi->getLoginId());
-            log::add('viessmannIot', 'debug', 'Récupération outside temperature ' . $viessmannApi->getOutsideTemperature());
+              $installationId = $viessmannApi->getInstallationId();
+              $serial = $viessmannApi->getSerial();
+              $this->setConfiguration('installationId', $installationId);
+              $this->setConfiguration('serial', $serial)->save();
+              log::add('viessmannIot', 'debug', 'Récupération id installation ' . $installationId);
+              log::add('viessmannIot', 'debug', 'Récupération serial ' . $serial);
+              log::add('viessmannIot', 'debug', 'Récupération login id ' . $viessmannApi->getLoginId());
+              log::add('viessmannIot', 'debug', 'Récupération outside temperature ' . $viessmannApi->getOutsideTemperature());
+
+              $this->deleteAllCommands();
+              $this->createCommands($viessmannApi);
           }
 
-          if ($viessmannApi->isNewToken() ) {
-            $expires_at = time() + $viessmannApi->getExpiresIn() - 300;
-            $this->setCache('expires_at', $expires_at);
-            $this->setCache('token', $viessmannApi->getNewToken());
-            log::add('viessmannIot', 'debug', 'Token expires at ' . date('d-m-Y H:i:s', $expires_at));            
+          if ($viessmannApi->isNewToken()) {
+              $expires_at = time() + $viessmannApi->getExpiresIn() - 300;
+              $this->setCache('expires_at', $expires_at);
+              $this->setCache('token', $viessmannApi->getNewToken());
+              log::add('viessmannIot', 'debug', 'Token expires at ' . date('d-m-Y H:i:s', $expires_at));
           }
 
           return $viessmannApi;
-
       }
 
-      public function rafraichir()
+      public function rafraichir($viessmannApi)
       {
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $features = $viessmannApi->getArrayFeatures();
+          $n = count($features["data"]);
+          for ($i=0; $i<$n; $i++) {
+              if ($features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $this->getCmd(null, 'outsideTemperature')->event($val);
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, "circulation.pump")) {
+                  $val = $features["data"][$i]["properties"]["status"]["value"];
+                  $this->getCmd(null, 'pumpStatus')->event($val);
+              } elseif ($features["data"][$i]["feature"] == "heating.dhw.sensors.temperature.hotWaterStorage") {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $this->getCmd(null, 'hotWaterStorageTemperature')->event($val);
+              } elseif ($features["data"][$i]["feature"] == "heating.dhw.temperature.main") {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $this->getCmd(null, 'dhwTemperature')->event($val);
+              }
+          }
           return;
       }
 
@@ -155,6 +273,11 @@
       //
       public function postRemove()
       {
+      }
+
+      private function buildFeature($circuitId, $feature)
+      {
+          return "heating.circuits" . "." . $circuitId . "." . $feature;
       }
   }
   
