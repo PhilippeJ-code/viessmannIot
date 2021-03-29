@@ -1,0 +1,16 @@
+{
+	"id" : "viessmannIot",
+	"name" : "ViessmannIot",
+	"description" : "Ce plugin permet de récupérer les infos d'une chaudière Viessmann",
+	"licence" : "AGPL",
+	"author" : "PhilippeJ",
+	"require" : "4.0",
+	"category" : "wellness",
+	"hasDependency" : false,
+	"hasOwnDeamon" : false,
+	"maxDependancyInstallTime" : 0,
+    "changelog": "https:\/\/github.com\/PhilippeJ-code\/viessmannIot\/blob\/master\/docs\/#language#\/changelog.md",
+    "documentation": "https:\/\/github.com\/PhilippeJ-code\/viessmannIot\/blob\/master\/docs\/#language#\/index.md",
+	"language" : ["fr_FR"],
+	"compatibility" : ["rpi","mobile","v4"]
+}

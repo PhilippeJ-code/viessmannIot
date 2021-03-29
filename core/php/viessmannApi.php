@@ -1,0 +1,430 @@
+<?php
+
+class ViessmannApiException extends Exception
+{
+    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
+
+class ViessmannApi
+{
+    const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v2/authorize";
+    const CALLBACK_URI = "http://localhost:4200/";
+
+    const TOKEN_URL = "https://iam.viessmann.com/idp/v2/token";
+
+    const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
+    const GATEWAY_URL = "https://api.viessmann.com/iot/v1/equipment/gateways";
+    const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
+    
+    // Les paramètres d'accès au serveur
+    //
+    //   Obligatoires
+    //
+    private $clientId;
+    private $codeChallenge;
+    private $user;
+    private $pwd;
+    //
+    // Facultatifs
+    //
+    private $installationId;
+    private $serial;
+    private $deviceId;
+    private $circuitId;
+    //
+    // Gestion du token
+    //
+    private $token;
+    private $expires_at;
+    private $expires_in;
+    private $if_new_token;
+
+    //
+    // Données récupérées du serveur Viessmann
+    //
+    private $identity;
+    private $gateway;
+    private $features;
+
+    // Constructeur
+    //
+    public function __construct($params)
+    {
+
+        // Contrôle des paramètres et mémorisation dans la classe
+        //
+        if (!array_key_exists('clientId', $params)) {
+            throw new ViessmannApiException('Id client obligatoire', 2);
+            return;     
+        }
+        if ( empty($params['clientId'])) {
+            throw new ViessmannApiException('Id client obligatoire', 2);
+            return;     
+        }
+        $this->clientId = $params['clientId'];
+            
+        if (!array_key_exists('codeChallenge', $params)) {
+            throw new ViessmannApiException('Code challenge obligatoire', 2);
+            return;     
+        }
+        if ( empty($params['codeChallenge'])) {
+            throw new ViessmannApiException('Code challenge obligatoire', 2);
+            return;     
+        }
+        $this->codeChallenge = $params['codeChallenge'];
+            
+        if (!array_key_exists('user', $params)) {
+            throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
+            return;     
+        }
+        if ( empty($params['user'])) {
+            throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
+            return;     
+        }
+        $this->user = $params['user'];
+
+        if (!array_key_exists('pwd', $params)) {
+            throw new ViessmannApiException('Mot de passe obligatoire', 2);
+            return;     
+        }
+        if ( empty($params['pwd'])) {
+            throw new ViessmannApiException('Mot de passe obligatoire', 2);
+            return;     
+        }
+        $this->pwd = $params['pwd'];
+
+        if (!array_key_exists('installationId', $params)) {
+            $this->installationId = '';
+        }
+        else {
+            $this->installationId = trim($params['installationId']);
+        }
+
+        if (!array_key_exists('serial', $params)) {
+            $this->serial = '';
+        }
+        else {
+            $this->serial = trim($params['serial']);
+        }
+
+        if (!array_key_exists('deviceId', $params)) {
+            $this->deviceId = 0;
+        }
+        else {
+            $this->deviceId = trim($params['deviceId']);
+        }
+
+        if (!array_key_exists('circuitId', $params)) {
+            $this->circuitId = 0;
+        }
+        else {
+            $this->circuitId = trim($params['circuitId']);
+        }
+
+        if (!array_key_exists('token', $params)) {
+            $this->token = '';
+        }
+        else {
+            $this->token = trim($params['token']);
+        }
+
+        if (!array_key_exists('expires_at', $params)) {
+            $this->expires_at = 0;
+        }
+        else {
+            $this->expires_at = intval($params['expires_at']);
+        }
+
+        // Si c'est possible on réutilise l'ancien token
+        //
+        $this->if_new_token = true;
+
+        if ( (time() <= $this->expires_at) && !empty($params["token"]) && !empty($params["installationId"]) && !empty($params["serial"]) ) {
+
+            log::add('viessmannIot', 'debug', 'Utilisation ancien token ' . $params["token"] . " " . $expires_at);
+
+            $this->if_new_token = false;
+            try {
+                $this->features = array();
+                $this->getFeatures($params["token"], $params["deviceId"]);
+            } catch (Throwable $t) {
+                log::add('viessmannIot', 'debug', $t->getMessage());
+                $this->if_new_token = true;
+            } catch (Exception $e) {
+                log::add('viessmannIot', 'debug', $e->getMessage());
+                $this->if_new_token = true;
+            }
+            $json_file = __DIR__ . '/../../data/features.json';
+            file_put_contents($json_file, json_encode($this->features, JSON_PRETTY_PRINT));        
+
+        }
+
+        if ( $this->if_new_token == false )
+          return; 
+
+        log::add('viessmannIot', 'debug', 'Recherche nouveau token ');
+
+        $code = $this->getCode();
+        if ($code == false) {
+            throw new ViessmannApiException("Erreur acquisition code sur le serveur Viessmann", 2);
+        }
+        
+        $return = $this->getToken($code);
+        if ($return == false) {
+            throw new ViessmannApiException("Erreur acquisition token sur le serveur Viessmann", 2);
+        }
+
+        if ($installationId == '' || $serial == '') {
+            $this->identity = array();
+            $this->getIdentity($this->token);
+            $json_file = __DIR__ . '/../../data/identity.json';
+            file_put_contents($json_file, json_encode($this->identity, JSON_PRETTY_PRINT));
+    
+            $this->gateway = array();
+            $this->getGateway($this->token);
+            $json_file = __DIR__ . '/../../data/gateway.json';
+            file_put_contents($json_file, json_encode($this->gateway, JSON_PRETTY_PRINT));
+    
+            $this->installationId = $this->getInstallationId();
+            $this->serial = $this->getSerial();
+        }
+
+        $this->features = array();
+        $this->getFeatures($this->token, $params["deviceId"]);
+
+        $json_file = __DIR__ . '/../../data/features.json';
+        file_put_contents($json_file, json_encode($this->features, JSON_PRETTY_PRINT));
+    }
+
+    // Lire le code d'accès au serveur Viessmann
+    //
+    private function getCode() : string
+    {
+ 
+        // Paramètres code
+        //
+        $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
+            self::CALLBACK_URI . "&response_type=code";
+        $header = array("Content-Type: application/x-www-form-urlencoded");
+
+        $curloptions = array(
+           CURLOPT_URL => $url,
+           CURLOPT_HTTPHEADER => $header,
+           CURLOPT_SSL_VERIFYPEER => false,
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_USERPWD => $this->user.':'.$this->pwd,
+           CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+           CURLOPT_POST => true,
+        );
+
+        // Appel Curl Code
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Extraction Code
+        //
+        $matches = array();
+        $pattern = '/code=(.*)"/';
+        if (preg_match_all($pattern, $response, $matches)) {
+            return $matches[1][0];
+        } else {
+            return false;
+        }
+    }
+
+    // Lire le token d'accès au serveur Viessmann
+    //
+    private function getToken($code) : string
+    {
+        // Paramètres Token
+        //
+        $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
+          $this->clientId . "&redirect_uri=" . self::CALLBACK_URI . "&code=" . $code;
+        $header = array("Content-Type: application/x-www-form-urlencoded");
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_POST => true,
+        );
+
+        // Appel Curl Token
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Extraction Token
+        //
+        $json = json_decode($response, true);
+        if (array_key_exists('error', $json)) {
+            return false;
+        }
+
+        if (!array_key_exists('access_token', $json) || !array_key_exists('expires_in', $json)) {
+            return false;
+        }
+        $this->token = $json['access_token'];
+        $this->expires_in = $json['expires_in'];
+
+        return true;
+    }
+
+    // Lire les données d'identité
+    //
+    private function getIdentity($token)
+    {
+
+        // Lire les données utilisateur
+        //
+        $url = self::IDENTITY_URL;
+        $header = array("Authorization: Bearer $token");
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+        );
+
+        // Appel Curl Données
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $this->identity = json_decode($response, true);
+    }
+
+    // Lire les données du gateway
+    //
+    private function getGateway($token)
+    {
+
+        // Lire les données du gateway
+        //
+        $url = self::GATEWAY_URL;
+        $header = array("Authorization: Bearer $token");
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+        );
+
+        // Appel Curl Données
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $this->gateway = json_decode($response, true);
+
+        if (array_key_exists('statusCode', $this->gateway)) {
+            throw new ViessmannApiException($this->gateway["message"], 2);
+        }
+    }
+
+    // Lire les features
+    //
+    private function getFeatures($token, $deviceId)
+    {
+
+        // Lire les données du gateway
+        //
+        $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $deviceId . "/features";
+        $header = array("Authorization: Bearer $token");
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+        );
+
+        // Appel Curl Données
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $this->features = json_decode($response, true);
+
+        if (array_key_exists('statusCode', $this->features)) {
+            throw new ViessmannApiException($this->features["message"], 2);
+        }
+    }
+
+    // Lire Login Id
+    //
+    public function getLoginId()
+    {
+        return $this->identity['loginId'];
+    }
+
+    // Lire Installation Id
+    //
+    public function getInstallationId()
+    {
+        return $this->gateway["data"][0]["installationId"];
+    }
+
+    // Lire Login Id
+    //
+    public function getSerial()
+    {
+        return $this->gateway["data"][0]["serial"];
+    }
+
+    // Lire Outside Temperature
+    //
+    public function getOutsideTemperature()
+    {
+        $n = count($this->features["data"]);
+
+        for ($i=0; $i<$n; $i++) {
+            if ($this->features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
+                return $this->features["data"][$i]["properties"]["value"]["value"];
+            }
+        }
+        return false;
+    }
+
+    // Si nouveau token
+    //
+    public function isNewToken()
+    {
+        return $this->if_new_token;
+    }
+
+    // Get Token
+    //
+    public function getNewToken()
+    {
+        return $this->token;
+    }
+
+    // Expires In
+    //
+    public function getExpiresIn()
+    {
+        return $this->expires_in;
+    }
+}
