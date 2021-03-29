@@ -410,7 +410,7 @@ class ViessmannApi
     // Si nouveau token
     //
     public function isNewToken()
-    {
+    { 
         return $this->if_new_token;
     }
 
