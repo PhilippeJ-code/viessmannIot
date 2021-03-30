@@ -26,8 +26,9 @@
       const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
       const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
       const DHW_TEMPERATURE = "heating.dhw.temperature.main";
-      const ACTIVE_MODE = "operating.modes.active";
 
+      const ACTIVE_MODE = "operating.modes.active";
+      const ACTIVE_PROGRAM = "operating.programs.active";
       const PUMP_STATUS = "circulation.pump";
 
       // Supprimer les commandes
@@ -207,7 +208,21 @@
                           $obj->save();
                       }
                   }
-              }
+                } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM)) {
+                    $obj = $this->getCmd(null, 'activeProgram');
+                    if (!is_object($obj)) {
+                        $obj = new viessmannIotCmd();
+                        $obj->setName(__('Programme activé', __FILE__));
+                        $obj->setIsVisible(1);
+                        $obj->setIsHistorized(0);
+                    }
+                    $obj->setEqLogic_id($this->getId());
+                    $obj->setType('info');
+                    $obj->setSubType('string');
+                    $obj->setLogicalId('activeProgram');
+                    $obj->save();
+                           
+            }
           }
       }
 
@@ -297,6 +312,9 @@
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE)) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $this->getCmd(null, 'activeMode')->event($val);
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM)) {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $this->getCmd(null, 'activeProgram')->event($val);
               }
           }
           $date = new DateTime();

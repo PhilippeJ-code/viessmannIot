@@ -147,10 +147,8 @@ class ViessmannApi
         $this->if_new_token = false;
 
         if ( (time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial) ) {
-
             log::add('viessmannIot', 'debug', 'Utilisation ancien token');
             return;
-
         }
 
         log::add('viessmannIot', 'debug', 'Recherche nouveau token');
@@ -166,6 +164,13 @@ class ViessmannApi
         }
 
         $this->if_new_token = true;
+
+        if (empty($this->installationId) || empty($this->serial)) {
+            $this->getGateway();
+            $this->installationId = $this->getInstallationId();
+            $this->serial = $this->getSerial();
+        }
+
     }
 
     // Lire le code d'accès au serveur Viessmann
@@ -307,9 +312,6 @@ class ViessmannApi
         if (array_key_exists('statusCode', $this->gateway)) {
             throw new ViessmannApiException($this->gateway["message"], 2);
         }
-
-        $this->installationId = $this->getInstallationId();
-        $this->serial = $this->getSerial();
 
     }
 
