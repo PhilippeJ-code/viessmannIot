@@ -21,14 +21,22 @@
 
   class viessmannIot extends eqLogic
   {
-      
+      const HEATING_CIRCUITS = "heating.circuits";
+
+      const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
+      const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
+      const DHW_TEMPERATURE = "heating.dhw.temperature.main";
+      const ACTIVE_MODE = "operating.modes.active";
+
+      const PUMP_STATUS = "circulation.pump";
+
       // Supprimer les commandes
       //
       public function deleteAllCommands()
       {
           $cmds = $this->getCmd();
           foreach ($cmds as $cmd) {
-              if ($cmd->getLogicalId() != 'refresh') {
+              if ($cmd->getLogicalId() != 'refresh' && $cmd->getLogicalId() != 'refreshDate') {
                   $cmd->remove();
               }
           }
@@ -43,7 +51,7 @@
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
-              if ($features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
+              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE) {
                   $obj = $this->getCmd(null, 'outsideTemperature');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -57,7 +65,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('outsideTemperature');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, "circulation.pump")) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS)) {
                   $obj = $this->getCmd(null, 'pumpStatus');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -70,7 +78,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('pumpStatus');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == "heating.dhw.sensors.temperature.hotWaterStorage") {
+              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE) {
                   $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -83,7 +91,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('hotWaterStorageTemperature');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == "heating.dhw.temperature.main") {
+              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE) {
                   $objDhw = $this->getCmd(null, 'dhwTemperature');
                   if (!is_object($objDhw)) {
                       $objDhw = new viessmannIotCmd();
@@ -115,6 +123,90 @@
                   $obj->setConfiguration('minValue', 10);
                   $obj->setConfiguration('maxValue', 60);
                   $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE)) {
+                  $obj = $this->getCmd(null, 'activeMode');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Mode activé', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('activeMode');
+                  $obj->save();
+                  
+                  $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
+                  for ($j=0; $j<$nc; $j++) {
+                      if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'standby') {
+                          $obj = $this->getCmd(null, 'modeStandby');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Mode arrêt', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeStandby');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'heating') {
+                          $obj = $this->getCmd(null, 'modeHeating');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Mode chauffage', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeHeating');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhw') {
+                          $obj = $this->getCmd(null, 'modeDhw');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Mode eau chaude', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeDhw');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhwAndHeating') {
+                          $obj = $this->getCmd(null, 'modeDhwAndHeating');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Mode chauffage et eau chaude', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeDhwAndHeating');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'forcedReduced') {
+                          $obj = $this->getCmd(null, 'modeForcedReduced');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Marche réduite permanente', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeForcedReduced');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'forcedNormal') {
+                          $obj = $this->getCmd(null, 'modeForcedNormal');
+                          if (!is_object($obj)) {
+                              $obj = new viessmannIotCmd();
+                              $obj->setName(__('Marche normale permanente', __FILE__));
+                          }
+                          $obj->setEqLogic_id($this->getId());
+                          $obj->setLogicalId('modeForcedNormal');
+                          $obj->setType('action');
+                          $obj->setSubType('other');
+                          $obj->save();
+                      }
+                  }
               }
           }
       }
@@ -158,15 +250,15 @@
           $viessmannApi = new ViessmannApi($params);
                         
           if ((empty($installationId)) || (empty($serial))) {
-
               $viessmannApi->getGateway();
-
+              $viessmannApi->getFeatures();
+            
               $installationId = $viessmannApi->getInstallationId();
               $serial = $viessmannApi->getSerial();
 
               $this->setConfiguration('installationId', $installationId);
               $this->setConfiguration('serial', $serial)->save();
-
+            
               $this->deleteAllCommands();
               $this->createCommands($viessmannApi);
           }
@@ -183,24 +275,28 @@
 
       public function rafraichir($viessmannApi)
       {
-         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+    
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi->getFeatures();
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
-              if ($features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
+              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $this->getCmd(null, 'outsideTemperature')->event($val);
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, "circulation.pump")) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS)) {
                   $val = $features["data"][$i]["properties"]["status"]["value"];
                   $this->getCmd(null, 'pumpStatus')->event($val);
-              } elseif ($features["data"][$i]["feature"] == "heating.dhw.sensors.temperature.hotWaterStorage") {
+              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $this->getCmd(null, 'hotWaterStorageTemperature')->event($val);
-              } elseif ($features["data"][$i]["feature"] == "heating.dhw.temperature.main") {
+              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $this->getCmd(null, 'dhwTemperature')->event($val);
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE)) {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $this->getCmd(null, 'activeMode')->event($val);
               }
           }
           $date = new DateTime();
@@ -272,9 +368,27 @@
           }
 
           $data = "{\"temperature\": $temperature}";
-          $viessmannApi->setFeature("heating.dhw.temperature.main", "setTargetTemperature", $data);
+          $viessmannApi->setFeature(self::DHW_TEMPERATURE, "setTargetTemperature", $data);
           
           unset($viessmannApi);
+      }
+
+      // Set Mode
+      //
+      public function setMode($mode)
+      {
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+        $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{\"mode\":\"" . $mode . "\"}";
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::ACTIVE_MODE), "setMode", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'activeMode')->event($mode);
       }
 
       public static function cron()
@@ -385,7 +499,7 @@
 
       private function buildFeature($circuitId, $feature)
       {
-          return "heating.circuits" . "." . $circuitId . "." . $feature;
+          return self::HEATING_CIRCUITS . "." . $circuitId . "." . $feature;
       }
   }
   
@@ -402,6 +516,18 @@
                   $eqlogic->rafraichir($viessmannApi);
                   unset($viessmannApi);
               }
+          } elseif ($this->getLogicalId() == 'modeStandby') {
+              $eqlogic->setMode('standby');
+          } elseif ($this->getLogicalId() == 'modeDhw') {
+              $eqlogic->setMode('dhw');
+          } elseif ($this->getLogicalId() == 'modeHeating') {
+              $eqlogic->setMode('heating');
+          } elseif ($this->getLogicalId() == 'modeDhwAndHeating') {
+              $eqlogic->setMode('dhwAndHeating');
+          } elseif ($this->getLogicalId() == 'modeForcedReduced') {
+              $eqlogic->setMode('forcedReduced');
+          } elseif ($this->getLogicalId() == 'modeForcedNormal') {
+              $eqlogic->setMode('forcedNormal');
           } elseif ($this->getLogicalId() == 'dhwSlider') {
               if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                   return;

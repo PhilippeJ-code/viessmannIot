@@ -171,8 +171,7 @@ class ViessmannApi
     // Lire le code d'accès au serveur Viessmann
     //
     private function getCode() : string
-    {
- 
+    { 
         // Paramètres code
         //
         $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
@@ -253,7 +252,6 @@ class ViessmannApi
     //
     public function getIdentity()
     {
-
         // Lire les données utilisateur
         //
         $url = self::IDENTITY_URL;
@@ -303,10 +301,16 @@ class ViessmannApi
         curl_close($curl);
 
         $this->gateway = json_decode($response, true);
+        $json_file = __DIR__ . '/../../data/gateway.json';
+        file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->gateway)) {
             throw new ViessmannApiException($this->gateway["message"], 2);
         }
+
+        $this->installationId = $this->getInstallationId();
+        $this->serial = $this->getSerial();
+
     }
 
     // Lire les features
@@ -334,14 +338,13 @@ class ViessmannApi
         curl_close($curl);
 
         $this->features = json_decode($response, true);
+        $json_file = __DIR__ . '/../../data/features.json';
+        file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->features)) {
             throw new ViessmannApiException($this->features["message"], 2);
         }
-
-        $json_file = __DIR__ . '/../../data/features.json';
-        file_put_contents($json_file, $response);
-
+ 
     }
 
     // Ecrire une feature
@@ -380,7 +383,7 @@ class ViessmannApi
         if (array_key_exists('statusCode', $features)) {
             throw new ViessmannApiException($features["message"], 2);
         }
-        
+
     }
 
     // Lire Installation Id
