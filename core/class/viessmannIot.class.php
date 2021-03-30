@@ -155,25 +155,17 @@
           "token" => $token
         ];
 
-          try {
-              $viessmannApi = new ViessmannApi($params);
-          } catch (Throwable $t) {
-              log::add('viessmannIot', 'error', $t->getMessage());
-              return null;
-          } catch (Exception $e) {
-              log::add('viessmannIot', 'error', $e->getMessage());
-              return null;
-          }
+          $viessmannApi = new ViessmannApi($params);
                         
           if ((empty($installationId)) || (empty($serial))) {
+
+              $viessmannApi->getGateway();
+
               $installationId = $viessmannApi->getInstallationId();
               $serial = $viessmannApi->getSerial();
+
               $this->setConfiguration('installationId', $installationId);
               $this->setConfiguration('serial', $serial)->save();
-              log::add('viessmannIot', 'debug', 'Récupération id installation ' . $installationId);
-              log::add('viessmannIot', 'debug', 'Récupération serial ' . $serial);
-              log::add('viessmannIot', 'debug', 'Récupération login id ' . $viessmannApi->getLoginId());
-              log::add('viessmannIot', 'debug', 'Récupération outside temperature ' . $viessmannApi->getOutsideTemperature());
 
               $this->deleteAllCommands();
               $this->createCommands($viessmannApi);
@@ -191,8 +183,9 @@
 
       public function rafraichir($viessmannApi)
       {
-          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+         $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
+          $viessmannApi->getFeatures();
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
@@ -210,6 +203,10 @@
                   $this->getCmd(null, 'dhwTemperature')->event($val);
               }
           }
+          $date = new DateTime();
+          $date = $date->format('d-m-Y H:i:s');
+          $this->getCmd(null, 'refreshDate')->event($date);
+
           return;
       }
 
@@ -220,7 +217,7 @@
   
           $first = true;
           $tousPareils = true;
-          foreach (self::byType('viessmann') as $viessmann) {
+          foreach (self::byType('viessmannIot') as $viessmann) {
               if ($viessmann->getIsEnable() == 1) {
                   $userName = trim($viessmann->getConfiguration('userName', ''));
                   $password = trim($viessmann->getConfiguration('password', ''));
@@ -238,7 +235,7 @@
           if ($tousPareils == true) {
               $viessmann = null;
               $first = true;
-              foreach (self::byType('viessmann') as $viessmann) {
+              foreach (self::byType('viessmannIot') as $viessmann) {
                   if ($viessmann->getIsEnable() == 1) {
                       if ($first == true) {
                           $viessmannApi = $viessmann->getViessmann();
@@ -253,7 +250,7 @@
               unset($viessmannApi);
           } else {
               $viessmann = null;
-              foreach (self::byType('viessmann') as $viessmann) {
+              foreach (self::byType('viessmannIot') as $viessmann) {
                   if ($viessmann->getIsEnable() == 1) {
                       $viessmannApi = $viessmann->getViessmann();
                       if ($viessmannApi != null) {
@@ -265,6 +262,21 @@
           }
       }
   
+      // Set Dhw Temperature
+      //
+      public function setDhwTemperature($temperature)
+      {
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+
+          $data = "{\"temperature\": $temperature}";
+          $viessmannApi->setFeature("heating.dhw.temperature.main", "setTargetTemperature", $data);
+          
+          unset($viessmannApi);
+      }
+
       public static function cron()
       {
           $maintenant = time();
@@ -299,7 +311,7 @@
           self::periodique();
       }
       
-        // Fonction exécutée automatiquement avant la création de l'équipement
+      // Fonction exécutée automatiquement avant la création de l'équipement
       //
       public function preInsert()
       {
@@ -343,7 +355,21 @@
           $obj->setType('action');
           $obj->setSubType('other');
           $obj->save();
+
+          $obj = $this->getCmd(null, 'refreshDate');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Date rafraichissement', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('refreshDate');
+          $obj->save();
       }
+
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -370,13 +396,18 @@
       public function execute($_options = array())
       {
           $eqlogic = $this->getEqLogic();
-          switch ($this->getLogicalId()) {
-            case 'refresh':
-                $viessmannApi = $eqlogic->getViessmann();
-                if ($viessmannApi !== null) {
-                    $eqlogic->rafraichir($viessmannApi);
-                    unset($viessmannApi);
-                }
-        }
+          if ($this->getLogicalId() == 'refresh') {
+              $viessmannApi = $eqlogic->getViessmann();
+              if ($viessmannApi !== null) {
+                  $eqlogic->rafraichir($viessmannApi);
+                  unset($viessmannApi);
+              }
+          } elseif ($this->getLogicalId() == 'dhwSlider') {
+              if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                  return;
+              }
+              $eqlogic->getCmd(null, 'dhwTemperature')->event($_options['slider']);
+              $eqlogic->setDhwTemperature($_options['slider']);
+          }
       }
   }

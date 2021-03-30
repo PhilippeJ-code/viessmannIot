@@ -58,6 +58,10 @@ function viessmannIot_update()
         config::save('functionality::cronHourly::enable', 0, 'viessmannIot');
     }
 
+    foreach (viessmann::byType('viessmannIot') as $viessmann) {
+        $viessmann->save();
+    }
+
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin

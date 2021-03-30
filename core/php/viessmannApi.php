@@ -138,34 +138,22 @@ class ViessmannApi
             $this->expires_at = intval($params['expires_at']);
         }
 
+        $this->identity = array();
+        $this->gateway = array();
+        $this->features = array();
+        
         // Si c'est possible on réutilise l'ancien token
         //
-        $this->if_new_token = true;
+        $this->if_new_token = false;
 
-        if ( (time() <= $this->expires_at) && !empty($params["token"]) && !empty($params["installationId"]) && !empty($params["serial"]) ) {
+        if ( (time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial) ) {
 
-            log::add('viessmannIot', 'debug', 'Utilisation ancien token ' . $params["token"] . " " . $expires_at);
-
-            $this->if_new_token = false;
-            try {
-                $this->features = array();
-                $this->getFeatures($params["token"], $params["deviceId"]);
-            } catch (Throwable $t) {
-                log::add('viessmannIot', 'debug', $t->getMessage());
-                $this->if_new_token = true;
-            } catch (Exception $e) {
-                log::add('viessmannIot', 'debug', $e->getMessage());
-                $this->if_new_token = true;
-            }
-            $json_file = __DIR__ . '/../../data/features.json';
-            file_put_contents($json_file, json_encode($this->features, JSON_PRETTY_PRINT));        
+            log::add('viessmannIot', 'debug', 'Utilisation ancien token');
+            return;
 
         }
 
-        if ( $this->if_new_token == false )
-          return; 
-
-        log::add('viessmannIot', 'debug', 'Recherche nouveau token ');
+        log::add('viessmannIot', 'debug', 'Recherche nouveau token');
 
         $code = $this->getCode();
         if ($code == false) {
@@ -177,26 +165,7 @@ class ViessmannApi
             throw new ViessmannApiException("Erreur acquisition token sur le serveur Viessmann", 2);
         }
 
-        if ($installationId == '' || $serial == '') {
-            $this->identity = array();
-            $this->getIdentity($this->token);
-            $json_file = __DIR__ . '/../../data/identity.json';
-            file_put_contents($json_file, json_encode($this->identity, JSON_PRETTY_PRINT));
-    
-            $this->gateway = array();
-            $this->getGateway($this->token);
-            $json_file = __DIR__ . '/../../data/gateway.json';
-            file_put_contents($json_file, json_encode($this->gateway, JSON_PRETTY_PRINT));
-    
-            $this->installationId = $this->getInstallationId();
-            $this->serial = $this->getSerial();
-        }
-
-        $this->features = array();
-        $this->getFeatures($this->token, $params["deviceId"]);
-
-        $json_file = __DIR__ . '/../../data/features.json';
-        file_put_contents($json_file, json_encode($this->features, JSON_PRETTY_PRINT));
+        $this->if_new_token = true;
     }
 
     // Lire le code d'accès au serveur Viessmann
@@ -282,13 +251,13 @@ class ViessmannApi
 
     // Lire les données d'identité
     //
-    private function getIdentity($token)
+    public function getIdentity()
     {
 
         // Lire les données utilisateur
         //
         $url = self::IDENTITY_URL;
-        $header = array("Authorization: Bearer $token");
+        $header = array("Authorization: Bearer " . $this->token);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -310,13 +279,13 @@ class ViessmannApi
 
     // Lire les données du gateway
     //
-    private function getGateway($token)
+    public function getGateway()
     {
 
         // Lire les données du gateway
         //
         $url = self::GATEWAY_URL;
-        $header = array("Authorization: Bearer $token");
+        $header = array("Authorization: Bearer " . $this->token);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -342,13 +311,12 @@ class ViessmannApi
 
     // Lire les features
     //
-    private function getFeatures($token, $deviceId)
+    public function getFeatures()
     {
-
         // Lire les données du gateway
         //
-        $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $deviceId . "/features";
-        $header = array("Authorization: Bearer $token");
+        $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $this->deviceId . "/features";
+        $header = array("Authorization: Bearer " . $this->token);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -370,13 +338,49 @@ class ViessmannApi
         if (array_key_exists('statusCode', $this->features)) {
             throw new ViessmannApiException($this->features["message"], 2);
         }
+
+        $json_file = __DIR__ . '/../../data/features.json';
+        file_put_contents($json_file, $response);
+
     }
 
-    // Lire Login Id
+    // Ecrire une feature
     //
-    public function getLoginId()
+    public function setFeature($feature, $action, $data)
     {
-        return $this->identity['loginId'];
+
+        // Lire les données du gateway
+        //
+        $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $this->deviceId . "/features/" . $feature . "/commands/" . $action;
+
+        $header = array(
+            "Content-Type: application/json", 
+            "Accept : application/vnd.siren+json",
+            "Authorization: Bearer " . $this->token);
+ 
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $data,            
+        );
+
+        // Appel Curl Données
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $features = json_decode($response, true);
+
+        if (array_key_exists('statusCode', $features)) {
+            throw new ViessmannApiException($features["message"], 2);
+        }
+        
     }
 
     // Lire Installation Id
@@ -391,20 +395,6 @@ class ViessmannApi
     public function getSerial()
     {
         return $this->gateway["data"][0]["serial"];
-    }
-
-    // Lire Outside Temperature
-    //
-    public function getOutsideTemperature()
-    {
-        $n = count($this->features["data"]);
-
-        for ($i=0; $i<$n; $i++) {
-            if ($this->features["data"][$i]["feature"] == "heating.sensors.temperature.outside") {
-                return $this->features["data"][$i]["properties"]["value"]["value"];
-            }
-        }
-        return false;
     }
 
     // Si nouveau token
@@ -428,7 +418,21 @@ class ViessmannApi
         return $this->expires_in;
     }
 
-    // get Features
+    // Get Array Identity
+    //
+    public function getArrayIdentity()
+    {
+        return $this->identity;
+    }
+
+    // Get Array Gateway
+    //
+    public function getArrayGateway()
+    {
+        return $this->gateway;
+    }
+
+    // Get Array Features
     //
     public function getArrayFeatures()
     {
