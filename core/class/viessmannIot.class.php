@@ -213,11 +213,93 @@
           return;
       }
 
+      public static function periodique()
+      {
+          $oldUserName = '';
+          $oldPassword = '';
+  
+          $first = true;
+          $tousPareils = true;
+          foreach (self::byType('viessmann') as $viessmann) {
+              if ($viessmann->getIsEnable() == 1) {
+                  $userName = trim($viessmann->getConfiguration('userName', ''));
+                  $password = trim($viessmann->getConfiguration('password', ''));
+                  if ($first == false) {
+                      if (($userName != $oldUserName) || ($password != $oldPassword)) {
+                          $tousPareils = false;
+                      }
+                  }
+                  $oldUserName = $userName;
+                  $oldPassword = $password;
+                  $first = false;
+              }
+          }
+  
+          if ($tousPareils == true) {
+              $viessmann = null;
+              $first = true;
+              foreach (self::byType('viessmann') as $viessmann) {
+                  if ($viessmann->getIsEnable() == 1) {
+                      if ($first == true) {
+                          $viessmannApi = $viessmann->getViessmann();
+                          $first = false;
+                      }
+  
+                      if ($viessmannApi != null) {
+                          $viessmann->rafraichir($viessmannApi);
+                      }
+                  }
+              }
+              unset($viessmannApi);
+          } else {
+              $viessmann = null;
+              foreach (self::byType('viessmann') as $viessmann) {
+                  if ($viessmann->getIsEnable() == 1) {
+                      $viessmannApi = $viessmann->getViessmann();
+                      if ($viessmannApi != null) {
+                          $viessmann->rafraichir($viessmannApi);
+                          unset($viessmannApi);
+                      }
+                  }
+              }
+          }
+      }
+  
+      public static function cron()
+      {
+          $maintenant = time();
+          $minute = date("i", $maintenant);
+          if (($minute % 2) == 0) {
+              self::periodique();
+          }
+      }
+      
+      public static function cron5()
+      {
+          self::periodique();
+      }
+      
       public static function cron10()
       {
+          self::periodique();
       }
-
-      // Fonction exécutée automatiquement avant la création de l'équipement
+      
+      public static function cron15()
+      {
+          self::periodique();
+      }
+      
+      public static function cron30()
+      {
+          self::periodique();
+      }
+      
+      public static function cronHourly()
+      {
+          self::periodique();
+      }
+      
+        // Fonction exécutée automatiquement avant la création de l'équipement
       //
       public function preInsert()
       {
