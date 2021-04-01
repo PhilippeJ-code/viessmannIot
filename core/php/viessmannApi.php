@@ -1,5 +1,7 @@
 <?php
 
+// Classe gérant les exceptions
+//
 class ViessmannApiException extends Exception
 {
     public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
@@ -8,6 +10,8 @@ class ViessmannApiException extends Exception
     }
 }
 
+// Classe gérant l'accès au serveur Viessmann
+//
 class ViessmannApi
 {
     const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v2/authorize";
@@ -16,6 +20,7 @@ class ViessmannApi
     const TOKEN_URL = "https://iam.viessmann.com/idp/v2/token";
 
     const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
+    
     const GATEWAY_URL = "https://api.viessmann.com/iot/v1/equipment/gateways";
     const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
     
@@ -147,11 +152,8 @@ class ViessmannApi
         $this->if_new_token = false;
 
         if ( (time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial) ) {
-            log::add('viessmannIot', 'debug', 'Utilisation ancien token');
             return;
         }
-
-        log::add('viessmannIot', 'debug', 'Recherche nouveau token');
 
         $code = $this->getCode();
         if ($code == false) {
