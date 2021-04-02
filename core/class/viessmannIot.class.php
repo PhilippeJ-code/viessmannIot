@@ -1,6 +1,6 @@
 <?php
 
-/* This file is part of Jeedom.
+/* This file is part of Jeedom
  *
  * Jeedom is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
       const COMFORT_PROGRAM = "operating.programs.comfort";
       const NORMAL_PROGRAM = "operating.programs.normal";
       const REDUCED_PROGRAM = "operating.programs.reduced";
+      const SENSORS_TEMPERATURE_ROOM = "sensors.temperature.room";
   
       // Supprimer les commandes
       //
@@ -67,7 +68,7 @@
           }
 
           for ($i=0; $i<$n; $i++) {
-              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'outsideTemperature');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -81,7 +82,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('outsideTemperature');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'pumpStatus');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -94,7 +95,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('pumpStatus');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -107,7 +108,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('hotWaterStorageTemperature');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $objDhw = $this->getCmd(null, 'dhwTemperature');
                   if (!is_object($objDhw)) {
                       $objDhw = new viessmannIotCmd();
@@ -139,7 +140,7 @@
                   $obj->setConfiguration('minValue', 10);
                   $obj->setConfiguration('maxValue', 60);
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'activeMode');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -223,7 +224,7 @@
                           $obj->save();
                       }
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'activeProgram');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -236,7 +237,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('activeProgram');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -249,7 +250,7 @@
                   $obj->setSubType('binary');
                   $obj->setLogicalId('isHeatingBurnerActive');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'isDhwModeActive');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -262,7 +263,7 @@
                   $obj->setSubType('binary');
                   $obj->setLogicalId('isDhwModeActive');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_SUPPLY) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_SUPPLY) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'supplyProgramTemperature');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -276,7 +277,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('supplyProgramTemperature');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $objComfort = $this->getCmd(null, 'comfortProgramTemperature');
                   if (!is_object($objComfort)) {
                       $objComfort = new viessmannIotCmd();
@@ -309,7 +310,7 @@
                   $obj->setConfiguration('minValue', 3);
                   $obj->setConfiguration('maxValue', 37);
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $objNormal = $this->getCmd(null, 'normalProgramTemperature');
                   if (!is_object($objNormal)) {
                       $objNormal = new viessmannIotCmd();
@@ -342,7 +343,7 @@
                   $obj->setConfiguration('minValue', 3);
                   $obj->setConfiguration('maxValue', 37);
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $objReduced = $this->getCmd(null, 'reducedProgramTemperature');
                   if (!is_object($objReduced)) {
                       $objReduced = new viessmannIotCmd();
@@ -374,6 +375,19 @@
                   $obj->setValue($objReduced->getId());
                   $obj->setConfiguration('minValue', 3);
                   $obj->setConfiguration('maxValue', 37);
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_ROOM) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'roomTemperature');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Température intérieure', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('roomTemperature');
                   $obj->save();
               }
           }
@@ -449,76 +463,82 @@
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
-              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'outsideTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["status"]["value"];
                   $obj = $this->getCmd(null, 'pumpStatus');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'dhwTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
                   $this->getCmd(null, 'dhwTemperature')->event($val);
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'activeMode');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'activeProgram');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isDhwModeActive');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_SUPPLY) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_SUPPLY) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'supplyProgramTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["temperature"]["value"];
                   $obj = $this->getCmd(null, 'comfortProgramTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["temperature"]["value"];
                   $obj = $this->getCmd(null, 'normalProgramTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true ) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["temperature"]["value"];
                   $obj = $this->getCmd(null, 'reducedProgramTemperature');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_ROOM) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["temperature"]["value"];
+                  $obj = $this->getCmd(null, 'roomTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
