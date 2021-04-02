@@ -537,7 +537,7 @@
                       $obj->event($val);
                   }
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_ROOM) && $features["data"][$i]["isEnabled"] == true) {
-                  $val = $features["data"][$i]["properties"]["temperature"]["value"];
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'roomTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
