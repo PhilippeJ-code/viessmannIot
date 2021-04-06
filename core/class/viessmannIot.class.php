@@ -27,6 +27,7 @@
       const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
       const DHW_TEMPERATURE = "heating.dhw.temperature.main";
       const HEATING_BURNER = "heating.burner";
+      const HEATING_DHW_ONETIMECHARGE = "heating.dhw.oneTimeCharge";
 
       const ACTIVE_MODE = "operating.modes.active";
       const ACTIVE_PROGRAM = "operating.programs.active";
@@ -389,6 +390,41 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('roomTemperature');
                   $obj->save();
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_ONETIMECHARGE && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Forcer Eau chaude', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isOneTimeDhwCharge');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'startOneTimeDhwCharge');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Activer eau chaude', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('startOneTimeDhwCharge');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'stopOneTimeDhwCharge');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Désactiver eau chaude', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('stopOneTimeDhwCharge');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
               }
           }
       }
@@ -542,6 +578,12 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_ONETIMECHARGE && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
               }
           }
           $date = new DateTime();
@@ -687,6 +729,38 @@
           unset($viessmannApi);
       }
 
+      // Start One Time Dhw Charge
+      //
+      public function startOneTimeDhwCharge()
+      {
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature(self::HEATING_DHW_ONETIMECHARGE, "activate", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isOneTimeDhwCharge')->event(1);
+      }
+
+      // Stop One Time Dhw Charge
+      //
+      public function stopOneTimeDhwCharge()
+      {
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature(self::HEATING_DHW_ONETIMECHARGE, "deactivate", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isOneTimeDhwCharge')->event(0);
+      }
+
       public static function cron()
       {
           $maintenant = time();
@@ -812,6 +886,10 @@
                   $eqlogic->rafraichir($viessmannApi);
                   unset($viessmannApi);
               }
+          } elseif ($this->getLogicalId() == 'startOneTimeDhwCharge') {
+              $eqlogic->startOneTimeDhwCharge();
+          } elseif ($this->getLogicalId() == 'stopOneTimeDhwCharge') {
+              $eqlogic->stopOneTimeDhwCharge();
           } elseif ($this->getLogicalId() == 'modeStandby') {
               $eqlogic->setMode('standby');
           } elseif ($this->getLogicalId() == 'modeDhw') {
