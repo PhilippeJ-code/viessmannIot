@@ -32,7 +32,16 @@
       const ACTIVE_MODE = "operating.modes.active";
       const ACTIVE_PROGRAM = "operating.programs.active";
       const PUMP_STATUS = "circulation.pump";
+
+      const STANDBY_MODE = "operating.modes.standby";
+      const HEATING_MODE = "operating.modes.heating";
       const DHW_MODE = "operating.modes.dhw";
+      const DHW_AND_HEATING_MODE = "operating.modes.dhwAndHeating";
+      const COOLING_MODE = "operating.modes.cooling";
+      const DHW_AND_HEATING_COOLING_MODE = "operating.modes.dhwAndHeatingCooling";
+      const HEATING_COOLING_MODE = "operating.modes.heatingCooling";
+      const NORMAL_STANDBY_MODE = "operating.modes.normalStandby";
+  
       const SENSORS_TEMPERATURE_SUPPLY = "sensors.temperature.supply";
       const HEATING_CURVE = "heating.curve";
       const COMFORT_PROGRAM = "operating.programs.comfort";
@@ -251,6 +260,32 @@
                   $obj->setSubType('binary');
                   $obj->setLogicalId('isHeatingBurnerActive');
                   $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::STANDBY_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isStandbyModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Attente activée', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isStandbyModeActive');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isHeatingModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Chauffage activé', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isHeatingModeActive');
+                  $obj->save();                  
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'isDhwModeActive');
                   if (!is_object($obj)) {
@@ -263,6 +298,73 @@
                   $obj->setType('info');
                   $obj->setSubType('binary');
                   $obj->setLogicalId('isDhwModeActive');
+                  $obj->save();                  
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_AND_HEATING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isDhwAndHeatingModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Eau chaude et chauffage activés', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isDhwAndHeatingModeActive');
+                  $obj->save();                  
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isCoolingModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Refroidissement activé', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isCoolingModeActive');
+                  $obj->save();
+            
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_AND_HEATING_COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isDhwAndHeatingCoolingModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Eau chaude, chauffage et refroidissement activés', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isDhwAndHeatingCoolingModeActive');
+                  $obj->save();
+                  
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isHeatingCoolingModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Chauffage et refroidissement activés', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isHeatingCoolingModeActive');
+                  $obj->save();                  
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_STANDBY_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isNormalStandbyModeActive');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Attente normale activée', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isNormalStandbyModeActive');
                   $obj->save();
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::SENSORS_TEMPERATURE_SUPPLY) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'supplyProgramTemperature');
@@ -542,9 +644,51 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::STANDBY_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isStandbyModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isHeatingModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isDhwModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_AND_HEATING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isDhwAndHeatingModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isCoolingModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::DHW_AND_HEATING_COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isDhwAndHeatingCoolingModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_COOLING_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isHeatingCoolingModeActive');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_STANDBY_MODE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isNormalStandbyModeActive');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
