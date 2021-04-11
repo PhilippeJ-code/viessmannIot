@@ -134,23 +134,25 @@
                   $objDhw->setConfiguration('minValue', 10);
                   $objDhw->setConfiguration('maxValue', 60);
                   $objDhw->save();
-
-                  $obj = $this->getCmd(null, 'dhwSlider');
-                  if (!is_object($obj)) {
-                      $obj = new viessmannIotCmd();
-                      $obj->setUnite('°C');
-                      $obj->setName(__('Slider consigne eau chaude ', __FILE__));
-                      $obj->setIsVisible(1);
-                      $obj->setIsHistorized(0);
+                  
+                  if (isset($features["data"][$i]["commands"]["setTargetTemperature"])) {
+                      $obj = $this->getCmd(null, 'dhwSlider');
+                      if (!is_object($obj)) {
+                          $obj = new viessmannIotCmd();
+                          $obj->setUnite('°C');
+                          $obj->setName(__('Slider consigne eau chaude ', __FILE__));
+                          $obj->setIsVisible(1);
+                          $obj->setIsHistorized(0);
+                      }
+                      $obj->setEqLogic_id($this->getId());
+                      $obj->setType('action');
+                      $obj->setSubType('slider');
+                      $obj->setLogicalId('dhwSlider');
+                      $obj->setValue($objDhw->getId());
+                      $obj->setConfiguration('minValue', 10);
+                      $obj->setConfiguration('maxValue', 60);
+                      $obj->save();
                   }
-                  $obj->setEqLogic_id($this->getId());
-                  $obj->setType('action');
-                  $obj->setSubType('slider');
-                  $obj->setLogicalId('dhwSlider');
-                  $obj->setValue($objDhw->getId());
-                  $obj->setConfiguration('minValue', 10);
-                  $obj->setConfiguration('maxValue', 60);
-                  $obj->save();
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'activeMode');
                   if (!is_object($obj)) {
@@ -514,39 +516,6 @@
                   $obj->setConfiguration('maxValue', 37);
                   $obj->save();
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ECO_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
-                  $objReduced = $this->getCmd(null, 'ecoProgramTemperature');
-                  if (!is_object($objReduced)) {
-                      $objReduced = new viessmannIotCmd();
-                      $objReduced->setName(__('Consigne éco', __FILE__));
-                      $objReduced->setUnite('°C');
-                      $objReduced->setIsVisible(1);
-                      $objReduced->setIsHistorized(0);
-                  }
-                  $objReduced->setEqLogic_id($this->getId());
-                  $objReduced->setType('info');
-                  $objReduced->setSubType('numeric');
-                  $objReduced->setLogicalId('ecoProgramTemperature');
-                  $objReduced->setConfiguration('minValue', 3);
-                  $objReduced->setConfiguration('maxValue', 37);
-                  $objReduced->save();
-
-                  $obj = $this->getCmd(null, 'ecoProgramSlider');
-                  if (!is_object($obj)) {
-                      $obj = new viessmannIotCmd();
-                      $obj->setUnite('°C');
-                      $obj->setName(__('Slider consigne éco', __FILE__));
-                      $obj->setIsVisible(1);
-                      $obj->setIsHistorized(0);
-                  }
-                  $obj->setEqLogic_id($this->getId());
-                  $obj->setType('action');
-                  $obj->setSubType('slider');
-                  $obj->setLogicalId('ecoProgramSlider');
-                  $obj->setValue($objReduced->getId());
-                  $obj->setConfiguration('minValue', 3);
-                  $obj->setConfiguration('maxValue', 37);
-                  $obj->save();
-
                   $obj = $this->getCmd(null, 'isActivateEcoProgram');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -824,11 +793,6 @@
                       $obj->event($val);
                   }
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ECO_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
-                  $val = $features["data"][$i]["properties"]["temperature"]["value"];
-                  $obj = $this->getCmd(null, 'ecoProgramTemperature');
-                  if (is_object($obj)) {
-                      $obj->event($val);
-                  }
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isActivateEcoProgram');
                   if (is_object($obj)) {
@@ -991,23 +955,6 @@
           unset($viessmannApi);
       }
 
-      // Set Eco Program Temperature
-      //
-      public function setEcoProgramTemperature($temperature)
-      {
-          $circuitId = trim($this->getConfiguration('circuitId', '0'));
-
-          $viessmannApi = $this->getViessmann();
-          if ($viessmannApi == null) {
-              return;
-          }
-        
-          $data = "{\"targetTemperature\": $temperature}";
-          $viessmannApi->setFeature($this->buildFeature($circuitId, self::ECO_PROGRAM), "setTemperature", $data);
-
-          unset($viessmannApi);
-      }
-
       // Start One Time Dhw Charge
       //
       public function startOneTimeDhwCharge()
@@ -1044,7 +991,9 @@
       //
       public function activateComfortProgram()
       {
-          $viessmannApi = $this->getViessmann();
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+        $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1060,7 +1009,9 @@
       //
       public function deActivateComfortProgram()
       {
-          $viessmannApi = $this->getViessmann();
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+        $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1076,7 +1027,9 @@
       //
       public function activateEcoProgram()
       {
-          $viessmannApi = $this->getViessmann();
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+        $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1092,7 +1045,9 @@
       //
       public function deActivateEcoProgram()
       {
-          $viessmannApi = $this->getViessmann();
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+        $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1277,12 +1232,6 @@
               }
               $eqlogic->getCmd(null, 'reducedProgramTemperature')->event($_options['slider']);
               $eqlogic->setReducedProgramTemperature($_options['slider']);
-          } elseif ($this->getLogicalId() == 'ecoProgramSlider') {
-              if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
-                  return;
-              }
-              $eqlogic->getCmd(null, 'ecoProgramTemperature')->event($_options['slider']);
-              $eqlogic->setEcoProgramTemperature($_options['slider']);
           }
       }
   }
