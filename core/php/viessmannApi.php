@@ -14,8 +14,6 @@ class ViessmannApiException extends Exception
 //
 class ViessmannApi
 {
-    const VICARE = true;
-
     const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v2/authorize";
     const CALLBACK_URI = "http://localhost:4200/";
     
@@ -57,6 +55,8 @@ class ViessmannApi
     private $gateway;
     private $features;
 
+    private $vicare;
+
     // Constructeur
     //
     public function __construct($params)
@@ -83,11 +83,6 @@ class ViessmannApi
             return;
         }
         $this->codeChallenge = $params['codeChallenge'];
-            
-        if (self::VICARE == true) {
-            $this->clientId = '79742319e39245de5f91d15ff4cac2a8';
-            $this->codeChallenge = '8ad97aceb92c5892e102b093c7c083fa';
-        }
             
         if (!array_key_exists('user', $params)) {
             throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
@@ -145,6 +140,17 @@ class ViessmannApi
             $this->expires_at = intval($params['expires_at']);
         }
 
+        if (!array_key_exists('vicare', $params)) {
+            $this->vicare = false;
+        } else {
+            $this->vicare = $params['vicare'];
+        }
+
+        if ($this->vicare == true) {
+            $this->clientId = '79742319e39245de5f91d15ff4cac2a8';
+            $this->codeChallenge = '8ad97aceb92c5892e102b093c7c083fa';
+        }
+            
         $this->identity = array();
         $this->gateway = array();
         $this->features = array();
@@ -183,7 +189,7 @@ class ViessmannApi
     {
         // Paramètres code
         //
-        if (self::VICARE == true) {
+        if ($this->vicare == true) {
             $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&scope=openid&redirect_uri=vicare://oauth-callback/everest" .
             "&response_type=code";
         } else {
@@ -226,7 +232,7 @@ class ViessmannApi
     {
         // Paramètres Token
         //
-        if (self::VICARE == true) {
+        if ($this->vicare == true) {
             $url = self::TOKEN_URL . "?grant_type=authorization_code&client_id=" .
           $this->clientId . "&client_secret=" . $this->codeChallenge .  "&redirect_uri=vicare://oauth-callback/everest&code=" . $code;
         } else {

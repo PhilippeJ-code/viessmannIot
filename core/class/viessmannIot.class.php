@@ -28,10 +28,12 @@
       const DHW_TEMPERATURE = "heating.dhw.temperature.main";
       const HEATING_BURNER = "heating.burner";
       const HEATING_DHW_ONETIMECHARGE = "heating.dhw.oneTimeCharge";
+      const HEATING_DHW_SCHEDULE = "heating.dhw.schedule";
 
       const ACTIVE_MODE = "operating.modes.active";
       const ACTIVE_PROGRAM = "operating.programs.active";
       const PUMP_STATUS = "circulation.pump";
+      const HEATING_BOILER_SENSORS_TEMPERATURE = "heating.boiler.sensors.temperature.commonSupply";
 
       const STANDBY_MODE = "operating.modes.standby";
       const HEATING_MODE = "operating.modes.heating";
@@ -41,6 +43,8 @@
       const DHW_AND_HEATING_COOLING_MODE = "operating.modes.dhwAndHeatingCooling";
       const HEATING_COOLING_MODE = "operating.modes.heatingCooling";
       const NORMAL_STANDBY_MODE = "operating.modes.normalStandby";
+      const HEATING_SCHEDULE = "heating.schedule";
+      const HEATING_FROSTPROTECTION = "frostprotection";
   
       const SENSORS_TEMPERATURE_SUPPLY = "sensors.temperature.supply";
       const HEATING_CURVE = "heating.curve";
@@ -598,6 +602,126 @@
                   $obj->setType('action');
                   $obj->setSubType('other');
                   $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_CURVE) && $features["data"][$i]["isEnabled"] == true) {
+                  $objSlope = $this->getCmd(null, 'slope');
+                  if (!is_object($objSlope)) {
+                      $objSlope = new viessmannIotCmd();
+                      $objSlope->setName(__('Pente', __FILE__));
+                      $objSlope->setIsVisible(1);
+                      $objSlope->setIsHistorized(0);
+                  }
+                  $objSlope->setEqLogic_id($this->getId());
+                  $objSlope->setType('info');
+                  $objSlope->setSubType('numeric');
+                  $objSlope->setLogicalId('slope');
+                  $objSlope->setConfiguration('minValue', 0.2);
+                  $objSlope->setConfiguration('maxValue', 3.5);
+                  $objSlope->save();
+              
+                  $objShift = $this->getCmd(null, 'shift');
+                  if (!is_object($objShift)) {
+                      $objShift = new viessmannIotCmd();
+                      $objShift->setName(__('Parallèle', __FILE__));
+                      $objShift->setIsVisible(1);
+                      $objShift->setIsHistorized(0);
+                  }
+                  $objShift->setEqLogic_id($this->getId());
+                  $objShift->setType('info');
+                  $objShift->setSubType('numeric');
+                  $objShift->setLogicalId('shift');
+                  $objShift->setConfiguration('minValue', -13);
+                  $objShift->setConfiguration('maxValue', 40);
+                  $objShift->save();
+
+                  $obj = $this->getCmd(null, 'slopeSlider');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Slider pente', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('action');
+                  $obj->setSubType('slider');
+                  $obj->setLogicalId('slopeSlider');
+                  $obj->setValue($objSlope->getId());
+                  $obj->setConfiguration('minValue', 0.2);
+                  $obj->setConfiguration('maxValue', 3.5);
+                  $optParam = $obj->getDisplay('parameters');
+                  if (!is_array($optParam)) {
+                      $optParam = array();
+                  }
+                  $optParam['step'] = 0.1;
+                  $obj->setDisplay('parameters', $optParam);
+                  $obj->save();
+
+                  $obj = $this->getCmd(null, 'shiftSlider');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Slider parallèle', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('action');
+                  $obj->setSubType('slider');
+                  $obj->setLogicalId('shiftSlider');
+                  $obj->setValue($objShift->getId());
+                  $obj->setConfiguration('minValue', -13);
+                  $obj->setConfiguration('maxValue', 40);
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_SCHEDULE && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'dhwSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Programmation eau chaude', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('dhwSchedule');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_SCHEDULE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'heatingSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Programmation chauffage', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('heatingSchedule');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_FROSTPROTECTION) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'frostProtection');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Protection gel', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('frostProtection');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'boilerTemperature');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannCmd();
+                      $obj->setName(__('Température eau radiateur', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('boilerTemperature');
+                  $obj->save();
               }
           }
       }
@@ -618,6 +742,8 @@
           $deviceId = trim($this->getConfiguration('deviceId', '0'));
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
+          $isVicare = $this->getConfiguration('isVicare', false);
+
           $expires_at = $this->getCache('expires_at', 0);
           $token = $this->getCache('token', '');
 
@@ -635,7 +761,8 @@
           "deviceId" => $deviceId,
           "circuitId" => $circuitId,
           "expires_at" => $expires_at,
-          "token" => $token
+          "token" => $token,
+          "vicare" => $isVicare
         ];
 
           $viessmannApi = new ViessmannApi($params);
@@ -670,8 +797,8 @@
 
           $viessmannApi->getFeatures();
           $features = $viessmannApi->getArrayFeatures();
-          $n = count($features["data"]);
-          for ($i=0; $i<$n; $i++) {
+          $nbr = count($features["data"]);
+          for ($i=0; $i<$nbr; $i++) {
               if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'outsideTemperature');
@@ -807,6 +934,194 @@
               } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_ONETIMECHARGE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_CURVE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["shift"]["value"];
+                  $obj = $this->getCmd(null, 'shift');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+                  $val = $features["data"][$i]["properties"]["slope"]["value"];
+                  $obj = $this->getCmd(null, 'slope');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_SCHEDULE && $features["data"][$i]["isEnabled"] == true) {
+                  $dhwSchedule = '';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['mon']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['tue']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['wed']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['thu']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['fri']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['sat']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                  $dhwSchedule .= ';';
+        
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['sun']);
+                  for ($j=0; $j<$n; $j++) {
+                      $dhwSchedule .= 'n,';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['start'] . ',';
+                      $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['end'];
+                      if ($j < $n-1) {
+                          $dhwSchedule .= ',';
+                      }
+                  }
+                
+                  $obj = $this->getCmd(null, 'dhwSchedule');
+                  if (is_object($obj)) {
+                      $obj->event($dhwSchedule);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_SCHEDULE) && $features["data"][$i]["isEnabled"] == true) {
+                  $heatingSchedule = '';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['mon']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['mon'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['tue']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['tue'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['wed']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['wed'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['thu']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['thu'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['fri']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['fri'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['sat']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['sat'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $heatingSchedule .= ';';
+
+                  $n = count($features["data"][$i]["properties"]['entries']['value']['sun']);
+                  for ($j=0; $j<$n; $j++) {
+                      $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['sun'][$j]['mode'], 0, 1) . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['start'] . ',';
+                      $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['end'];
+                      if ($j < $n-1) {
+                          $heatingSchedule .= ',';
+                      }
+                  }
+                  $obj = $this->getCmd(null, 'heatingSchedule');
+                  if (is_object($obj)) {
+                      $obj->event($heatingSchedule);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_FROSTPROTECTION) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["status"]["value"];
+                  $obj = $this->getCmd(null, 'frostProtection');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $obj = $this->getCmd(null, 'boilerTemperature');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
@@ -1059,6 +1374,46 @@
           $this->getCmd(null, 'isActivateEcoProgram')->event(0);
       }
 
+      // Set Slope
+      //
+      public function setSlope($slope)
+      {
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+
+          $obj = $this->getCmd(null, 'shift');
+          $shift = $obj->execCmd();
+        
+          $data = "{\"shift\":" . $shift . ",\"slope\":" . round($slope, 1) . "}";
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::HEATING_CURVE), "setCurve", $data);
+
+          unset($viessmannApi);
+      }
+
+      // Set Shift
+      //
+      public function setShift($shift)
+      {
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $obj = $this->getCmd(null, 'slope');
+          $slope = $obj->execCmd();
+
+          $data = "{\"shift\":" . $shift . ",\"slope\":" . round($slope, 1) . "}";
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::HEATING_CURVE), "setCurve", $data);
+
+          unset($viessmannApi);
+      }
+
       public static function cron()
       {
           $maintenant = time();
@@ -1232,6 +1587,18 @@
               }
               $eqlogic->getCmd(null, 'reducedProgramTemperature')->event($_options['slider']);
               $eqlogic->setReducedProgramTemperature($_options['slider']);
+          } elseif ($this->getLogicalId() == 'shiftSlider') {
+              if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                  return;
+              }
+              $eqlogic->getCmd(null, 'shift')->event($_options['slider']);
+              $eqlogic->setShift($_options['slider']);
+          } elseif ($this->getLogicalId() == 'slopeSlider') {
+              if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                  return;
+              }
+              $eqlogic->getCmd(null, 'slope')->event($_options['slider']);
+              $eqlogic->setSlope($_options['slider']);
           }
       }
   }
