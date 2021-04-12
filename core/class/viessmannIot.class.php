@@ -53,6 +53,7 @@
       const REDUCED_PROGRAM = "operating.programs.reduced";
       const SENSORS_TEMPERATURE_ROOM = "sensors.temperature.room";
       const ECO_PROGRAM = "operating.programs.eco";
+      const PRESSURE_SUPPLY = "heating.sensors.pressure.supply";
 
       // Supprimer les commandes
       //
@@ -722,6 +723,19 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('boilerTemperature');
                   $obj->save();
+              } elseif ($features["data"][$i]["feature"] == self::PRESSURE_SUPPLY && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'pressureSupply');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Pression installation', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('pressureSupply');
+                  $obj->save();
               }
           }
       }
@@ -1122,6 +1136,12 @@
               } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'boilerTemperature');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == self::PRESSURE_SUPPLY && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["value"]["value"];
+                  $obj = $this->getCmd(null, 'pressureSupply');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }

@@ -363,7 +363,10 @@ class ViessmannApi
         curl_close($curl);
 
         $this->features = json_decode($response, true);
-        $json_file = __DIR__ . '/../../data/features.json';
+        if ( $this->vicare == true )
+            $json_file = __DIR__ . '/../../data/features_vic.json';
+        else
+            $json_file = __DIR__ . '/../../data/features_iot.json';
         file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->features)) {
