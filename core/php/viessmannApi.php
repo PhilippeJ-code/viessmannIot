@@ -14,14 +14,17 @@ class ViessmannApiException extends Exception
 //
 class ViessmannApi
 {
+    const VICARE = true;
+
     const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v2/authorize";
     const CALLBACK_URI = "http://localhost:4200/";
-
+    
     const TOKEN_URL = "https://iam.viessmann.com/idp/v2/token";
 
     const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
     
     const GATEWAY_URL = "https://api.viessmann.com/iot/v1/equipment/gateways";
+
     const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
     
     // Les paramètres d'accès au serveur
@@ -63,83 +66,82 @@ class ViessmannApi
         //
         if (!array_key_exists('clientId', $params)) {
             throw new ViessmannApiException('Id client obligatoire', 2);
-            return;     
+            return;
         }
-        if ( empty($params['clientId'])) {
+        if (empty($params['clientId'])) {
             throw new ViessmannApiException('Id client obligatoire', 2);
-            return;     
+            return;
         }
         $this->clientId = $params['clientId'];
-            
+
         if (!array_key_exists('codeChallenge', $params)) {
             throw new ViessmannApiException('Code challenge obligatoire', 2);
-            return;     
+            return;
         }
-        if ( empty($params['codeChallenge'])) {
+        if (empty($params['codeChallenge'])) {
             throw new ViessmannApiException('Code challenge obligatoire', 2);
-            return;     
+            return;
         }
         $this->codeChallenge = $params['codeChallenge'];
             
+        if (self::VICARE == true) {
+            $this->clientId = '79742319e39245de5f91d15ff4cac2a8';
+            $this->codeChallenge = '8ad97aceb92c5892e102b093c7c083fa';
+        }
+            
         if (!array_key_exists('user', $params)) {
             throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
-            return;     
+            return;
         }
-        if ( empty($params['user'])) {
+        if (empty($params['user'])) {
             throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
-            return;     
+            return;
         }
         $this->user = $params['user'];
 
         if (!array_key_exists('pwd', $params)) {
             throw new ViessmannApiException('Mot de passe obligatoire', 2);
-            return;     
+            return;
         }
-        if ( empty($params['pwd'])) {
+        if (empty($params['pwd'])) {
             throw new ViessmannApiException('Mot de passe obligatoire', 2);
-            return;     
+            return;
         }
         $this->pwd = $params['pwd'];
 
         if (!array_key_exists('installationId', $params)) {
             $this->installationId = '';
-        }
-        else {
+        } else {
             $this->installationId = trim($params['installationId']);
         }
 
         if (!array_key_exists('serial', $params)) {
             $this->serial = '';
-        }
-        else {
+        } else {
             $this->serial = trim($params['serial']);
         }
 
         if (!array_key_exists('deviceId', $params)) {
             $this->deviceId = 0;
-        }
-        else {
+        } else {
             $this->deviceId = trim($params['deviceId']);
         }
 
         if (!array_key_exists('circuitId', $params)) {
             $this->circuitId = 0;
-        }
-        else {
+        } else {
             $this->circuitId = trim($params['circuitId']);
         }
 
         if (!array_key_exists('token', $params)) {
             $this->token = '';
-        }
-        else {
+        } else {
             $this->token = trim($params['token']);
         }
 
         if (!array_key_exists('expires_at', $params)) {
             $this->expires_at = 0;
-        }
-        else {
+        } else {
             $this->expires_at = intval($params['expires_at']);
         }
 
@@ -151,7 +153,7 @@ class ViessmannApi
         //
         $this->if_new_token = false;
 
-        if ( (time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial) ) {
+        if ((time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial)) {
             return;
         }
 
@@ -169,20 +171,25 @@ class ViessmannApi
 
         if (empty($this->installationId) || empty($this->serial)) {
             $this->getGateway();
+            $this->getIdentity();
             $this->installationId = $this->getInstallationId();
             $this->serial = $this->getSerial();
         }
-
     }
 
     // Lire le code d'accès au serveur Viessmann
     //
     private function getCode() : string
-    { 
+    {
         // Paramètres code
         //
-        $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
+        if (self::VICARE == true) {
+            $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&scope=openid&redirect_uri=vicare://oauth-callback/everest" .
+            "&response_type=code";
+        } else {
+            $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
             self::CALLBACK_URI . "&response_type=code";
+        }
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -219,8 +226,13 @@ class ViessmannApi
     {
         // Paramètres Token
         //
-        $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
+        if (self::VICARE == true) {
+            $url = self::TOKEN_URL . "?grant_type=authorization_code&client_id=" .
+          $this->clientId . "&client_secret=" . $this->codeChallenge .  "&redirect_uri=vicare://oauth-callback/everest&code=" . $code;
+        } else {
+            $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
           $this->clientId . "&redirect_uri=" . self::CALLBACK_URI . "&code=" . $code;
+        }
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -280,6 +292,10 @@ class ViessmannApi
         curl_close($curl);
 
         $this->identity = json_decode($response, true);
+
+        $json_file = __DIR__ . '/../../data/identity.json';
+        file_put_contents($json_file, $response);
+
     }
 
     // Lire les données du gateway
@@ -314,14 +330,13 @@ class ViessmannApi
         if (array_key_exists('statusCode', $this->gateway)) {
             throw new ViessmannApiException($this->gateway["message"], 2);
         }
-
     }
 
     // Lire les features
     //
     public function getFeatures()
     {
-        // Lire les données du gateway
+        // Lire les données features
         //
         $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $this->deviceId . "/features";
         $header = array("Authorization: Bearer " . $this->token);
@@ -348,7 +363,6 @@ class ViessmannApi
         if (array_key_exists('statusCode', $this->features)) {
             throw new ViessmannApiException($this->features["message"], 2);
         }
- 
     }
 
     // Ecrire une feature
@@ -361,7 +375,7 @@ class ViessmannApi
         $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $this->deviceId . "/features/" . $feature . "/commands/" . $action;
 
         $header = array(
-            "Content-Type: application/json", 
+            "Content-Type: application/json",
             "Accept : application/vnd.siren+json",
             "Authorization: Bearer " . $this->token);
  
@@ -372,7 +386,7 @@ class ViessmannApi
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $data,            
+            CURLOPT_POSTFIELDS => $data,
         );
 
         // Appel Curl Données
@@ -387,7 +401,6 @@ class ViessmannApi
         if (array_key_exists('statusCode', $features)) {
             throw new ViessmannApiException($features["message"], 2);
         }
-
     }
 
     // Lire Installation Id
@@ -407,7 +420,7 @@ class ViessmannApi
     // Si nouveau token
     //
     public function isNewToken()
-    { 
+    {
         return $this->if_new_token;
     }
 

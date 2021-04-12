@@ -650,7 +650,7 @@
               $this->setConfiguration('installationId', $installationId);
               $this->setConfiguration('serial', $serial)->save();
             
-              $this->deleteAllCommands();
+//              $this->deleteAllCommands();
               $this->createCommands($viessmannApi);
           }
 
@@ -991,9 +991,9 @@
       //
       public function activateComfortProgram()
       {
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
-        $viessmannApi = $this->getViessmann();
+          $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1009,9 +1009,9 @@
       //
       public function deActivateComfortProgram()
       {
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
-        $viessmannApi = $this->getViessmann();
+          $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1027,9 +1027,9 @@
       //
       public function activateEcoProgram()
       {
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
-        $viessmannApi = $this->getViessmann();
+          $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
@@ -1045,9 +1045,9 @@
       //
       public function deActivateEcoProgram()
       {
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
-        $viessmannApi = $this->getViessmann();
+          $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
           }
