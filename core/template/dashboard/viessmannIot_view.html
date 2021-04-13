@@ -1,0 +1,2150 @@
+<div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class#" data-eqType="#eqType#"
+    data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#"
+    data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#"
+    style="width: #width#;height: #height#;#style#">
+
+    <div class="classContenant#uid#" id="idResume#uid#">
+
+        <div class="classFlex#uid#">
+
+            <div class="classTuile#uid#">
+
+                <img class="classFlamme#uid#" id="idBruleurAllumer#uid#"
+                    src="plugins/viessmannIot/resources/flamme.svg">
+                <img class="classIconeAlerte#uid#" id="idIconeAlerte#uid#"
+                    src="plugins/viessmannIot/resources/alerte.svg">
+                <span id="idTexteAlerte#uid#"></span>
+
+                <a href="#eqLink#" <span id="idNomObjet#uid#" class="cursor">#name_display#</span></a>
+
+                <span id="idRafraichir#uid#" class="cmd refresh pull-right cursor classRefresh#uid#"
+                    data-cmd_id="#idRefresh#">
+                    <i class="fas fa-sync"></i>
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="classFlex#uid#">
+
+            <div class="classTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsChaudiere#uid#"
+                    src="plugins/viessmannIot/resources/options.svg">
+                <img class="classOptionsCal#uid#" id="idOptionsErreurs#uid#"
+                    src="plugins/viessmannIot/resources/alerte.svg">
+
+                <span id="idProgrammeActuel#uid#"></span>
+
+                <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
+                    id="idOutsideTemperature#uid#"></span>
+            </div>
+
+        </div>
+
+        <div class="classFlex#uid#">
+
+            <div class="classDemiTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsRadiateurs#uid#"
+                    src="plugins/viessmannIot/resources/options.svg">
+                <img class="classOptionsCal#uid#" id="idOptionsCalRadiateurs#uid#"
+                    src="plugins/viessmannIot/resources/calendrier.svg">
+                <span id="idRoomTemperature#uid#" class="history cursor" data-cmd_id="#idRoomTemperature#"></span>
+                <span id="idProgramTemperature#uid#"></span>
+                <span class="classLibelleTuile#uid#">#circuitName#</span>
+            </div>
+
+            <div id="idTuileEau#uid#" class="classDemiTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsEauChaude#uid#"
+                    src="plugins/viessmannIot/resources/options.svg">
+                <img class="classOptionsCal#uid#" id="idOptionsCalEauChaude#uid#"
+                    src="plugins/viessmannIot/resources/calendrier.svg">
+                <span id="idHotWaterStorageTemperature#uid#" class="history cursor"
+                    data-cmd_id="#idHotWaterStorageTemperature#"></span>
+                <span id="idDhwTemperature#uid#" class="history cursor" data-cmd_id="#idDhwTemperature#"></span>
+                <span class="classLibelleTuile#uid#">Eau Chaude</span>
+            </div>
+
+        </div>
+
+        <div class="classFlex#uid#">
+
+            <div id="idTuileGaz#uid#" class="classDemiTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsGaz#uid#"
+                    src="plugins/viessmannIot/resources/options.svg">
+                <span id="idDhwGazConsumption#uid#" class="history cursor" data-cmd_id="#idDhwGazConsumption#"></span>
+                <span id="idHeatingGazConsumption#uid#" class="history cursor" data-cmd_id="#idHeatingGazConsumption#""></span>
+                  <span class=" classLibelleTuile#uid#">Gaz</span>
+            </div>
+
+            <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
+                    src="plugins/viessmannIot/resources/options.svg">
+                <span id="idHeatingPowerConsumption#uid#" class="history cursor"
+                    data-cmd_id="#idHeatingPowerConsumption#"></span>
+                <span class="classLibelleTuile#uid#">Electricité</span>
+            </div>
+
+        </div>
+
+        <div class="classFlex#uid#">
+            <div class="classTuile#uid#">
+                <img class="classOptions#uid# cursor" id="idOptionsActions#uid#"
+                    src="plugins/viessmannIot/resources/main.svg">
+                <span id="idRefreshDate#uid#"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idChaudiere#uid#" style="display:none;">
+
+        </br></br>
+        <span class="classTitre#uid#">Brûleur</span></br>
+        <div class="gap-10"></div>
+        <div id="showEtatBruleur#uid#">
+            <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
+                id="idEtatBruleur#uid#"></span></br>
+        </div>
+        <div id="showHeatingBurnerHours#uid#">
+            <span class="classSousTitre#uid#">Heures de fonctionnement</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerHours#"
+                id="idHeatingBurnerHours#uid#"></span></br>
+        </div>
+        <div id="showHeatingBurnerHoursPerDay#uid#">
+            <span class="classSousTitre#uid#">Heures de fonct. veille</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerHoursPerDay#"
+                id="idHeatingBurnerHoursPerDay#uid#"></span></br>
+        </div>
+        <div id="showHeatingBurnerStarts#uid#">
+            <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingBurnerStarts#" id="idHeatingBurnerStarts#uid#"></span></br>
+        </div>
+        <div id="showHeatingBurnerModulation#uid#">
+            <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingBurnerModulation#" id="idHeatingBurnerModulation#uid#"></span></br>
+        </div>
+        <div class="gap-10"></div>
+        <span class="classTitre#uid#">Courbes</span></br>
+        <div class="gap-10"></div>
+        <div id="showSlope#uid#">
+            <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idSlope#" id="idSlope#uid#"></span></span><img class="classCrayon#uid# cursor"
+                id="idModifierPente#uid#" src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div id="showShift#uid#">
+            <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idShift#" id="idShift#uid#"></span></span><img class="classCrayon#uid# cursor"
+                id="idModifierParallele#uid#" src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div class="gap-10"></div>
+        <span class="classTitre#uid#">Installation</span></br>
+        <div class="gap-10"></div>
+        <div id="showPressureSupply#uid#">
+            <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
+        </div>
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Chaudière</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idErreurs#uid#" style="display:none;">
+
+        </br></br>
+
+        <div id="showEntretien#uid#">
+            <span class="classTitre#uid#">Entretien</span></br>
+            <div class="gap-10"></div>
+            <span class="classSousTitre#uid#">Date dernier entretien</span><span class="classValeur#uid#"
+                id="idLastServiceDate#uid#"></span></br>
+            <span class="classSousTitre#uid#">Mois entre entretiens</span><span class="classValeur#uid#"
+                id="idServiceInterval#uid#"></span></br>
+            <span class="classSousTitre#uid#">Mois depuis l'entretien</span><span class="classValeur#uid#"
+                id="idMonthSinceService#uid#"></span></br>
+            <div class="gap-10"></div>
+        </div>
+
+        <span class="classTitre#uid#">Dysfonctionnements</span></br></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_0#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_0#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_1#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_1#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_2#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_2#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_3#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_3#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_4#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_4#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_5#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_5#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_6#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_6#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_7#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_7#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_8#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_8#uid#"></span></br>
+        <span class="classSousTitre#uid#" id="idErrorDat_9#uid#"></span><span class="classValeur#uid#"
+            id="idErrorCod_9#uid#"></span></br>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Statut</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idRadiateurs#uid#" style="display:none;">
+
+        </br></br>
+        <div id="showStatutChauffage#uid#">
+            <span class="classTitre#uid#">Statut</span></br>
+            <div class="gap-10"></div>
+            <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></span><img
+                class="classCrayon#uid# cursor" id="idModifierStatut#uid#"
+                src="plugins/viessmannIot/resources/crayon.svg"></br>
+            <div class="gap-10"></div>
+        </div>
+        <span class="classTitre#uid#">Températures</span></br>
+        <div class="gap-10"></div>
+        <div id="showComfortProgramTemperature#uid#">
+            <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"
+                class="classValeur#uid#  history cursor" data-cmd_id="#idComfortProgramTemperature#"></span><img
+                class="classCrayon#uid# cursor" id="idModifierConfort#uid#"
+                src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div id="showNormalProgramTemperature#uid#">
+            <span class="classSousTitre#uid#">Normale</span><span id="idNormalProgramTemperature#uid#"
+                class="classValeur#uid# history cursor" data-cmd_id="#idNormalProgramTemperature#"></span><img
+                class="classCrayon#uid# cursor" id="idModifierNormale#uid#"
+                src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div id="showReducedProgramTemperature#uid#">
+            <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"
+                class="classValeur#uid# history cursor" data-cmd_id="#idReducedProgramTemperature#"></span><img
+                class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
+                src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div class="gap-10"></div>
+        <span class="classTitre#uid#">#circuitName#</span></br>
+        <div class="gap-10"></div>
+        <div id="showTemperaturePiece#uid#">
+            <span class="classSousTitre#uid#">Température intérieure</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idRoomTemperature#" id="idTemperaturePiece#uid#"></span></br>
+        </div>
+        <div id="showTemperatureDepart#uid#">
+            <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idSupplyProgramTemperature#" id="idTemperatureDepart#uid#"></span></br>
+        </div>
+        <div id="showTemperatureEauRadiateur#uid#">
+            <span class="classSousTitre#uid#">Température circuit chauffage</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperature#"
+                id="idTemperatureEauRadiateur#uid#"></span></br>
+        </div>
+        <div id="showFrostProtection#uid#">
+            <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
+                id="idFrostProtection#uid#"></span></br>
+        </div>
+        <div id="showPumpStatus#uid#">
+            <span class="classSousTitre#uid#">Etat circulateur</span><span class="classValeur#uid#"
+                id="idEtatCirculateur#uid#"></span></br>
+        </div>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">#circuitName#</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idCalRadiateurs#uid#" style="display:none;">
+
+        </br></br>
+        <span class="classTitre#uid#">Programmation</span>
+        </br></br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchLun#&title=Lun">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchMar#&title=Mar">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchMer#&title=Mer">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchJeu#&title=Jeu">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchVen#&title=Ven">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchSam#&title=Sam">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#heaSchDim#&title=Dim">
+        </img>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Programmation chauffage</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idEauChaude#uid#" style="display:none;">
+
+        </br></br>
+        <span class="classTitre#uid#">Températures</span>
+        </br>
+        <div class="gap-10"></div>
+        <div id="showDhwTemperature#uid#">
+            <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idDhwTemperature#" id="idConsigneEauChaude#uid#"></span><img
+                class="classCrayon#uid# cursor" id="idModifierDhw#uid#"
+                src="plugins/viessmannIot/resources/crayon.svg"></br>
+        </div>
+        <div id="showHotWaterStorageTemperature#uid#">
+            <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHotWaterStorageTemperature#" id="idActuelEauChaude#uid#"></span></br>
+        </div>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Eau chaude</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idCalEauChaude#uid#" style="display:none;">
+
+        </br></br>
+        <span class="classTitre#uid#">Programmation</span>
+        </br></br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchLun#&title=Lun">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchMar#&title=Mar">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchMer#&title=Mer">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchJeu#&title=Jeu">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchVen#&title=Ven">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchSam#&title=Sam">
+        </img>
+        </br>
+        <img class="classProg#uid#"
+            src="plugins/viessmannIot/resources/image.php?width=220&height=40&prog=#dhwSchDim#&title=Dim">
+        </img>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Eau chaude</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idGaz#uid#" style="display:none;">
+
+        </br></br>
+        <select id="selectionGrapheGaz#uid#">
+            <option value="0" selected>Jour</option>
+            <option value="1">Semaine</option>
+            <option value="2">Mois</option>
+            <option value="3">Année</option>
+        </select>
+        </br>
+
+        <div id="grapheGazJour#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheGazSemaine#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheGazMois#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheGazAnnee#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Consommation gaz</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idElec#uid#" style="display:none;">
+
+        </br></br>
+        <select id="selectionGrapheElec#uid#">
+            <option value="0" selected>Jour</option>
+            <option value="1">Semaine</option>
+            <option value="2">Mois</option>
+            <option value="3">Année</option>
+        </select>
+        </br>
+
+        <div id="grapheElecJour#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheElecSemaine#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheElecMois#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <div id="grapheElecAnnee#uid#" style="width:100%; height:200px;">
+        </div>
+
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Consommation électricité</span></br>
+
+    </div>
+
+    <div class="classContenant#uid#" id="idActions#uid#" style="display:none;">
+
+        </br></br>
+
+        <div id="showOneTimeDhwCharge#uid#">
+            <span class="classSousTitre#uid#">Forcer eau chaude</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idIsOneTimeDhwCharge#" id="idIsOneTimeDhwCharge#uid#"></span>
+            <img class="classCrayon#uid# cursor" id="idStartOneTimeDhwCharge#uid#"
+                src="plugins/viessmannIot/resources/start.svg">
+            <img class="classCrayon#uid# cursor" id="idStopOneTimeDhwCharge#uid#"
+                src="plugins/viessmannIot/resources/stop.svg"></br>
+        </div>
+
+        <div id="showComfortProgram#uid#">
+            <span class="classSousTitre#uid#">Programme confort</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idIsActivateComfortProgram#" id="idIsActivateComfortProgram#uid#"></span>
+            <img class="classCrayon#uid# cursor" id="idActivateComfortProgram#uid#"
+                src="plugins/viessmannIot/resources/start.svg">
+            <img class="classCrayon#uid# cursor" id="idDeActivateComfortProgram#uid#"
+                src="plugins/viessmannIot/resources/stop.svg"></br>
+        </div>
+
+        <div id="showEcoProgram#uid#">
+            <span class="classSousTitre#uid#">Programme éco</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idIsActivateEcoProgram#" id="idIsActivateEcoProgram#uid#"></span>
+            <img class="classCrayon#uid# cursor" id="idActivateEcoProgram#uid#"
+                src="plugins/viessmannIot/resources/start.svg">
+            <img class="classCrayon#uid# cursor" id="idDeActivateEcoProgram#uid#"
+                src="plugins/viessmannIot/resources/stop.svg"></br>
+        </div>
+        <div class="gap-10"></div>
+
+        <div id="showHolidayProgram#uid#">
+            <span class="classSousTitre#uid#">Date début</span>
+            <input type="date" id="idStartHoliday#uid#"></br>
+            <div class="gap-10"></div>
+            <span class="classSousTitre#uid#">Date fin</span>
+            <input type="date" id="idEndHoliday#uid#"></br>
+            <div class="gap-10"></div>
+            <span class="classSousTitre#uid#">Programme vacances</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idIsScheduleHolidayProgram#" id="idIsScheduleHolidayProgram#uid#"></span>
+            <img class="classCrayon#uid# cursor" id="idScheduleHolidayProgram#uid#"
+                src="plugins/viessmannIot/resources/start.svg">
+            <img class="classCrayon#uid# cursor" id="idUnscheduleHolidayProgram#uid#"
+                src="plugins/viessmannIot/resources/stop.svg"></br>
+        </div>
+        <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <span class="classTitreTuile#uid#">Actions</span></br>
+
+        <div id="statsTemperature#uid#" style="width:100%; height:180px">
+        </div>
+
+    </div>
+
+    <style>
+        .classContenant#uid# {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            color: #000000;
+        }
+
+        .classFlex#uid# {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .classTuile#uid# {
+            width: 96%;
+            height: 40px;
+            position: relative;
+            margin-top: 8px;
+            background-color: #FFFFFF;
+            border: 1px solid #808080;
+            border-radius: 8px;
+            color: #000000;
+        }
+
+        .classDemiTuile#uid# {
+            width: 46%;
+            height: 95px;
+            margin-top: 8px;
+            position: relative;
+            background-color: #FFFFFF;
+            border: 1px solid #808080;
+            border-radius: 8px;
+            color: #000000;
+        }
+
+        .classTitreTuile#uid# {
+            position: absolute;
+            width: 70%;
+            top: 10px;
+            left: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #808080;
+        }
+
+        .gap-10 {
+            width: 100%;
+            height: 10px;
+        }
+
+        .classFlamme#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            top: 3px;
+            filter: invert(7%) sepia(100%) saturate(7480%) hue-rotate(248deg) brightness(104%) contrast(141%);
+        }
+
+        .classRefresh#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: 3px;
+            top: 3px;
+            filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
+        }
+
+        .classRefresh#uid#:hover {
+            filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
+        }
+
+        .classIconeAlerte#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 26px;
+            top: 3px;
+            filter: invert(33%) sepia(55%) saturate(7464%) hue-rotate(348deg) brightness(86%) contrast(142%);
+        }
+
+        #idTexteAlerte#uid# {
+            position: absolute;
+            height: 20px;
+            left: 50px;
+            top: 5px;
+            color: #ff0000;
+        }
+
+        #idNomObjet#uid# {
+            position: absolute;
+            width: 65%;
+            top: 10px;
+            left: 50px;
+            text-align: center;
+            font-size: 14px;
+            color: #808080 !important;
+        }
+
+        .classOptions#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            top: 3px;
+            filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
+        }
+
+        .classOptions#uid#:hover {
+            filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
+        }
+
+        .classOptionsCal#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 26px;
+            top: 3px;
+            filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
+        }
+
+        .classOptionsCal#uid#:hover {
+            filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
+        }
+
+        #idProgrammeActuel#uid# {
+            position: absolute;
+            width: 65%;
+            top: 10px;
+            left: 50px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .classOutsideTemperature#uid# {
+            position: absolute;
+            height: 30px;
+            top: 5px;
+            right: 5px;
+            text-align: right;
+            font-size: 18px;
+            color: #808080;
+        }
+
+        .classLibelleTuile#uid# {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #808080;
+            bottom: 5px;
+        }
+
+        #idRoomTemperature#uid# {
+            position: absolute;
+            text-align: right;
+            font-size: 14px;
+            top: 3px;
+            right: 3px;
+            color: #808080;
+        }
+
+        #idProgramTemperature#uid# {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 35px;
+            top: 20px;
+        }
+
+        #idHotWaterStorageTemperature#uid# {
+            position: absolute;
+            text-align: right;
+            font-size: 14px;
+            top: 3px;
+            right: 3px;
+            color: #808080;
+        }
+
+        #idDhwTemperature#uid# {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 35px;
+            top: 20px;
+        }
+
+        #idDhwGazConsumption#uid# {
+            position: absolute;
+            text-align: right;
+            font-size: 14px;
+            top: 3px;
+            right: 3px;
+            color: #808080;
+        }
+
+        #idHeatingGazConsumption#uid# {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 35px;
+            top: 20px;
+        }
+
+        #idHeatingPowerConsumption#uid# {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 35px;
+            top: 20px;
+        }
+
+        #idRefreshDate#uid# {
+            position: absolute;
+            width: 80%;
+            text-align: center;
+            font-size: 14px;
+            color: #808080;
+            top: 10px;
+            left: 30px;
+        }
+
+        .classPrecedent#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 5px;
+            top: 3px;
+            filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
+        }
+
+        .classPrecedent#uid#:hover {
+            filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
+        }
+
+        .classTitre#uid# {
+            position: absolute;
+            width: 96%;
+            left: 2%;
+            text-align: left;
+            font-size: 14px;
+            background-color: #E0E0E0;
+            color: #808080;
+        }
+
+        .classSousTitre#uid# {
+            position: absolute;
+            width: 100%;
+            left: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        .classProg#uid# {
+            width: 220px;
+            height: 40px;
+            margin-left: 20px;
+        }
+
+        .classValeur#uid# {
+            position: absolute;
+            width: 100%;
+            right: 25px;
+            text-align: right;
+            font-size: 14px;
+            color: #808080;
+        }
+
+        #idComfortProgramTemperature#uid# {
+            color: red;
+        }
+
+        #idNormalProgramTemperature#uid# {
+            color: orange;
+        }
+
+        #idReducedProgramTemperature#uid# {
+            color: blue;
+        }
+
+        .classCrayon#uid# {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: 3px;
+            filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
+        }
+
+        .classCrayon#uid#:hover {
+            filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
+        }
+
+        #idStartHoliday#uid# {
+            position: absolute;
+            right: 3px;
+            border-radius: 5px;
+            background-color: #fff !important;
+            border: 1px solid #808080 !important;
+        }
+
+        #idEndHoliday#uid# {
+            position: absolute;
+            right: 3px;
+            border-radius: 5px;
+            background-color: #fff !important;
+            border: 1px solid #808080 !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        // Affichage initial
+        //
+        $('#idResume#uid#').show();
+        $('#idChaudiere#uid#').hide();
+        $('#idErreurs#uid#').hide();
+        $('#idRadiateurs#uid#').hide();
+        $('#idCalRadiateurs#uid#').hide();
+        $('#idEauChaude#uid#').hide();
+        $('#idCalEauChaude#uid#').hide();
+        $('#idGaz#uid#').hide();
+        $('#idElec#uid#').hide();
+        $('#idActions#uid#').hide();
+
+        // Retour sur tuile principale
+        //
+        $('.classPrecedent#uid#').on('click', function () {
+            $('#idResume#uid#').show();
+            $('#idChaudiere#uid#').hide();
+            $('#idErreurs#uid#').hide();
+            $('#idRadiateurs#uid#').hide();
+            $('#idCalRadiateurs#uid#').hide();
+            $('#idEauChaude#uid#').hide();
+            $('#idCalEauChaude#uid#').hide();
+            $('#idGaz#uid#').hide();
+            $('#idElec#uid#').hide();
+            $('#idActions#uid#').hide();
+        });
+
+        // Tuile titre
+        //
+
+        // Click pour rafraichir
+        //
+        $('#idRafraichir#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idRefresh#'
+            });
+        });
+
+        // Tuile chaudière
+        //
+        jeedom.cmd.update['#idActiveProgram#'] = function (_options) {
+            if (_options.display_value == 'comfort') {
+                $('#idProgrammeActuel#uid#').css("color", "red");
+                $('#idProgramTemperature#uid#').css("color", "red");
+            } else if (_options.display_value == 'normal') {
+                $('#idProgrammeActuel#uid#').css("color", "orange");
+                $('#idProgramTemperature#uid#').css("color", "orange");
+            } else if (_options.display_value == 'reduced') {
+                $('#idProgrammeActuel#uid#').css("color", "blue");
+                $('#idProgramTemperature#uid#').css("color", "blue");
+            } else if (_options.display_value == 'eco') {
+                $('#idProgrammeActuel#uid#').css("color", "blue");
+                $('#idProgramTemperature#uid#').css("color", "blue");
+            } else {
+                $('#idProgrammeActuel#uid#').css("color", "#808080");
+                $('#idProgramTemperature#uid#').css("color", "#808080");
+            }
+
+            if (_options.display_value == 'comfort')
+                $('#idProgrammeActuel#uid#').html('Confort');
+            else if (_options.display_value == 'normal')
+                $('#idProgrammeActuel#uid#').html('Normal');
+            else if (_options.display_value == 'eco')
+                $('#idProgrammeActuel#uid#').html('Eco');
+            else if (_options.display_value == 'reduced')
+                $('#idProgrammeActuel#uid#').html('Réduit');
+            else if (_options.display_value == 'external')
+                $('#idProgrammeActuel#uid#').html('Externe');
+            else if (_options.display_value == 'holiday')
+                $('#idProgrammeActuel#uid#').html('Vacances');
+            else if (_options.display_value == 'standby')
+                $('#idProgrammeActuel#uid#').html('Veille');
+            else if (_options.display_value == 'summerEco')
+                $('#idProgrammeActuel#uid#').html('Economique été');
+            else
+                $('#idProgrammeActuel#uid#').html('Programme inconnu');
+        }
+        jeedom.cmd.update['#idActiveProgram#']({ display_value: '#activeProgram#' });
+
+        jeedom.cmd.update['#idOutsideTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#idOutsideTemperature#uid#').html('--');
+            } else {
+                $('#idOutsideTemperature#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idOutsideTemperature#']({ display_value: '#outsideTemperature#' });
+
+        // Click pour accès tuile options chaudière
+        //
+        $('#idOptionsChaudiere#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idChaudiere#uid#').show();
+        });
+
+        // Tuile options chaudière
+        //
+        jeedom.cmd.update['#idIsHeatingBurnerActive#'] = function (_options) {
+
+            if (_options.display_value == -1) {
+                $('#idBruleurAllumer#uid#').hide();
+                $('#showEtatBruleur#uid#').hide();
+            }
+            else if (_options.display_value == 1) {
+                $('#idBruleurAllumer#uid#').show();
+                $('#idEtatBruleur#uid#').html('Allumé');
+            } else {
+                $('#idBruleurAllumer#uid#').hide();
+                $('#idEtatBruleur#uid#').html('Eteint');
+            }
+        }
+        jeedom.cmd.update['#idIsHeatingBurnerActive#']({ display_value: '#isHeatingBurnerActive#' });
+
+        jeedom.cmd.update['#idHeatingBurnerHours#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingBurnerHours#uid#').hide();
+            } else {
+                $('#idHeatingBurnerHours#uid#').html(_options.display_value + " h");
+            }
+        }
+        jeedom.cmd.update['#idHeatingBurnerHours#']({ display_value: '#heatingBurnerHours#' });
+
+        jeedom.cmd.update['#idHeatingBurnerHoursPerDay#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingBurnerHoursPerDay#uid#').hide();
+            } else {
+                $('#idHeatingBurnerHoursPerDay#uid#').html(_options.display_value + " h");
+            }
+        }
+        jeedom.cmd.update['#idHeatingBurnerHoursPerDay#']({ display_value: '#heatingBurnerHoursPerDay#' });
+
+        jeedom.cmd.update['#idHeatingBurnerStarts#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingBurnerStarts#uid#').hide();
+            } else {
+                $('#idHeatingBurnerStarts#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idHeatingBurnerStarts#']({ display_value: '#heatingBurnerStarts#' });
+
+        jeedom.cmd.update['#idHeatingBurnerModulation#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingBurnerModulation#uid#').hide();
+            } else {
+                $('#idHeatingBurnerModulation#uid#').html(_options.display_value + " %");
+            }
+        }
+        jeedom.cmd.update['#idHeatingBurnerModulation#']({ display_value: '#heatingBurnerModulation#' });
+
+        jeedom.cmd.update['#idSlope#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showSlope#uid#').hide();
+            } else {
+                $('#idSlope#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idSlope#']({ display_value: '#slope#' });
+
+        jeedom.cmd.update['#idShift#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showShift#uid#').hide();
+            } else {
+                $('#idShift#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idShift#']({ display_value: '#shift#' });
+
+        jeedom.cmd.update['#idPressureSupply#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showPressureSupply#uid#').hide();
+            } else {
+                $('#idPressureSupply#uid#').html(_options.display_value + " bar");
+            }
+        }
+        jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+
+        jeedom.cmd.update['#idCurrentError#'] = function (_options) {
+            if (_options.display_value == '') {
+                $('#idIconeAlerte#uid#').hide();
+            } else {
+                $('#idIconeAlerte#uid#').show();
+            }
+            $('#idTexteAlerte#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idCurrentError#']({ display_value: '#currentError#' });
+
+        // Click pour accès tuile options erreurs
+        //
+        $('#idOptionsErreurs#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idErreurs#uid#').show();
+        });
+
+        // Tuile options erreurs
+        //
+        jeedom.cmd.update['#idErrors#'] = function (_options) {
+            $('#idErrorDat_0#uid#').html('');
+            $('#idErrorCod_0#uid#').html('');
+            $('#idErrorDat_1#uid#').html('');
+            $('#idErrorCod_1#uid#').html('');
+            $('#idErrorDat_2#uid#').html('');
+            $('#idErrorCod_2#uid#').html('');
+            $('#idErrorDat_3#uid#').html('');
+            $('#idErrorCod_3#uid#').html('');
+            $('#idErrorDat_4#uid#').html('');
+            $('#idErrorCod_4#uid#').html('');
+            $('#idErrorDat_5#uid#').html('');
+            $('#idErrorCod_5#uid#').html('');
+            $('#idErrorDat_6#uid#').html('');
+            $('#idErrorCod_6#uid#').html('');
+            $('#idErrorDat_7#uid#').html('');
+            $('#idErrorCod_7#uid#').html('');
+            $('#idErrorDat_8#uid#').html('');
+            $('#idErrorCod_8#uid#').html('');
+            $('#idErrorDat_9#uid#').html('');
+            $('#idErrorCod_9#uid#').html('');
+
+            $('#idErrorCod_0#uid#').css("color", "#808080");
+            $('#idErrorCod_1#uid#').css("color", "#808080");
+            $('#idErrorCod_2#uid#').css("color", "#808080");
+            $('#idErrorCod_3#uid#').css("color", "#808080");
+            $('#idErrorCod_4#uid#').css("color", "#808080");
+            $('#idErrorCod_5#uid#').css("color", "#808080");
+            $('#idErrorCod_6#uid#').css("color", "#808080");
+            $('#idErrorCod_7#uid#').css("color", "#808080");
+            $('#idErrorCod_8#uid#').css("color", "#808080");
+            $('#idErrorCod_9#uid#').css("color", "#808080");
+
+            var items = _options.display_value.split(';');
+            var n = items.length;
+
+            if (n >= 3) {
+                $('#idErrorDat_0#uid#').html(items[0] + ' ' + items[1]);
+                $('#idErrorCod_0#uid#').html(items[2]);
+                if (items[0] == "EC") {
+                    $('#idErrorCod_0#uid#').css("color", "red");
+                }
+            }
+            if (n >= 6) {
+                $('#idErrorDat_1#uid#').html(items[3] + ' ' + items[4]);
+                $('#idErrorCod_1#uid#').html(items[5]);
+                if (items[3] == "EC") {
+                    $('#idErrorCod_1#uid#').css("color", "red");
+                }
+            }
+            if (n >= 9) {
+                $('#idErrorDat_2#uid#').html(items[6] + ' ' + items[7]);
+                $('#idErrorCod_2#uid#').html(items[8]);
+                if (items[6] == "EC") {
+                    $('#idErrorCod_2#uid#').css("color", "red");
+                }
+            }
+            if (n >= 12) {
+                $('#idErrorDat_3#uid#').html(items[9] + ' ' + items[10]);
+                $('#idErrorCod_3#uid#').html(items[11]);
+                if (items[9] == "EC") {
+                    $('#idErrorCod_3#uid#').css("color", "red");
+                }
+            }
+            if (n >= 15) {
+                $('#idErrorDat_4#uid#').html(items[12] + ' ' + items[13]);
+                $('#idErrorCod_4#uid#').html(items[14]);
+                if (items[12] == "EC") {
+                    $('#idErrorCod_4#uid#').css("color", "red");
+                }
+            }
+            if (n >= 18) {
+                $('#idErrorDat_5#uid#').html(items[15] + ' ' + items[16]);
+                $('#idErrorCod_5#uid#').html(items[17]);
+                if (items[15] == "EC") {
+                    $('#idErrorCod_5#uid#').css("color", "red");
+                }
+            }
+            if (n >= 21) {
+                $('#idErrorDat_6#uid#').html(items[18] + ' ' + items[19]);
+                $('#idErrorCod_6#uid#').html(items[20]);
+                if (items[18] == "EC") {
+                    $('#idErrorCod_6#uid#').css("color", "red");
+                }
+            }
+            if (n >= 24) {
+                $('#idErrorDat_7#uid#').html(items[21] + ' ' + items[22]);
+                $('#idErrorCod_7#uid#').html(items[23]);
+                if (items[21] == "EC") {
+                    $('#idErrorCod_7#uid#').css("color", "red");
+                }
+            }
+            if (n >= 27) {
+                $('#idErrorDat_8#uid#').html(items[24] + ' ' + items[25]);
+                $('#idErrorCod_8#uid#').html(items[26]);
+                if (items[24] == "EC") {
+                    $('#idErrorCod_8#uid#').css("color", "red");
+                }
+            }
+            if (n >= 30) {
+                $('#idErrorDat_9#uid#').html(items[27] + ' ' + items[28]);
+                $('#idErrorCod_9#uid#').html(items[29]);
+                if (items[27] == "EC") {
+                    $('#idErrorCod_9#uid#').css("color", "red");
+                }
+            }
+        }
+        jeedom.cmd.update['#idErrors#']({ display_value: '#errors#' });
+
+        jeedom.cmd.update['#idLastServiceDate#'] = function (_options) {
+            $('#idLastServiceDate#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idLastServiceDate#']({ display_value: '#lastServiceDate#' });
+
+        jeedom.cmd.update['#idServiceInterval#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showEntretien#uid#').hide();
+            } else {
+                $('#idServiceInterval#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idServiceInterval#']({ display_value: '#serviceInterval#' });
+
+        jeedom.cmd.update['#idMonthSinceService#'] = function (_options) {
+            $('#idMonthSinceService#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idMonthSinceService#']({ display_value: '#monthSinceService#' });
+
+        // Tuile Radiateurs
+        //
+        jeedom.cmd.update['#idRoomTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#idRoomTemperature#uid#').html('--');
+                $('#showTemperaturePiece#uid#').hide();
+            } else {
+                $('#idRoomTemperature#uid#').html(_options.display_value + '°');
+                $('#idTemperaturePiece#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idRoomTemperature#']({ display_value: '#roomTemperature#' });
+
+        jeedom.cmd.update['#idProgramTemperature#'] = function (_options) {
+            $('#idProgramTemperature#uid#').html(_options.display_value + '°');
+        }
+        jeedom.cmd.update['#idProgramTemperature#']({ display_value: '#programTemperature#' });
+
+        // Click pour accès tuile options radiateurs
+        //
+        $('#idOptionsRadiateurs#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idRadiateurs#uid#').show();
+        });
+
+        // Tuile options radiateurs
+        //
+        jeedom.cmd.update['#idActiveMode#'] = function (_options) {
+
+            if (_options.display_value == '??') {
+                $('#showStatutChauffage#uid#').hide();
+            } else {
+                $('#idModeStandby#uid#').attr('checked', 'checked');
+
+                if (_options.display_value == 'standby') {
+                    $('#idStatutChauffage#uid#').html('Arrêt');
+                } else if (_options.display_value == 'heating') {
+                    $('#idStatutChauffage#uid#').html('Chauffage seul activé');
+                    $('#idModeHeating#uid#').attr('checked', 'checked');
+                } else if (_options.display_value == 'dhw') {
+                    $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
+                    $('#idModeDhw#uid#').attr('checked', 'checked');
+                } else if (_options.display_value == 'dhwAndHeating') {
+                    $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
+                    $('#idModeDhwAndHeating#uid#').attr('checked', 'checked');
+                } else if (_options.display_value == 'forcedReduced') {
+                    $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
+                    $('#idModeForcedReduced#uid#').attr('checked', 'checked');
+                } else if (_options.display_value == 'forcedNormal') {
+                    $('#idStatutChauffage#uid#').html('Mode jour en permanence');
+                    $('#idModeForcedNormal#uid#').attr('checked', 'checked');
+                } else {
+                    $('#idStatutChauffage#uid#').html(_options.display_value);
+                }
+            }
+        }
+        jeedom.cmd.update['#idActiveMode#']({ display_value: '#activeMode#' });
+
+        jeedom.cmd.update['#idComfortProgramTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showComfortProgramTemperature#uid#').hide();
+            } else {
+                $('#idComfortProgramTemperature#uid#').html(_options.display_value + '°');
+                $('#idConfortValeur#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: '#comfortProgramTemperature#' });
+
+        jeedom.cmd.update['#idNormalProgramTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showNormalProgramTemperature#uid#').hide();
+            } else {
+                $('#idNormalProgramTemperature#uid#').html(_options.display_value + '°');
+                $('#idNormaleValeur#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: '#normalProgramTemperature#' });
+
+        jeedom.cmd.update['#idReducedProgramTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showReducedProgramTemperature#uid#').hide();
+            } else {
+                $('#idReducedProgramTemperature#uid#').html(_options.display_value + '°');
+                $('#idReduiteValeur#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: '#reducedProgramTemperature#' });
+
+        jeedom.cmd.update['#idSupplyProgramTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showTemperatureDepart#uid#').hide();
+            } else {
+                $('#idTemperatureDepart#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idSupplyProgramTemperature#']({ display_value: '#supplyProgramTemperature#' });
+
+        jeedom.cmd.update['#idBoilerTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showTemperatureEauRadiateur#uid#').hide();
+            } else {
+                $('#idTemperatureEauRadiateur#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idBoilerTemperature#']({ display_value: '#boilerTemperature#' });
+
+        jeedom.cmd.update['#idFrostProtection#'] = function (_options) {
+            if (_options.display_value == '??') {
+                $('#showFrostProtection#uid#').hide();
+            }
+            else if (_options.display_value == 'off') {
+                $('#idFrostProtection#uid#').html('éteint');
+            } else {
+                $('#idFrostProtection#uid#').html('allumé');
+            }
+        }
+        jeedom.cmd.update['#idFrostProtection#']({ display_value: '#frostProtection#' });
+
+        jeedom.cmd.update['#idPumpStatus#'] = function (_options) {
+            if (_options.display_value == '??') {
+                $('#showPumpStatus#uid#').hide();
+            } else {
+                $('#idEtatCirculateur#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idPumpStatus#']({ display_value: '#pumpStatus#' });
+
+        // Click pour accès tuile calendrier radiateurs
+        //
+        $('#idOptionsCalRadiateurs#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idCalRadiateurs#uid#').show();
+        });
+
+        // Tuile eau chaude
+        //
+        jeedom.cmd.update['#idHotWaterStorageTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#idHotWaterStorageTemperature#uid#').html('--');
+                $('showHotWaterStorageTemperature#uid#').hide();
+            } else {
+                $('#idHotWaterStorageTemperature#uid#').html(_options.display_value + '°');
+                $('#idActuelEauChaude#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idHotWaterStorageTemperature#']({ display_value: '#hotWaterStorageTemperature#' });
+
+        jeedom.cmd.update['#idDhwTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#idDhwTemperature#uid#').html('--');
+                $('#showDhwTemperature#uid#').hide();
+            } else {
+                $('#idDhwTemperature#uid#').html(_options.display_value + '°');
+                $('#idConsigneEauChaude#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idDhwTemperature#']({ display_value: '#dhwTemperature#' });
+
+        // Click accès tuile options eau chaude
+        //
+        $('#idOptionsEauChaude#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idEauChaude#uid#').show();
+        });
+
+        // Tuile options eau chaude
+        //
+
+        // Click accès tuile calendrier eau chaude
+        //
+        $('#idOptionsCalEauChaude#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idCalEauChaude#uid#').show();
+        });
+
+        // Tuile gaz
+        //
+        jeedom.cmd.update['#idHeatingGazConsumption#'] = function (_options) {
+            $('#idHeatingGazConsumption#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: '#heatingGazConsumption#' });
+
+        jeedom.cmd.update['#idDhwGazConsumption#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#idDhwGazConsumption#uid#').html('--');
+            } else {
+                $('#idDhwGazConsumption#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idDhwGazConsumption#']({ display_value: '#dhwGazConsumption#' });
+
+        // Click pour accès options gaz
+        //
+        $('#idOptionsGaz#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idGaz#uid#').show();
+        });
+
+        // Tuile options gaz
+        //
+
+        // Sélection graphes gaz
+        //
+        $('#grapheGazJour#uid#').show();
+        $('#grapheGazSemaine#uid#').hide();
+        $('#grapheGazMois#uid#').hide();
+        $('#grapheGazAnnee#uid#').hide();
+
+        $("#selectionGrapheGaz#uid#").change(function () {
+            $('#grapheGazJour#uid#').hide();
+            $('#grapheGazSemaine#uid#').hide();
+            $('#grapheGazMois#uid#').hide();
+            $('#grapheGazAnnee#uid#').hide();
+
+            if ($(this).value() !== null) {
+                if ($(this).value() === "0") {
+                    $('#grapheGazJour#uid#').show();
+                }
+                else if ($(this).value() === "1") {
+                    $('#grapheGazSemaine#uid#').show();
+                }
+                else if ($(this).value() === "2") {
+                    $('#grapheGazMois#uid#').show();
+                }
+                else {
+                    $('#grapheGazAnnee#uid#').show();
+                }
+            }
+        });
+
+        // Graphes gaz
+        //
+        const chartGazJour#uid# = Highcharts.chart('grapheGazJour#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#joursSemaine#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Rad',
+                data: [0]
+
+            }, {
+                name: 'Eau',
+                data: [0]
+
+            }, {
+                name: 'Tot',
+                data: [0]
+
+            }]
+        });
+
+        const chartGazSemaine#uid# = Highcharts.chart('grapheGazSemaine#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#semaines#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Rad',
+                data: [0]
+
+            }, {
+                name: 'Eau',
+                data: [0]
+
+            }, {
+                name: 'Tot',
+                data: [0]
+
+            }]
+        });
+
+        const chartGazMois#uid# = Highcharts.chart('grapheGazMois#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#moisS#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Rad',
+                data: [0]
+
+            }, {
+                name: 'Eau',
+                data: [0]
+
+            }, {
+                name: 'Tot',
+                data: [0]
+
+            }]
+        });
+
+        const chartGazAnnee#uid# = Highcharts.chart('grapheGazAnnee#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#annees#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Rad',
+                data: [0]
+
+            }, {
+                name: 'Eau',
+                data: [0]
+
+            }, {
+                name: 'Tot',
+                data: [0]
+
+            }]
+        });
+
+        // Données graphes gaz
+        //  
+        jeedom.cmd.update['#idHeatingGazConsumptionDay#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazJour#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingGazConsumptionDay#']({ display_value: '#heatingGazConsumptionDay#' });
+
+        jeedom.cmd.update['#idDhwGazConsumptionDay#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazJour#uid#.series[1].setData(datas);
+        }
+        jeedom.cmd.update['#idDhwGazConsumptionDay#']({ display_value: '#dhwGazConsumptionDay#' });
+
+        jeedom.cmd.update['#idTotalGazConsumptionDay#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazJour#uid#.series[2].setData(datas);
+        }
+        jeedom.cmd.update['#idTotalGazConsumptionDay#']({ display_value: '#totalGazConsumptionDay#' });
+
+        jeedom.cmd.update['#idHeatingGazConsumptionWeek#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazSemaine#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingGazConsumptionWeek#']({ display_value: '#heatingGazConsumptionWeek#' });
+
+        jeedom.cmd.update['#idDhwGazConsumptionWeek#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazSemaine#uid#.series[1].setData(datas);
+        }
+        jeedom.cmd.update['#idDhwGazConsumptionWeek#']({ display_value: '#dhwGazConsumptionWeek#' });
+
+        jeedom.cmd.update['#idTotalGazConsumptionWeek#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazSemaine#uid#.series[2].setData(datas);
+        }
+        jeedom.cmd.update['#idTotalGazConsumptionWeek#']({ display_value: '#totalGazConsumptionWeek#' });
+
+        jeedom.cmd.update['#idHeatingGazConsumptionMonth#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazMois#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingGazConsumptionMonth#']({ display_value: '#heatingGazConsumptionMonth#' });
+
+        jeedom.cmd.update['#idDhwGazConsumptionMonth#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazMois#uid#.series[1].setData(datas);
+        }
+        jeedom.cmd.update['#idDhwGazConsumptionMonth#']({ display_value: '#dhwGazConsumptionMonth#' });
+
+        jeedom.cmd.update['#idTotalGazConsumptionMonth#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazMois#uid#.series[2].setData(datas);
+        }
+        jeedom.cmd.update['#idTotalGazConsumptionMonth#']({ display_value: '#totalGazConsumptionMonth#' });
+
+        jeedom.cmd.update['#idHeatingGazConsumptionYear#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazAnnee#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingGazConsumptionYear#']({ display_value: '#heatingGazConsumptionYear#' });
+
+        jeedom.cmd.update['#idDhwGazConsumptionYear#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazAnnee#uid#.series[1].setData(datas);
+        }
+        jeedom.cmd.update['#idDhwGazConsumptionYear#']({ display_value: '#dhwGazConsumptionYear#' });
+
+        jeedom.cmd.update['#idTotalGazConsumptionYear#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartGazAnnee#uid#.series[2].setData(datas);
+        }
+        jeedom.cmd.update['#idTotalGazConsumptionYear#']({ display_value: '#totalGazConsumptionYear#' });
+
+        // Tuile électricité
+        //
+        jeedom.cmd.update['#idHeatingPowerConsumption#'] = function (_options) {
+            $('#idHeatingPowerConsumption#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
+
+        // Tuile rafraichir
+        //
+        jeedom.cmd.update['#idRefreshDate#'] = function (_options) {
+            $('#idRefreshDate#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idRefreshDate#']({ display_value: '#refreshDate#' });
+
+        // Click pour rafraichir
+        //
+        $('#idRafraichir#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idRefresh#'
+            });
+        });
+
+        // Tuile électricité
+        //
+        jeedom.cmd.update['#idHeatingPowerConsumption#'] = function (_options) {
+            $('#idHeatingPowerConsumption#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
+
+        // Click pour accès tuile options électricité
+        //
+        $('#idOptionsElectricite#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idElec#uid#').show();
+        });
+
+        // Tuile options électricité
+        //
+
+        // Sélection graphes électricité
+        //
+        $('#grapheElecJour#uid#').show();
+        $('#grapheElecSemaine#uid#').hide();
+        $('#grapheElecMois#uid#').hide();
+        $('#grapheElecAnnee#uid#').hide();
+
+        $("#selectionGrapheElec#uid#").change(function () {
+            $('#grapheElecJour#uid#').hide();
+            $('#grapheElecSemaine#uid#').hide();
+            $('#grapheElecMois#uid#').hide();
+            $('#grapheElecAnnee#uid#').hide();
+
+            if ($(this).value() !== null) {
+                if ($(this).value() === "0") {
+                    $('#grapheElecJour#uid#').show();
+                }
+                else if ($(this).value() === "1") {
+                    $('#grapheElecSemaine#uid#').show();
+                }
+                else if ($(this).value() === "2") {
+                    $('#grapheElecMois#uid#').show();
+                }
+                else {
+                    $('#grapheElecAnnee#uid#').show();
+                }
+            }
+        });
+
+        // Graphes électricité
+        //
+        const chartElecJour#uid# = Highcharts.chart('grapheElecJour#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#elec_joursSemaine#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Elec',
+                data: [0]
+
+            }]
+        });
+
+        const chartElecSemaine#uid# = Highcharts.chart('grapheElecSemaine#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#elec_semaines#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Elec',
+                data: [0]
+
+            }]
+        });
+
+        const chartElecMois#uid# = Highcharts.chart('grapheElecMois#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#elec_moisS#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Elec',
+                data: [0]
+
+            }]
+        });
+
+        const chartElecAnnee#uid# = Highcharts.chart('grapheElecAnnee#uid#', {
+            chart: {
+                type: 'column'
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [#elec_annees#],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Elec',
+                data: [0]
+
+            }]
+        });
+
+        // Données graphes électricité
+        //
+        jeedom.cmd.update['#idHeatingPowerConsumptionDay#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartElecJour#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumptionDay#']({ display_value: '#heatingPowerConsumptionDay#' });
+
+        jeedom.cmd.update['#idHeatingPowerConsumptionWeek#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartElecSemaine#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumptionWeek#']({ display_value: '#heatingPowerConsumptionWeek#' });
+
+        jeedom.cmd.update['#idHeatingPowerConsumptionMonth#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartElecMois#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumptionMonth#']({ display_value: '#heatingPowerConsumptionMonth#' });
+
+        jeedom.cmd.update['#idHeatingPowerConsumptionYear#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartElecAnnee#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idHeatingPowerConsumptionYear#']({ display_value: '#heatingPowerConsumptionYear#' });
+
+        // Tuile rafraichir
+        //
+        jeedom.cmd.update['#idRefreshDate#'] = function (_options) {
+            $('#idRefreshDate#uid#').html(_options.display_value);
+        }
+        jeedom.cmd.update['#idRefreshDate#']({ display_value: '#refreshDate#' });
+
+        // Click accès tuile actions
+        //
+        $('#idOptionsActions#uid#').on('click', function () {
+            $('#idResume#uid#').hide();
+            $('#idActions#uid#').show();
+        });
+
+        jeedom.cmd.update['#idIsOneTimeDhwCharge#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showOneTimeDhwCharge#uid#').hide();
+            } else if (_options.display_value == 1) {
+                $('#idIsOneTimeDhwCharge#uid#').html("Activé");
+                $('#idStartOneTimeDhwCharge#uid#').hide();
+                $('#idStopOneTimeDhwCharge#uid#').show();
+            } else {
+                $('#idIsOneTimeDhwCharge#uid#').html("Désactivé");
+                $('#idStartOneTimeDhwCharge#uid#').show();
+                $('#idStopOneTimeDhwCharge#uid#').hide();
+            }
+        }
+        jeedom.cmd.update['#idIsOneTimeDhwCharge#']({ display_value: '#isOneTimeDhwCharge#' });
+
+        // Click pour start dhw
+        //
+        $('#idStartOneTimeDhwCharge#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idStartOneTimeDhwCharge#'
+            });
+        });
+
+        // Click pour stop dhw
+        //
+        $('#idStopOneTimeDhwCharge#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idStopOneTimeDhwCharge#'
+            });
+        });
+
+        jeedom.cmd.update['#idIsActivateComfortProgram#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showComfortProgram#uid#').hide();
+            } else if (_options.display_value == 1) {
+                $('#idIsActivateComfortProgram#uid#').html("Activé");
+                $('#idActivateComfortProgram#uid#').hide();
+                $('#idDeActivateComfortProgram#uid#').show();
+            } else {
+                $('#idIsActivateComfortProgram#uid#').html("Désactivé");
+                $('#idActivateComfortProgram#uid#').show();
+                $('#idDeActivateComfortProgram#uid#').hide();
+            }
+        }
+        jeedom.cmd.update['#idIsActivateComfortProgram#']({ display_value: '#isActivateComfortProgram#' });
+
+        // Click pour activer comfort program
+        //
+        $('#idActivateComfortProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idActivateComfortProgram#'
+            });
+        });
+
+        // Click pour désactiver comfort program
+        //
+        $('#idDeActivateComfortProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idDeActivateComfortProgram#'
+            });
+        });
+
+        jeedom.cmd.update['#idIsActivateEcoProgram#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showEcoProgram#uid#').hide();
+            } else if (_options.display_value == 1) {
+                $('#idIsActivateEcoProgram#uid#').html("Activé");
+                $('#idActivateEcoProgram#uid#').hide();
+                $('#idDeActivateEcoProgram#uid#').show();
+            } else {
+                $('#idIsActivateEcoProgram#uid#').html("Désactivé");
+                $('#idActivateEcoProgram#uid#').show();
+                $('#idDeActivateEcoProgram#uid#').hide();
+            }
+        }
+        jeedom.cmd.update['#idIsActivateEcoProgram#']({ display_value: '#isActivateEcoProgram#' });
+
+        // Click pour activer eco program
+        //
+        $('#idActivateEcoProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idActivateEcoProgram#'
+            });
+        });
+
+        // Click pour désactiver eco program
+        //
+        $('#idDeActivateEcoProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idDeActivateEcoProgram#'
+            });
+        });
+
+        jeedom.cmd.update['#idStartHoliday#'] = function (_options) {
+            $('#idStartHoliday#uid#').val(_options.display_value);
+        }
+        jeedom.cmd.update['#idStartHoliday#']({ display_value: '#startHoliday#' });
+
+        jeedom.cmd.update['#idEndHoliday#'] = function (_options) {
+            $('#idEndHoliday#uid#').val(_options.display_value);
+        }
+        jeedom.cmd.update['#idEndHoliday#']({ display_value: '#endHoliday#' });
+
+        $('#idStartHoliday#uid#').on('change', function () {
+            jeedom.cmd.execute({ id: '#idStartHolidayText#', value: { text: $('#idStartHoliday#uid#').val() } });
+        });
+
+        $('#idEndHoliday#uid#').on('change', function () {
+            jeedom.cmd.execute({ id: '#idEndHolidayText#', value: { text: $('#idEndHoliday#uid#').val() } });
+        });
+
+        jeedom.cmd.update['#idIsScheduleHolidayProgram#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHolidayProgram#uid#').hide();
+            } else if (_options.display_value == 1) {
+                $('#idIsScheduleHolidayProgram#uid#').html("Activé");
+                $('#idScheduleHolidayProgram#uid#').hide();
+                $('#idUnscheduleHolidayProgram#uid#').show();
+            } else {
+                $('#idIsScheduleHolidayProgram#uid#').html("Désactivé");
+                $('#idScheduleHolidayProgram#uid#').show();
+                $('#idUnscheduleHolidayProgram#uid#').hide();
+            }
+        }
+        jeedom.cmd.update['#idIsScheduleHolidayProgram#']({ display_value: '#isScheduleHolidayProgram#' });
+
+        // Click pour activer holiday program
+        //
+        $('#idScheduleHolidayProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idScheduleHolidayProgram#'
+            });
+        });
+
+        // Click pour désactiver holiday program
+        //
+        $('#idUnscheduleHolidayProgram#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idUnscheduleHolidayProgram#'
+            });
+        });
+
+    </script>
+
+</div>

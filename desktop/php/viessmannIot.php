@@ -54,6 +54,10 @@
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
       <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
+      <li role="presentation"><a href="#widgettab" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>
+          {{Widget}}</a></li>
+      <li role="presentation"><a href="#donneestab" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>
+          {{Données supplémentaires}}</a></li>
       <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
     </ul>
     <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -181,6 +185,107 @@
           </fieldset>
         </form>
       </div>
+
+      <div role="tabpanel" class="tab-pane" id="widgettab">
+        <form class="form-horizontal">
+          <fieldset>
+            <br /><br />
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Nom du circuit}}</label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="circuitName"
+                  placeholder="Nom du circuit" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Unité Gaz}}</label>
+              <div class="col-sm-3">
+                <select required class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="uniteGaz">
+                  <option value="" disabled selected>{{Sélectionnez l'unité}}</option>
+                  <option value="m3">m3( défaut )</option>
+                  <option value="kWh">kWh</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Facteur de conversion}}</label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
+                  data-l2key="facteurConversionGaz" placeholder="m3 -> kWh ou kWh -> m3" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
+                  data-l2key="isWidgetPlugin" checked /></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile eau chaude}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayWater"
+                  checked /></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayGas"
+                  checked /></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile électricité}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayPower"
+                  checked /></label>
+              </div>
+            </div>
+
+          </fieldset>
+        </form>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="donneestab">
+        <form class="form-horizontal">
+          <fieldset>
+            <br /><br />
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{Température intérieure}}</label>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration"
+                    data-l2key="temperature_interieure" data-concat="1" />
+                  <span class="input-group-btn">
+                    <a class="btn btn-default listCmdInfo roundedRight"><i class="fas fa-list-alt"></i></a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{Température extérieure}}</label>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration"
+                    data-l2key="temperature_exterieure" data-concat="1" />
+                  <span class="input-group-btn">
+                    <a class="btn btn-default listCmdInfo roundedRight"><i class="fas fa-list-alt"></i></a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+
       <div role="tabpanel" class="tab-pane" id="commandtab">
         <a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
         <table id="table_cmd" class="table table-bordered table-condensed">
