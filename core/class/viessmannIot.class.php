@@ -1957,6 +1957,32 @@
               $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
           }
         
+          $now = time();
+          $heure = date("H", $now);
+          if (($outsideTemperature != 99) &&
+              ($roomTemperature != 99) &&
+              ($activeProgram === 'normal') &&
+              ($heure >= 0) && ($heure < 25)) {
+              $index = round($outsideTemperature, 0) + 10;
+              if (($index >=0) && ($index < 35)) {
+                  $obj = $this->getCmd(null, 'statsTemperature');
+                  $stats = $obj->execCmd();
+  
+                  if ($stats !== '') {
+                      $lstStats = explode(',', $stats);
+                  } else {
+                      $lstStats = array();
+                      for ($i=0; $i<35; $i++) {
+                          $lstStats[$i] = 0;
+                      }
+                  }
+                  $lstStats[$index] = $roomTemperature;
+                  $obj->event(implode(',', $lstStats));
+  
+                  log::add('viessmann', 'debug', 'Pour pente ' . $index . ' -> ' . $roomTemperature);
+              }
+          }
+  
           if ($heatingBurnerHours != -1) {
               $jour = date("d", $now);
               $oldJour = $this->getCache('oldJour', -1);
@@ -2480,8 +2506,20 @@
           $obj->setType('action');
           $obj->setSubType('other');
           $obj->save();
-      }
 
+          $obj = $this->getCmd(null, 'statsTemperature');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Statistiques température', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('statsTemperature');
+          $obj->save();
+      }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -3105,6 +3143,10 @@
           $obj = $this->getCmd(null, 'endHolidayText');
           $replace["#idEndHolidayText#"] = $obj->getId();
       
+          $obj = $this->getCmd(null, 'statsTemperature');
+          $replace["#statsTemperature#"] = $obj->execCmd();
+          $replace["#idStatsTemperature#"] = $obj->getId();
+  
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }
 

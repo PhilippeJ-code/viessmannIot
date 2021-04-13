@@ -2145,6 +2145,69 @@
             });
         });
 
+        const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
+
+            title: {
+                text: ''
+            },
+
+            subtitle: {
+                text: 'Températures int/ext'
+            },
+
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: ''
+                }
+            },
+
+            xAxis: {
+                accessibility: {
+                    rangeDescription: 'Range: -10 to 24'
+                },
+                tickInterval: 1
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            legend: {
+                enabled: false
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: -10
+                }
+            },
+
+            series: [{
+                name: 'Int',
+                data: [0]
+            }],
+
+        });
+
+        jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartStats#uid#.series[0].setData(datas);
+        }
+        jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
+
     </script>
 
 </div>
