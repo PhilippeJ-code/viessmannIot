@@ -1065,6 +1065,10 @@
           $deviceId = trim($this->getConfiguration('deviceId', '0'));
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
+          $logFeatures = $this->getConfiguration('logFeatures', '');
+          if ($logFeatures === 'Oui') {
+              $this->setConfiguration('logFeatures', '')->save();
+          }
           $isVicare = $this->getConfiguration('isVicare', false);
 
           $expires_at = $this->getCache('expires_at', 0);
@@ -1085,6 +1089,7 @@
           "circuitId" => $circuitId,
           "expires_at" => $expires_at,
           "token" => $token,
+          "logFeatures" => $logFeatures,
           "vicare" => $isVicare
         ];
 

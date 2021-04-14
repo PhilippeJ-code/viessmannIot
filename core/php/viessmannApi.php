@@ -55,6 +55,7 @@ class ViessmannApi
     private $gateway;
     private $features;
 
+    private $logFeatures;
     private $vicare;
 
     // Constructeur
@@ -144,6 +145,12 @@ class ViessmannApi
             $this->vicare = false;
         } else {
             $this->vicare = $params['vicare'];
+        }
+
+        if (!array_key_exists('logFeatures', $params)) {
+            $this->logFeatures = '';
+        } else {
+            $this->logFeatures = $params['logFeatures'];
         }
 
         if ($this->vicare == true) {
@@ -303,7 +310,6 @@ class ViessmannApi
         $response = str_replace($this->installationId, 'XXXXXX', $response);
         $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
         file_put_contents($json_file, $response);
-
     }
 
     // Lire les données du gateway
@@ -367,14 +373,18 @@ class ViessmannApi
         curl_close($curl);
 
         $this->features = json_decode($response, true);
-        if ( $this->vicare == true )
-            $json_file = __DIR__ . '/../../data/features_vic.json';
-        else
-            $json_file = __DIR__ . '/../../data/features_iot.json';
-        $response = str_replace($this->installationId, 'XXXXXX', $response);
-        $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
-        file_put_contents($json_file, $response);
 
+        if ($this->logFeatures == 'Oui') {
+            if ($this->vicare == true) {
+                $json_file = __DIR__ . '/../../data/features_vic.json';
+            } else {
+                $json_file = __DIR__ . '/../../data/features_iot.json';
+            }
+            $response = str_replace($this->installationId, 'XXXXXX', $response);
+            $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
+            file_put_contents($json_file, $response);
+        }
+        
         if (array_key_exists('statusCode', $this->features)) {
             throw new ViessmannApiException($this->features["message"], 2);
         }

@@ -175,6 +175,17 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-3 control-label">{{Log Features}}
+                <sup><i class="fas fa-question-circle tooltips"
+                    title="{{Le json est à récupérer dans le répertoire data du plugin}}"></i></sup>
+              </label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="logFeatures"
+                  placeholder="Mettre Oui" />
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-3 control-label">{{Utiliser les identifiants Vicare}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
