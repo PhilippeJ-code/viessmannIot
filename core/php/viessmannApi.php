@@ -300,6 +300,8 @@ class ViessmannApi
         $this->identity = json_decode($response, true);
 
         $json_file = __DIR__ . '/../../data/identity.json';
+        $response = str_replace($this->installationId, 'XXXXXX', $response);
+        $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
         file_put_contents($json_file, $response);
 
     }
@@ -331,6 +333,8 @@ class ViessmannApi
 
         $this->gateway = json_decode($response, true);
         $json_file = __DIR__ . '/../../data/gateway.json';
+        $response = str_replace($this->installationId, 'XXXXXX', $response);
+        $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
         file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->gateway)) {
@@ -367,6 +371,8 @@ class ViessmannApi
             $json_file = __DIR__ . '/../../data/features_vic.json';
         else
             $json_file = __DIR__ . '/../../data/features_iot.json';
+        $response = str_replace($this->installationId, 'XXXXXX', $response);
+        $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
         file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->features)) {

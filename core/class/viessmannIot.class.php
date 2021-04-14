@@ -1560,6 +1560,15 @@
                   }
                   $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumtions[0]);
   
+                  $conso = $dhwGazConsumptions[0];
+                  $oldConso = $this->getCache('oldConsoDhw', -1);
+                  if ($oldConso > $conso) {
+                      $dateVeille = time()-24*60*60;
+                      $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                      $this->getCmd(null, 'dhwGazHistorize')->event($dhwGazConsumptions[1], $dateVeille);
+                  }
+                  $this->setCache('oldConsoDhw', $conso);
+
                   $day = '';
                   $n = 0;
                   foreach ($dhwGazConsumtions as $dhwGazConsumtion) {
@@ -1643,6 +1652,15 @@
                   }
                   $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]);
 
+                  $conso = $heatingGazConsumptions[0];
+                  $oldConso = $this->getCache('oldConsoHeating', -1);
+                  if ($oldConso > $conso) {
+                      $dateVeille = time()-24*60*60;
+                      $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                      $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                  }
+                  $this->setCache('oldConsoHeating', $conso);
+                  
                   $day = '';
                   $n = 0;
                   foreach ($heatingGazConsumptions as $heatingGazConsumption) {
@@ -1726,6 +1744,15 @@
                   }
                   $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
                   
+                  $conso = $heatingPowerConsumptions[0];
+                  $oldConso = $this->getCache('oldConsoPower', -1);
+                  if ($oldConso > $conso) {
+                      $dateVeille = time()-24*60*60;
+                      $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                      $this->getCmd(null, 'heatingPowerHistorize')->event($heatingPowerConsumptions[1], $dateVeille);
+                  }
+                  $this->setCache('oldConsoPower', $conso);
+
                   $day = '';
                   foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
                       if ($day !== '') {
@@ -1878,7 +1905,7 @@
                   $val = $features["data"][$i]["properties"]["lastService"]["value"];
                   $val = substr($val, 0, 19);
                   $val = str_replace('T', ' ', $val);
-                  $obj = $this->getCmd(null, 'lastService');
+                  $obj = $this->getCmd(null, 'lastServiceDate');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
@@ -1906,7 +1933,6 @@
                   }
               } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER_MODULATION && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
-                  $heatingBurnerHours = $val;
                   $obj = $this->getCmd(null, 'heatingBurnerModulation');
                   if (is_object($obj)) {
                       $obj->event($val);
@@ -1951,17 +1977,19 @@
 
           if ($activeProgram === 'comfort') {
               $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
+              $consigneTemperature = $comfortProgramTemperature;
           } elseif ($activeProgram === 'normal') {
               $this->getCmd(null, 'programTemperature')->event($normalProgramTemperature);
+              $consigneTemperature = $normalProgramTemperature;
           } else {
               $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
+              $consigneTemperature = $reducedProgramTemperature;
           }
         
           $now = time();
           $heure = date("H", $now);
           if (($outsideTemperature != 99) &&
               ($roomTemperature != 99) &&
-              ($activeProgram === 'normal') &&
               ($heure >= 0) && ($heure < 25)) {
               $index = round($outsideTemperature, 0) + 10;
               if (($index >=0) && ($index < 35)) {
@@ -1978,8 +2006,27 @@
                   }
                   $lstStats[$index] = $roomTemperature;
                   $obj->event(implode(',', $lstStats));
+              }
+          }
   
-                  log::add('viessmann', 'debug', 'Pour pente ' . $index . ' -> ' . $roomTemperature);
+          if (($outsideTemperature != 99) &&
+              ($consigneTemperature != 99) &&
+              ($heure >= 0) && ($heure < 25)) {
+              $index = round($outsideTemperature, 0) + 10;
+              if (($index >=0) && ($index < 35)) {
+                  $obj = $this->getCmd(null, 'statsConsigne');
+                  $stats = $obj->execCmd();
+  
+                  if ($stats !== '') {
+                      $lstStats = explode(',', $stats);
+                  } else {
+                      $lstStats = array();
+                      for ($i=0; $i<35; $i++) {
+                          $lstStats[$i] = 0;
+                      }
+                  }
+                  $lstStats[$index] = $consigneTemperature;
+                  $obj->event(implode(',', $lstStats));
               }
           }
   
@@ -2519,6 +2566,58 @@
           $obj->setSubType('string');
           $obj->setLogicalId('statsTemperature');
           $obj->save();
+
+          $obj = $this->getCmd(null, 'statsConsigne');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Statistiques consigne', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('statsConsigne');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'heatingGazHistorize');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Historisation gaz chauffage', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('heatingGazHistorize');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'dhwGazHistorize');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Historisation gaz eau chaude', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('dhwGazHistorize');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'heatingPowerHistorize');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Historisation électricité', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('heatingPowerHistorize');
+          $obj->save();
       }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2589,7 +2688,11 @@
           }
 
           $replace["#circuitName#"] = $circuitName;
-
+          $replace["#displayWater#"] = $displayWater;
+          $replace["#displayGas#"] = $displayGas;
+          $replace["#displayPower#"] = $displayPower;
+          $replace["#uniteGaz#"] = $uniteGaz;
+  
           $obj = $this->getCmd(null, 'roomTemperature');
           $replace["#roomTemperature#"] = $obj->execCmd();
           $replace["#idRoomTemperature#"] = $obj->getId();
@@ -2614,6 +2717,8 @@
               $replace["#minDhw#"] = $obj->getConfiguration('minValue');
               $replace["#maxDhw#"] = $obj->getConfiguration('maxValue');
               $replace["#stepDhw#"] = 1;
+              $obj = $this->getCmd(null, 'dhwSlider');
+              $replace["#idDhwSlider#"] = $obj->getId();
           } else {
               $replace["#dhwTemperature#"] = 99;
               $replace["#idDhwTemperature#"] = "#idDhwTemperature#";
@@ -2678,6 +2783,8 @@
               $replace["#minSlope#"] = $obj->getConfiguration('minValue');
               $replace["#maxSlope#"] = $obj->getConfiguration('maxValue');
               $replace["#stepSlope#"] = 0.1;
+              $obj = $this->getCmd(null, 'slopeSlider');
+              $replace["#idSlopeSlider#"] = $obj->getId();
           } else {
               $replace["#slope#"] = 99;
               $replace["#idSlope#"] = "#idSlope#";
@@ -2690,6 +2797,8 @@
               $replace["#minShift#"] = $obj->getConfiguration('minValue');
               $replace["#maxShift#"] = $obj->getConfiguration('maxValue');
               $replace["#stepShift#"] = 1;
+              $obj = $this->getCmd(null, 'shiftSlider');
+              $replace["#idShiftSlider#"] = $obj->getId();
           } else {
               $replace["#shift#"] = 99;
               $replace["#idShift#"] = "#idShift#";
@@ -2744,11 +2853,48 @@
           if (is_object($obj)) {
               $replace["#activeMode#"] = $obj->execCmd();
               $replace["#idActiveMode#"] = $obj->getId();
+
+              $obj = $this->getCmd(null, 'modeStandby');
+              if (is_object($obj)) {
+                  $replace["#idModeStandby#"] = $obj->getId();
+              } else {
+                  $replace["#idModeStandby#"] = '??';
+              }
+              $obj = $this->getCmd(null, 'modeHeating');
+              if (is_object($obj)) {
+                  $replace["#idModeHeating#"] = $obj->getId();
+              } else {
+                  $replace["#idModeHeating#"] = '??';
+              }
+              $obj = $this->getCmd(null, 'modeDhw');
+              if (is_object($obj)) {
+                  $replace["#idModeDhw#"] = $obj->getId();
+              } else {
+                  $replace["#idModeDhw#"] = '??';
+              }
+              $obj = $this->getCmd(null, 'modeDhwAndHeating');
+              if (is_object($obj)) {
+                  $replace["#idModeDhwAndHeating#"] = $obj->getId();
+              } else {
+                  $replace["#idModeDhwAndHeating#"] = '??';
+              }
+              $obj = $this->getCmd(null, 'modeForcedReduced');
+              if (is_object($obj)) {
+                  $replace["#idModeForcedReduced#"] = $obj->getId();
+              } else {
+                  $replace["#idModeForcedReduced#"] = '??';
+              }
+              $obj = $this->getCmd(null, 'modeForcedNormal');
+              if (is_object($obj)) {
+                  $replace["#idModeForcedNormal#"] = $obj->getId();
+              } else {
+                  $replace["#idModeForcedNormal#"] = '??';
+              }
           } else {
               $replace["#activeMode#"] = '??';
               $replace["#idActiveMode#"] = "#idActiveMode#";
           }
-
+  
           $obj = $this->getCmd(null, 'comfortProgramTemperature');
           if (is_object($obj)) {
               $replace["#comfortProgramTemperature#"] = $obj->execCmd();
@@ -2756,6 +2902,8 @@
               $replace["#minComfort#"] = $obj->getConfiguration('minValue');
               $replace["#maxComfort#"] = $obj->getConfiguration('maxValue');
               $replace["#stepComfort#"] = 1;
+              $obj = $this->getCmd(null, 'comfortProgramSlider');
+              $replace["#idComfortProgramSlider#"] = $obj->getId();
           } else {
               $replace["#comfortProgramTemperature#"] = 99;
               $replace["#idComfortProgramTemperature#"] = "#idComfortProgramTemperature#";
@@ -2767,6 +2915,8 @@
               $replace["#minNormal#"] = $obj->getConfiguration('minValue');
               $replace["#maxNormal#"] = $obj->getConfiguration('maxValue');
               $replace["#stepNormal#"] = 1;
+              $obj = $this->getCmd(null, 'normalProgramSlider');
+              $replace["#idNormalProgramSlider#"] = $obj->getId();
           } else {
               $replace["#normalProgramTemperature#"] = 99;
               $replace["#idNormalProgramTemperature#"] = "#idNormalProgramTemperature#";
@@ -2778,6 +2928,8 @@
               $replace["#minReduced#"] = $obj->getConfiguration('minValue');
               $replace["#maxReduced#"] = $obj->getConfiguration('maxValue');
               $replace["#stepReduced#"] = 1;
+              $obj = $this->getCmd(null, 'reducedProgramSlider');
+              $replace["#idReducedProgramSlider#"] = $obj->getId();
           } else {
               $replace["#reducedProgramTemperature#"] = 99;
               $replace["#idReducedProgramTemperature#"] = "#idReducedProgramTemperature#";
@@ -2855,6 +3007,7 @@
           if (is_object($obj)) {
               $str = $obj->execCmd();
               $schedules = explode(";", $str);
+
               if (count($schedules) == 7) {
                   $replace["#dhwSchLun#"] = $schedules[0];
                   $replace["#dhwSchMar#"] = $schedules[1];
@@ -2883,17 +3036,31 @@
           }
   
           $obj = $this->getCmd(null, 'heatingGazConsumptionDay');
-          $str = $obj->execCmd();
-          $replace["#heatingGazConsumptionDay#"] = $str;
-          $replace["#idHeatingGazConsumptionDay#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingGazConsumptionDay#"] = $obj->execCmd();
+              $replace["#idHeatingGazConsumptionDay#"] = $obj->getId();
+          } else {
+              $replace["#heatingGazConsumptionDay#"] = '';
+              $replace["#idHeatingGazConsumptionDay#"] = "#idHeatingGazConsumptionDay#";
+          }
    
           $obj = $this->getCmd(null, 'dhwGazConsumptionDay');
-          $replace["#dhwGazConsumptionDay#"] = $obj->execCmd();
-          $replace["#idDhwGazConsumptionDay#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#dhwGazConsumptionDay#"] = $obj->execCmd();
+              $replace["#idDhwGazConsumptionDay#"] = $obj->getId();
+          } else {
+              $replace["#dhwGazConsumptionDay#"] = '';
+              $replace["#idDhwGazConsumptionDay#"] = "#idDhwGazConsumptionDay#";
+          }
   
           $obj = $this->getCmd(null, 'totalGazConsumptionDay');
-          $replace["#totalGazConsumptionDay#"] = $obj->execCmd();
-          $replace["#idTotalGazConsumptionDay#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#totalGazConsumptionDay#"] = $obj->execCmd();
+              $replace["#idTotalGazConsumptionDay#"] = $obj->getId();
+          } else {
+              $replace["#dhwGazConsumptionDay#"] = '';
+              $replace["#idDhwGazConsumptionDay#"] = "#idDhwGazConsumptionDay#";
+          }
   
           $jours = array("Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim");
             
@@ -2915,17 +3082,31 @@
           $replace["#joursSemaine#"] = $joursSemaine;
                      
           $obj = $this->getCmd(null, 'heatingGazConsumptionWeek');
-          $str = $obj->execCmd();
-          $replace["#heatingGazConsumptionWeek#"] = $str;
-          $replace["#idHeatingGazConsumptionWeek#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingGazConsumptionWeek#"] = $obj->execCmd();
+              $replace["#idHeatingGazConsumptionWeek#"] = $obj->getId();
+          } else {
+              $replace["#heatingGazConsumptionWeek#"] = '';
+              $replace["#idHeatingGazConsumptionWeek#"] = "#idHeatingGazConsumptionWeek#";
+          }
   
           $obj = $this->getCmd(null, 'dhwGazConsumptionWeek');
-          $replace["#dhwGazConsumptionWeek#"] = $obj->execCmd();
-          $replace["#idDhwGazConsumptionWeek#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#dhwGazConsumptionWeek#"] = $obj->execCmd();
+              $replace["#idDhwGazConsumptionWeek#"] = $obj->getId();
+          } else {
+              $replace["#dhwGazConsumptionWeek#"] = '';
+              $replace["#idDhwGazConsumptionWeek#"] = "#idDhwGazConsumptionWeek#";
+          }
   
           $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
-          $replace["#totalGazConsumptionWeek#"] = $obj->execCmd();
-          $replace["#idTotalGazConsumptionWeek#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#totalGazConsumptionWeek#"] = $obj->execCmd();
+              $replace["#idTotalGazConsumptionWeek#"] = $obj->getId();
+          } else {
+              $replace["#totalGazConsumptionWeek#"] = '';
+              $replace["#idTotalGazConsumptionWeek#"] = "#idTotalGazConsumptionWeek#";
+          }
   
           $maintenant = time();
           $semaine = date("W", $maintenant);
@@ -2943,18 +3124,32 @@
           $replace["#semaines#"] = $semaines;
   
           $obj = $this->getCmd(null, 'heatingGazConsumptionMonth');
-          $str = $obj->execCmd();
-          $replace["#heatingGazConsumptionMonth#"] = $str;
-          $replace["#idHeatingGazConsumptionMonth#"] = $obj->getId();
-  
+          if (is_object($obj)) {
+              $replace["#heatingGazConsumptionMonth#"] = $obj->execCmd();
+              $replace["#idHeatingGazConsumptionMonth#"] = $obj->getId();
+          } else {
+              $replace["#heatingGazConsumptionMonth#"] = '';
+              $replace["#idHeatingGazConsumptionMonth#"] = "#idHeatingGazConsumptionMonth#";
+          }
+ 
           $obj = $this->getCmd(null, 'dhwGazConsumptionMonth');
-          $replace["#dhwGazConsumptionMonth#"] = $obj->execCmd();
-          $replace["#idDhwGazConsumptionMonth#"] = $obj->getId();
-  
+          if (is_object($obj)) {
+              $replace["#dhwGazConsumptionMonth#"] = $obj->execCmd();
+              $replace["#idDhwGazConsumptionMonth#"] = $obj->getId();
+          } else {
+              $replace["#dhwGazConsumptionMonth#"] = '';
+              $replace["#idDhwGazConsumptionMonth#"] = "#idDhwGazConsumptionMonth#";
+          }
+
           $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
-          $replace["#totalGazConsumptionMonth#"] = $obj->execCmd();
-          $replace["#idTotalGazConsumptionMonth#"] = $obj->getId();
-  
+          if (is_object($obj)) {
+              $replace["#totalGazConsumptionMonth#"] = $obj->execCmd();
+              $replace["#idTotalGazConsumptionMonth#"] = $obj->getId();
+          } else {
+              $replace["#totalGazConsumptionMonth#"] = '';
+              $replace["#idTotalGazConsumptionMonth#"] = "#idTotalGazConsumptionMonth#";
+          }
+
           $libMois = array("Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc");
             
           $maintenant = time();
@@ -2975,17 +3170,31 @@
           $replace["#moisS#"] = $moisS;
   
           $obj = $this->getCmd(null, 'heatingGazConsumptionYear');
-          $str = $obj->execCmd();
-          $replace["#heatingGazConsumptionYear#"] = $str;
-          $replace["#idHeatingGazConsumptionYear#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingGazConsumptionYear#"] = $obj->execCmd();
+              $replace["#idHeatingGazConsumptionYear#"] = $obj->getId();
+          } else {
+              $replace["#heatingGazConsumptionYear#"] = '';
+              $replace["#idHeatingGazConsumptionYear#"] = "#idHeatingGazConsumptionYear#";
+          }
   
           $obj = $this->getCmd(null, 'dhwGazConsumptionYear');
-          $replace["#dhwGazConsumptionYear#"] = $obj->execCmd();
-          $replace["#idDhwGazConsumptionYear#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#dhwGazConsumptionYear#"] = $obj->execCmd();
+              $replace["#idDhwGazConsumptionYear#"] = $obj->getId();
+          } else {
+              $replace["#dhwGazConsumptionYear#"] = '';
+              $replace["#idDhwGazConsumptionYear#"] = "#idDhwGazConsumptionYear#";
+          }
   
           $obj = $this->getCmd(null, 'totalGazConsumptionYear');
-          $replace["#totalGazConsumptionYear#"] = $obj->execCmd();
-          $replace["#idTotalGazConsumptionYear#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#totalGazConsumptionYear#"] = $obj->execCmd();
+              $replace["#idTotalGazConsumptionYear#"] = $obj->getId();
+          } else {
+              $replace["#totalGazConsumptionYear#"] = '';
+              $replace["#idTotalGazConsumptionYear#"] = "#idTotalGazConsumptionYear#";
+          }
   
           $maintenant = time();
           $annee = date("Y", $maintenant);
@@ -3002,9 +3211,13 @@
           $replace["#annees#"] = $annees;
             
           $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
-          $str = $obj->execCmd();
-          $replace["#heatingPowerConsumptionDay#"] = $str;
-          $replace["#idHeatingPowerConsumptionDay#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingPowerConsumptionDay#"] = $obj->execCmd();
+              $replace["#idHeatingPowerConsumptionDay#"] = $obj->getId();
+          } else {
+              $replace["#heatingPowerConsumptionDay#"] = '';
+              $replace["#idHeatingPowerConsumptionDay#"] = "#idHeatingPowerConsumptionDay#";
+          }
           
           $maintenant = time();
           $jour = date("N", $maintenant) - 1;
@@ -3024,9 +3237,13 @@
           $replace["#elec_joursSemaine#"] = $joursSemaine;
            
           $obj = $this->getCmd(null, 'heatingPowerConsumptionWeek');
-          $str = $obj->execCmd();
-          $replace["#heatingPowerConsumptionWeek#"] = $str;
-          $replace["#idHeatingPowerConsumptionWeek#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingPowerConsumptionWeek#"] = $obj->execCmd();
+              $replace["#idHeatingPowerConsumptionWeek#"] = $obj->getId();
+          } else {
+              $replace["#heatingPowerConsumptionWeek#"] = '';
+              $replace["#idHeatingPowerConsumptionWeek#"] = "#idHeatingPowerConsumptionWeek#";
+          }
   
           $maintenant = time();
           $semaine = date("W", $maintenant);
@@ -3044,9 +3261,13 @@
           $replace["#elec_semaines#"] = $semaines;
   
           $obj = $this->getCmd(null, 'heatingPowerConsumptionMonth');
-          $str = $obj->execCmd();
-          $replace["#heatingPowerConsumptionMonth#"] = $str;
-          $replace["#idHeatingPowerConsumptionMonth#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingPowerConsumptionMonth#"] = $obj->execCmd();
+              $replace["#idHeatingPowerConsumptionMonth#"] = $obj->getId();
+          } else {
+              $replace["#heatingPowerConsumptionMonth#"] = '';
+              $replace["#idHeatingPowerConsumptionMonth#"] = "#idHeatingPowerConsumptionMonth#";
+          }
   
           $maintenant = time();
           $mois = date("m", $maintenant)-1;
@@ -3066,9 +3287,13 @@
           $replace["#elec_moisS#"] = $moisS;
   
           $obj = $this->getCmd(null, 'heatingPowerConsumptionYear');
-          $str = $obj->execCmd();
-          $replace["#heatingPowerConsumptionYear#"] = $str;
-          $replace["#idHeatingPowerConsumptionYear#"] = $obj->getId();
+          if (is_object($obj)) {
+              $replace["#heatingPowerConsumptionYear#"] = $obj->execCmd();
+              $replace["#idHeatingPowerConsumptionYear#"] = $obj->getId();
+          } else {
+              $replace["#heatingPowerConsumptionYear#"] = '';
+              $replace["#idHeatingPowerConsumptionYear#"] = "#idHeatingPowerConsumptionYear#";
+          }
   
           $maintenant = time();
           $annee = date("Y", $maintenant);
@@ -3146,6 +3371,10 @@
           $obj = $this->getCmd(null, 'statsTemperature');
           $replace["#statsTemperature#"] = $obj->execCmd();
           $replace["#idStatsTemperature#"] = $obj->getId();
+  
+          $obj = $this->getCmd(null, 'statsConsigne');
+          $replace["#statsConsigne#"] = $obj->execCmd();
+          $replace["#idStatsConsigne#"] = $obj->getId();
   
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }
