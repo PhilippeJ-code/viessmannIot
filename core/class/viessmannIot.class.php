@@ -94,7 +94,6 @@
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
-              
               if ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'pumpStatus');
                   if (!is_object($obj)) {
@@ -876,7 +875,6 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingGazConsumptionYear');
                   $obj->save();
-                  
               } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
                   if (!is_object($obj)) {
@@ -1047,7 +1045,6 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('heatingBurnerModulation');
                   $obj->save();
-                  
               } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'startHoliday');
                   if (!is_object($obj)) {
@@ -1213,7 +1210,7 @@
                   $obj->setType('info');
                   $obj->setSubType('binary');
                   $obj->setLogicalId('isScheduleHolidayAtHomeProgram');
-                  $obj->save();                  
+                  $obj->save();
               }
           }
       }
@@ -1265,7 +1262,6 @@
           $viessmannApi = new ViessmannApi($params);
                         
           if ((empty($installationId)) || (empty($serial))) {
-              
               $viessmannApi->getFeatures();
             
               $installationId = $viessmannApi->getInstallationId();
@@ -1453,7 +1449,7 @@
                       $obj->event($val);
                   }
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_CURVE) && $features["data"][$i]["isEnabled"] == true) {
-                  $shift = $features["data"][$i]["properties"]["shift"]["value"];                  
+                  $shift = $features["data"][$i]["properties"]["shift"]["value"];
                   $obj = $this->getCmd(null, 'shift');
                   if (is_object($obj)) {
                       $obj->event($shift);
@@ -2112,7 +2108,7 @@
                   $obj = $this->getCmd(null, 'heatingBurnerModulation');
                   if (is_object($obj)) {
                       $obj->event($val);
-                  }                 
+                  }
               } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
                   $active = $features["data"][$i]["properties"]["active"]["value"];
                   $start = $features["data"][$i]["properties"]["start"]["value"];
@@ -2140,7 +2136,6 @@
                           $obj->event(0);
                       }
                   }
-                  
               } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_AT_HOME_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
                   $active = $features["data"][$i]["properties"]["active"]["value"];
                   $start = $features["data"][$i]["properties"]["start"]["value"];
@@ -2168,7 +2163,6 @@
                           $obj->event(0);
                       }
                   }
-                  
               }
           }
           $obj = $this->getCmd(null, 'errors');
@@ -2262,23 +2256,22 @@
           }
   
           if (($consigneTemperature != 99) &&
-              ($slope != 99 ) &&
-              ($shift != 99 )) {
-
-                $curve = '';
-                for ($ot=-10; $ot<25;$ot++) {
-                    $b37 = $ot - $consigneTemperature;                    
-                    $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37 );
-                    if ( $curve == '' ) {
-                      $curve = round($tempDepart,0);
-                    } else {
-                      $curve = $curve . ',' . round($tempDepart,0);
-                    }
-                }
-                $this->getCmd(null, 'curve')->event($curve);
+              ($slope != 99) &&
+              ($shift != 99)) {
+              $curve = '';
+              for ($ot=-10; $ot<25;$ot++) {
+                  $b37 = $ot - $consigneTemperature;
+                  $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37);
+                  if ($curve == '') {
+                      $curve = round($tempDepart, 0);
+                  } else {
+                      $curve = $curve . ',' . round($tempDepart, 0);
+                  }
+              }
+              $this->getCmd(null, 'curve')->event($curve);
 //                B37 = T°Ext.moyenne-T°cons.ambiance
 //                T°Départ = T°cons.ambiance + Parallèle - Pente x B37 x (1,4347 + 0,021 x B37 + 247,9 x 0,000001 x B37 x B37)
-            }
+          }
 
           if ($heatingBurnerHours != -1) {
               $jour = date("d", $now);
@@ -3352,10 +3345,12 @@
               $replace["#dhwSchSam#"] = '';
               $replace["#dhwSchDim#"] = '';
           }
-  
+
+          $str = '';
           $obj = $this->getCmd(null, 'heatingGazConsumptionDay');
           if (is_object($obj)) {
-              $replace["#heatingGazConsumptionDay#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingGazConsumptionDay#"] = $str;
               $replace["#idHeatingGazConsumptionDay#"] = $obj->getId();
           } else {
               $replace["#heatingGazConsumptionDay#"] = '';
@@ -3398,10 +3393,12 @@
               }
           }
           $replace["#joursSemaine#"] = $joursSemaine;
-                     
+
+          $str = '';
           $obj = $this->getCmd(null, 'heatingGazConsumptionWeek');
           if (is_object($obj)) {
-              $replace["#heatingGazConsumptionWeek#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingGazConsumptionWeek#"] = $str;
               $replace["#idHeatingGazConsumptionWeek#"] = $obj->getId();
           } else {
               $replace["#heatingGazConsumptionWeek#"] = '';
@@ -3441,9 +3438,11 @@
           }
           $replace["#semaines#"] = $semaines;
   
+          $str = '';
           $obj = $this->getCmd(null, 'heatingGazConsumptionMonth');
           if (is_object($obj)) {
-              $replace["#heatingGazConsumptionMonth#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingGazConsumptionMonth#"] = $str;
               $replace["#idHeatingGazConsumptionMonth#"] = $obj->getId();
           } else {
               $replace["#heatingGazConsumptionMonth#"] = '';
@@ -3486,10 +3485,12 @@
               }
           }
           $replace["#moisS#"] = $moisS;
-  
+
+          $str = '';
           $obj = $this->getCmd(null, 'heatingGazConsumptionYear');
           if (is_object($obj)) {
-              $replace["#heatingGazConsumptionYear#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingGazConsumptionYear#"] = $str;
               $replace["#idHeatingGazConsumptionYear#"] = $obj->getId();
           } else {
               $replace["#heatingGazConsumptionYear#"] = '';
@@ -3528,9 +3529,11 @@
           }
           $replace["#annees#"] = $annees;
             
+          $str = '';
           $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
           if (is_object($obj)) {
-              $replace["#heatingPowerConsumptionDay#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingPowerConsumptionDay#"] = $str;
               $replace["#idHeatingPowerConsumptionDay#"] = $obj->getId();
           } else {
               $replace["#heatingPowerConsumptionDay#"] = '';
@@ -3553,10 +3556,12 @@
               }
           }
           $replace["#elec_joursSemaine#"] = $joursSemaine;
-           
+
+          $str = '';
           $obj = $this->getCmd(null, 'heatingPowerConsumptionWeek');
           if (is_object($obj)) {
-              $replace["#heatingPowerConsumptionWeek#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingPowerConsumptionWeek#"] = $str;
               $replace["#idHeatingPowerConsumptionWeek#"] = $obj->getId();
           } else {
               $replace["#heatingPowerConsumptionWeek#"] = '';
@@ -3577,10 +3582,12 @@
               $semaine = date("W", $maintenant);
           }
           $replace["#elec_semaines#"] = $semaines;
-  
+
+          $str = '';
           $obj = $this->getCmd(null, 'heatingPowerConsumptionMonth');
           if (is_object($obj)) {
-              $replace["#heatingPowerConsumptionMonth#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingPowerConsumptionMonth#"] = $str;
               $replace["#idHeatingPowerConsumptionMonth#"] = $obj->getId();
           } else {
               $replace["#heatingPowerConsumptionMonth#"] = '';
@@ -3604,9 +3611,11 @@
           }
           $replace["#elec_moisS#"] = $moisS;
   
+          $str = '';
           $obj = $this->getCmd(null, 'heatingPowerConsumptionYear');
           if (is_object($obj)) {
-              $replace["#heatingPowerConsumptionYear#"] = $obj->execCmd();
+              $str = $obj->execCmd();
+              $replace["#heatingPowerConsumptionYear#"] = $str;
               $replace["#idHeatingPowerConsumptionYear#"] = $obj->getId();
           } else {
               $replace["#heatingPowerConsumptionYear#"] = '';
