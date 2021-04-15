@@ -1272,7 +1272,11 @@
             
 //              $this->deleteAllCommands();
               $this->createCommands($viessmannApi);
-          }
+
+              $this->getCmd(null, 'statsTemperature')->event('');
+              $this->getCmd(null, 'statsConsigne')->event('');
+            
+            }
 
           if ($viessmannApi->isNewToken()) {
               $expires_at = time() + $viessmannApi->getExpiresIn() - 300;
@@ -2216,19 +2220,20 @@
           if (($outsideTemperature != 99) &&
               ($roomTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = round($outsideTemperature, 0) + 10;
-              if (($index >=0) && ($index < 35)) {
+              $index = 50 - ( round($outsideTemperature, 0) + 30 );
+              if (($index >=0) && ($index <= 50)) {
                   $obj = $this->getCmd(null, 'statsTemperature');
                   $stats = $obj->execCmd();
   
-                  if ($stats !== '') {
-                      $lstStats = explode(',', $stats);
-                  } else {
+                  if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<35; $i++) {
+                      for ($i=0; $i<=50; $i++) {
                           $lstStats[$i] = 0;
                       }
+                  } else {
+                      $lstStats = explode(',', $stats);
                   }
+
                   $lstStats[$index] = $roomTemperature;
                   $obj->event(implode(',', $lstStats));
               }
@@ -2237,18 +2242,18 @@
           if (($outsideTemperature != 99) &&
               ($consigneTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = round($outsideTemperature, 0) + 10;
-              if (($index >=0) && ($index < 35)) {
+              $index = 50 - ( round($outsideTemperature, 0) + 30 );
+              if (($index >=0) && ($index < 50)) {
                   $obj = $this->getCmd(null, 'statsConsigne');
                   $stats = $obj->execCmd();
   
-                  if ($stats !== '') {
-                      $lstStats = explode(',', $stats);
-                  } else {
+                  if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<35; $i++) {
+                      for ($i=0; $i<=50; $i++) {
                           $lstStats[$i] = 0;
                       }
+                  } else {
+                      $lstStats = explode(',', $stats);
                   }
                   $lstStats[$index] = $consigneTemperature;
                   $obj->event(implode(',', $lstStats));
@@ -2259,7 +2264,7 @@
               ($slope != 99) &&
               ($shift != 99)) {
               $curve = '';
-              for ($ot=-10; $ot<25;$ot++) {
+              for ($ot=20; $ot>=-30;$ot-=10) {
                   $b37 = $ot - $consigneTemperature;
                   $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37);
                   if ($curve == '') {
@@ -2283,7 +2288,7 @@
                       $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                       if (is_object($obj)) {
-                          $obj->event($heatingBurnerHours-$oldHours, $dateVeille);
+                          $obj->event(round($heatingBurnerHours-$oldHours, 1), $dateVeille);
                       }
                   }
                   $this->setCache('oldHours', $heatingBurnerHours);
@@ -3635,7 +3640,25 @@
               $annee--;
           }
           $replace["#elec_annees#"] = $annees;
-  
+
+          $temp = '';
+          for ($ot=20; $ot>=-30;$ot-=10) {
+              if ($temp !== '') {
+                  $temp = $temp . ',';
+              }
+              $temp = $temp . "'" . $ot . "'";
+          }
+          $replace["#range_temp#"] = $temp;
+
+          $temp = '';
+          for ($ot=20; $ot>=-30;$ot--) {
+              if ($temp !== '') {
+                  $temp = $temp . ',';
+              }
+              $temp = $temp . "'" . $ot . "'";
+          }
+          $replace["#range_temperature#"] = $temp;
+
           $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
           if (is_object($obj)) {
               $replace["#isOneTimeDhwCharge#"] = $obj->execCmd();

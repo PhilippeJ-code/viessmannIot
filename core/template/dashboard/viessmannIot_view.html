@@ -146,6 +146,7 @@
             <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
         </div>
+
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
         <span class="classTitreTuile#uid#">Chaudière</span></br>
 
@@ -485,7 +486,10 @@
 
         </br></br>
 
-        <div id="statsTemperature#uid#" style="width:100%; height:250px">
+        <div id="statsTemperature#uid#" style="width:100%; height:150px">
+        </div>
+
+        <div id="graphePente#uid#" style="width:100%; height:200px">
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
@@ -1726,8 +1730,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#joursSemaine#],
-                crosshair: true
+                categories: [#joursSemaine#]                
             },
             yAxis: {
                 min: 0,
@@ -1783,8 +1786,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#semaines#],
-                crosshair: true
+                categories: [#semaines#]
             },
             yAxis: {
                 min: 0,
@@ -1840,8 +1842,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#moisS#],
-                crosshair: true
+                categories: [#moisS#]
             },
             yAxis: {
                 min: 0,
@@ -1897,8 +1898,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#annees#],
-                crosshair: true
+                categories: [#annees#]
             },
             yAxis: {
                 min: 0,
@@ -2146,8 +2146,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#elec_joursSemaine#],
-                crosshair: true
+                categories: [#elec_joursSemaine#]
             },
             yAxis: {
                 min: 0,
@@ -2195,8 +2194,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#elec_semaines#],
-                crosshair: true
+                categories: [#elec_semaines#]
             },
             yAxis: {
                 min: 0,
@@ -2244,8 +2242,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#elec_moisS#],
-                crosshair: true
+                categories: [#elec_moisS#]
             },
             yAxis: {
                 min: 0,
@@ -2293,8 +2290,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#elec_annees#],
-                crosshair: true
+                categories: [#elec_annees#]
             },
             yAxis: {
                 min: 0,
@@ -2606,10 +2602,7 @@
             },
 
             xAxis: {
-                accessibility: {
-                    rangeDescription: 'Range: -10 to 24'
-                },
-                tickInterval: 1
+                categories: [#range_temperature#]
             },
 
             credits: {
@@ -2623,9 +2616,8 @@
             plotOptions: {
                 series: {
                     label: {
-                        connectorAllowed: false
-                    },
-                    pointStart: -10
+                        connectorAllowed: true
+                    }
                 }
             },
 
@@ -2641,18 +2633,14 @@
             series:
                 [
                     {
-                        name: 'Int',
+                        name: 'T°Int',
                         data: [0]
                     },
                     {
-                        name: 'Csg',
-                        data: [0]
-                    },
-                    {
-                        name: 'Crb',
+                        name: 'T°Csg',
                         data: [0]
                     }
-                ],
+                ]
 
         });
 
@@ -2676,13 +2664,75 @@
         }
         jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
 
+        const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
+
+            title: {
+                text: ''
+            },
+
+            subtitle: {
+                text: 'Température de départ'
+            },
+
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: ''
+                }
+            },
+
+            xAxis: {
+                categories: [#range_temp#],
+                title: {
+                    text: 'Température extérieure'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            legend: {
+                enabled: false
+            },
+
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    label: {
+                        connectorAllowed: true
+                    }
+                }
+            },
+
+            tooltip: {
+                enabled: false
+             },
+
+            series:
+                [
+                    {
+                        name: 'T°Dep',
+                        data: [0]
+                    }
+                ]
+
+        });
+
         jeedom.cmd.update['#idCurve#'] = function (_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
                 datas.push(parseFloat(item));
             });
-            chartStats#uid#.series[2].setData(datas);
+            chartCourbe#uid#.series[0].setData(datas);
         }
         jeedom.cmd.update['#idCurve#']({ display_value: '#curve#' });
 
