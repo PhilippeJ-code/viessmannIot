@@ -64,6 +64,14 @@
       const HEATING_SERVICE_TIMEBASED = "heating.service.timeBased";
       const HEATING_BURNER_STATISTICS = "heating.burner.statistics";
       const HEATING_BURNER_MODULATION = "heating.burner.modulation";
+      const HOLIDAY_PROGRAM =  "heating.operating.programs.holiday";
+      const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
+      
+      public function validateDate($date, $format = 'Y-m-d H:i:s')
+      {
+          $d = DateTime::createFromFormat($format, $date);
+          return $d && $d->format($format) == $date;
+      }
       
       // Supprimer les commandes
       //
@@ -85,15 +93,8 @@
 
           $features = $viessmannApi->getArrayFeatures();
           $n = count($features["data"]);
-
-          $n = count($features["data"]);
           for ($i=0; $i<$n; $i++) {
-              if ($features["data"][$i]["isEnabled"] == true) {
-                  log::add('viessmannIot', 'debug', $features["data"][$i]["feature"]);
-              }
-          }
-
-          for ($i=0; $i<$n; $i++) {
+              
               if ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'pumpStatus');
                   if (!is_object($obj)) {
@@ -875,6 +876,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingGazConsumptionYear');
                   $obj->save();
+                  
               } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
                   if (!is_object($obj)) {
@@ -1045,6 +1047,173 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('heatingBurnerModulation');
                   $obj->save();
+                  
+              } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'startHoliday');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date début', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('startHoliday');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'endHoliday');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date fin', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('endHoliday');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'startHolidayText');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date Début texte', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('startHolidayText');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'endHolidayText');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date Fin texte', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('endHolidayText');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'scheduleHolidayProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Activer programme vacances', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('scheduleHolidayProgram');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'unscheduleHolidayProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Désactiver programme vacances', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('unscheduleHolidayProgram');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+        
+                  $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Programme vacances actif', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isScheduleHolidayProgram');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_AT_HOME_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'startHolidayAtHome');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date début maison', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('startHolidayAtHome');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'endHolidayAtHome');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date fin maison', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('string');
+                  $obj->setLogicalId('endHolidayAtHome');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'startHolidayAtHomeText');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date Début maison texte', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('startHolidayAtHomeText');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'endHolidayAtHomeText');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Date Fin maison texte', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('endHolidayAtHomeText');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'scheduleHolidayAtHomeProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Activer programme vacances maison', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('scheduleHolidayAtHomeProgram');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'unscheduleHolidayAtHomeProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Désactiver programme vacances maison', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('unscheduleHolidayAtHomeProgram');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+          
+                  $obj = $this->getCmd(null, 'isScheduleHolidayAtHomeProgram');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Programme vacances maison actif', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isScheduleHolidayAtHomeProgram');
+                  $obj->save();                  
               }
           }
       }
@@ -1096,7 +1265,7 @@
           $viessmannApi = new ViessmannApi($params);
                         
           if ((empty($installationId)) || (empty($serial))) {
-              $viessmannApi->getGateway();
+              
               $viessmannApi->getFeatures();
             
               $installationId = $viessmannApi->getInstallationId();
@@ -1941,10 +2110,65 @@
                   $obj = $this->getCmd(null, 'heatingBurnerModulation');
                   if (is_object($obj)) {
                       $obj->event($val);
+                  }                 
+              } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
+                  $active = $features["data"][$i]["properties"]["active"]["value"];
+                  $start = $features["data"][$i]["properties"]["start"]["value"];
+                  $end = $features["data"][$i]["properties"]["end"]["value"];
+
+                  $start = str_replace('"', '', $start);
+                  $end = str_replace('"', '', $end);
+    
+                  if ($active == true) {
+                      $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+                      if (is_object($obj)) {
+                          $obj->event(1);
+                      }
+                      $obj = $this->getCmd(null, 'startHoliday');
+                      if (is_object($obj)) {
+                          $obj->event($start);
+                      }
+                      $obj = $this->getCmd(null, 'endHoliday');
+                      if (is_object($obj)) {
+                          $obj->event($end);
+                      }
+                  } else {
+                      $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+                      if (is_object($obj)) {
+                          $obj->event(0);
+                      }
                   }
+                  
+              } elseif ($features["data"][$i]["feature"] == self::HOLIDAY_AT_HOME_PROGRAM && $features["data"][$i]["isEnabled"] == true) {
+                  $active = $features["data"][$i]["properties"]["active"]["value"];
+                  $start = $features["data"][$i]["properties"]["start"]["value"];
+                  $end = $features["data"][$i]["properties"]["end"]["value"];
+
+                  $start = str_replace('"', '', $start);
+                  $end = str_replace('"', '', $end);
+  
+                  if ($active == true) {
+                      $obj = $this->getCmd(null, 'isScheduleHolidayAtHomeProgram');
+                      if (is_object($obj)) {
+                          $obj->event(1);
+                      }
+                      $obj = $this->getCmd(null, 'startHolidayAtHome');
+                      if (is_object($obj)) {
+                          $obj->event($start);
+                      }
+                      $obj = $this->getCmd(null, 'endHolidayAtHome');
+                      if (is_object($obj)) {
+                          $obj->event($end);
+                      }
+                  } else {
+                      $obj = $this->getCmd(null, 'isScheduleHolidayAtHomeProgram');
+                      if (is_object($obj)) {
+                          $obj->event(0);
+                      }
+                  }
+                  
               }
           }
-
           $obj = $this->getCmd(null, 'errors');
           if (is_object($obj)) {
               $obj->event($erreurs);
@@ -2339,6 +2563,108 @@
           unset($viessmannApi);
       }
 
+      // Schedule Holiday Program
+      //
+      public function scheduleHolidayProgram()
+      {
+          $obj = $this->getCmd(null, 'startHoliday');
+          $startHoliday = $obj->execCmd();
+          if ($this->validateDate($startHoliday, 'Y-m-d') == false) {
+              throw new Exception(__('Date de début invalide', __FILE__));
+              return;
+          }
+          
+          $obj = $this->getCmd(null, 'endHoliday');
+          $endHoliday = $obj->execCmd();
+          if ($this->validateDate($endHoliday, 'Y-m-d') == false) {
+              throw new Exception(__('Date de fin invalide', __FILE__));
+              return;
+          }
+
+          if ($startHoliday > $endHoliday) {
+              throw new Exception(__('Date de début postérieure à la date de fin', __FILE__));
+              return;
+          }
+    
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+
+          $data = "{\"start\":\"" . $startHoliday . "\",\"end\":\"" . $endHoliday . "\"}";
+          $viessmannApi->setFeature(self::HOLIDAY_PROGRAM, "schedule", $data);
+          unset($viessmannApi);
+          
+          $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
+      }
+
+      // Unschedule Holiday Program
+      //
+      public function unscheduleHolidayProgram()
+      {
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature(self::HOLIDAY_PROGRAM, "unschedule", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
+      }
+
+      // Schedule Holiday At Home Program
+      //
+      public function scheduleHolidayAtHomeProgram()
+      {
+          $obj = $this->getCmd(null, 'startHolidayAtHome');
+          $startHolidayAtHome = $obj->execCmd();
+          if ($this->validateDate($startHolidayAtHome, 'Y-m-d') == false) {
+              throw new Exception(__('Date de début invalide', __FILE__));
+              return;
+          }
+          
+          $obj = $this->getCmd(null, 'endHolidayAtHome');
+          $endHolidayAtHome = $obj->execCmd();
+          if ($this->validateDate($endHolidayAtHome, 'Y-m-d') == false) {
+              throw new Exception(__('Date de fin invalide', __FILE__));
+              return;
+          }
+
+          if ($startHolidayAtHome > $endHolidayAtHome) {
+              throw new Exception(__('Date de début postérieure à la date de fin', __FILE__));
+              return;
+          }
+    
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+
+          $data = "{\"start\":\"" . $startHolidayAtHome . "\",\"end\":\"" . $endHolidayAtHome . "\"}";
+          $viessmannApi->setFeature(self::HOLIDAY_AT_HOME_PROGRAM, "schedule", $data);
+          unset($viessmannApi);
+          
+          $this->getCmd(null, 'isScheduleHolidayAtHomeProgram')->event(1);
+      }
+
+      // Unschedule Holiday At Home Program
+      //
+      public function unscheduleHolidayAtHomeProgram()
+      {
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature(self::HOLIDAY_AT_HOME_PROGRAM, "unschedule", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isScheduleHolidayAtHomeProgram')->event(0);
+      }
+
       public static function cron()
       {
           $maintenant = time();
@@ -2509,54 +2835,6 @@
           $obj->setType('info');
           $obj->setSubType('numeric');
           $obj->setLogicalId('heatingPowerConsumption');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'startHoliday');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Date début', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('startHoliday');
-          $obj->save();
-  
-          $obj = $this->getCmd(null, 'endHoliday');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Date fin', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('endHoliday');
-          $obj->save();
-  
-          $obj = $this->getCmd(null, 'startHolidayText');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Date Début texte', __FILE__));
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setLogicalId('startHolidayText');
-          $obj->setType('action');
-          $obj->setSubType('other');
-          $obj->save();
-  
-          $obj = $this->getCmd(null, 'endHolidayText');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Date Fin texte', __FILE__));
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setLogicalId('endHolidayText');
-          $obj->setType('action');
-          $obj->setSubType('other');
           $obj->save();
 
           $obj = $this->getCmd(null, 'statsTemperature');
@@ -3359,20 +3637,64 @@
               $replace["#idIsActivateEcoProgram#"] = "#idIsActivateEcoProgram#";
           }
    
-          $obj = $this->getCmd(null, 'startHoliday');
-          $replace["#startHoliday#"] = $obj->execCmd();
-          $replace["#idStartHoliday#"] = $obj->getId();
+          $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+          if (is_object($obj)) {
+              $replace["#isScheduleHolidayProgram#"] = $obj->execCmd();
+              $replace["#idIsScheduleHolidayProgram#"] = $obj->getId();
    
-          $obj = $this->getCmd(null, 'endHoliday');
-          $replace["#endHoliday#"] = $obj->execCmd();
-          $replace["#idEndHoliday#"] = $obj->getId();
+              $obj = $this->getCmd(null, 'startHoliday');
+              $replace["#startHoliday#"] = $obj->execCmd();
+              $replace["#idStartHoliday#"] = $obj->getId();
    
-          $obj = $this->getCmd(null, 'startHolidayText');
-          $replace["#idStartHolidayText#"] = $obj->getId();
+              $obj = $this->getCmd(null, 'endHoliday');
+              $replace["#endHoliday#"] = $obj->execCmd();
+              $replace["#idEndHoliday#"] = $obj->getId();
    
-          $obj = $this->getCmd(null, 'endHolidayText');
-          $replace["#idEndHolidayText#"] = $obj->getId();
-      
+              $obj = $this->getCmd(null, 'startHolidayText');
+              $replace["#idStartHolidayText#"] = $obj->getId();
+   
+              $obj = $this->getCmd(null, 'endHolidayText');
+              $replace["#idEndHolidayText#"] = $obj->getId();
+  
+              $obj = $this->getCmd(null, 'scheduleHolidayProgram');
+              $replace["#idScheduleHolidayProgram#"] = $obj->getId();
+  
+              $obj = $this->getCmd(null, 'unscheduleHolidayProgram');
+              $replace["#idUnscheduleHolidayProgram#"] = $obj->getId();
+          } else {
+              $replace["#isScheduleHolidayProgram#"] = -1;
+              $replace["#idIsScheduleHolidayProgram#"] = "#idIsScheduleHolidayProgram#";
+          }
+
+          $obj = $this->getCmd(null, 'isScheduleHolidayAtHomeProgram');
+          if (is_object($obj)) {
+              $replace["#isScheduleHolidayAtHomeProgram#"] = $obj->execCmd();
+              $replace["#idIsScheduleHolidayAtHomeProgram#"] = $obj->getId();
+   
+              $obj = $this->getCmd(null, 'startHolidayAtHome');
+              $replace["#startHolidayAtHome#"] = $obj->execCmd();
+              $replace["#idStartHolidayAtHome#"] = $obj->getId();
+   
+              $obj = $this->getCmd(null, 'endHolidayAtHome');
+              $replace["#endHolidayAtHome#"] = $obj->execCmd();
+              $replace["#idEndHolidayAtHome#"] = $obj->getId();
+   
+              $obj = $this->getCmd(null, 'startHolidayAtHomeText');
+              $replace["#idStartHolidayAtHomeText#"] = $obj->getId();
+   
+              $obj = $this->getCmd(null, 'endHolidayAtHomeText');
+              $replace["#idEndHolidayAtHomeText#"] = $obj->getId();
+  
+              $obj = $this->getCmd(null, 'scheduleHolidayAtHomeProgram');
+              $replace["#idScheduleHolidayAtHomeProgram#"] = $obj->getId();
+  
+              $obj = $this->getCmd(null, 'unscheduleHolidayAtHomeProgram');
+              $replace["#idUnscheduleHolidayAtHomeProgram#"] = $obj->getId();
+          } else {
+              $replace["#isScheduleHolidayAtHomeProgram#"] = -1;
+              $replace["#idIsScheduleHolidayAtHomeProgram#"] = "#idIsScheduleHolidayAtHomeProgram#";
+          }
+
           $obj = $this->getCmd(null, 'statsTemperature');
           $replace["#statsTemperature#"] = $obj->execCmd();
           $replace["#idStatsTemperature#"] = $obj->getId();
@@ -3427,6 +3749,14 @@
               $eqlogic->setMode('forcedReduced');
           } elseif ($this->getLogicalId() == 'modeForcedNormal') {
               $eqlogic->setMode('forcedNormal');
+          } elseif ($this->getLogicalId() == 'scheduleHolidayProgram') {
+              $eqlogic->scheduleHolidayProgram();
+          } elseif ($this->getLogicalId() == 'unscheduleHolidayProgram') {
+              $eqlogic->unscheduleHolidayProgram();
+          } elseif ($this->getLogicalId() == 'scheduleHolidayAtHomeProgram') {
+              $eqlogic->scheduleHolidayAtHomeProgram();
+          } elseif ($this->getLogicalId() == 'unscheduleHolidayAtHomeProgram') {
+              $eqlogic->unscheduleHolidayAtHomeProgram();
           } elseif ($this->getLogicalId() == 'dhwSlider') {
               if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                   return;
@@ -3473,6 +3803,16 @@
                   return;
               }
               $eqlogic->getCmd(null, 'endHoliday')->event($_options['text']);
+          } elseif ($this->getLogicalId() == 'startHolidayAtHomeText') {
+              if (!isset($_options['text']) || $_options['text'] == '') {
+                  return;
+              }
+              $eqlogic->getCmd(null, 'startHolidayAtHome')->event($_options['text']);
+          } elseif ($this->getLogicalId() == 'endHolidayAtHomeText') {
+              if (!isset($_options['text']) || $_options['text'] == '') {
+                  return;
+              }
+              $eqlogic->getCmd(null, 'endHolidayAtHome')->event($_options['text']);
           }
       }
   }
