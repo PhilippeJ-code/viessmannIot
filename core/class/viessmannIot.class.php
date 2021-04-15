@@ -1302,6 +1302,8 @@
 
           $outsideTemperature = 99;
           $roomTemperature = 99;
+          $slope = 99;
+          $shift = 99;
 
           $comfortProgramTemperature = 99;
           $normalProgramTemperature = 99;
@@ -1451,15 +1453,15 @@
                       $obj->event($val);
                   }
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_CURVE) && $features["data"][$i]["isEnabled"] == true) {
-                  $val = $features["data"][$i]["properties"]["shift"]["value"];
+                  $shift = $features["data"][$i]["properties"]["shift"]["value"];                  
                   $obj = $this->getCmd(null, 'shift');
                   if (is_object($obj)) {
-                      $obj->event($val);
+                      $obj->event($shift);
                   }
-                  $val = $features["data"][$i]["properties"]["slope"]["value"];
+                  $slope = $features["data"][$i]["properties"]["slope"]["value"];
                   $obj = $this->getCmd(null, 'slope');
                   if (is_object($obj)) {
-                      $obj->event($val);
+                      $obj->event($slope);
                   }
               } elseif ($features["data"][$i]["feature"] == self::HEATING_DHW_SCHEDULE && $features["data"][$i]["isEnabled"] == true) {
                   $dhwSchedule = '';
@@ -2259,6 +2261,25 @@
               }
           }
   
+          if (($consigneTemperature != 99) &&
+              ($slope != 99 ) &&
+              ($shift != 99 )) {
+
+                $curve = '';
+                for ($ot=-10; $ot<25;$ot++) {
+                    $b37 = $ot - $consigneTemperature;                    
+                    $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37 );
+                    if ( $curve == '' ) {
+                      $curve = round($tempDepart,0);
+                    } else {
+                      $curve = $curve . ',' . round($tempDepart,0);
+                    }
+                }
+                $this->getCmd(null, 'curve')->event($curve);
+//                B37 = T°Ext.moyenne-T°cons.ambiance
+//                T°Départ = T°cons.ambiance + Parallèle - Pente x B37 x (1,4347 + 0,021 x B37 + 247,9 x 0,000001 x B37 x B37)
+            }
+
           if ($heatingBurnerHours != -1) {
               $jour = date("d", $now);
               $oldJour = $this->getCache('oldJour', -1);
@@ -2276,6 +2297,7 @@
                   $this->setCache('oldJour', $jour);
               }
           }
+
           $date = new DateTime();
           $date = $date->format('d-m-Y H:i:s');
           $this->getCmd(null, 'refreshDate')->event($date);
@@ -2839,7 +2861,7 @@
 
           $obj = $this->getCmd(null, 'statsTemperature');
           if (!is_object($obj)) {
-              $obj = new viessmannCmd();
+              $obj = new viessmannIotCmd();
               $obj->setName(__('Statistiques température', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(0);
@@ -2852,7 +2874,7 @@
 
           $obj = $this->getCmd(null, 'statsConsigne');
           if (!is_object($obj)) {
-              $obj = new viessmannCmd();
+              $obj = new viessmannIotCmd();
               $obj->setName(__('Statistiques consigne', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(0);
@@ -2863,9 +2885,22 @@
           $obj->setLogicalId('statsConsigne');
           $obj->save();
 
+          $obj = $this->getCmd(null, 'curve');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Courbe de chauffe', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('curve');
+          $obj->save();
+
           $obj = $this->getCmd(null, 'heatingGazHistorize');
           if (!is_object($obj)) {
-              $obj = new viessmannCmd();
+              $obj = new viessmannIotCmd();
               $obj->setName(__('Historisation gaz chauffage', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(1);
@@ -2878,7 +2913,7 @@
 
           $obj = $this->getCmd(null, 'dhwGazHistorize');
           if (!is_object($obj)) {
-              $obj = new viessmannCmd();
+              $obj = new viessmannIotCmd();
               $obj->setName(__('Historisation gaz eau chaude', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(1);
@@ -2891,7 +2926,7 @@
 
           $obj = $this->getCmd(null, 'heatingPowerHistorize');
           if (!is_object($obj)) {
-              $obj = new viessmannCmd();
+              $obj = new viessmannIotCmd();
               $obj->setName(__('Historisation électricité', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(1);
@@ -3702,6 +3737,10 @@
           $obj = $this->getCmd(null, 'statsConsigne');
           $replace["#statsConsigne#"] = $obj->execCmd();
           $replace["#idStatsConsigne#"] = $obj->getId();
+  
+          $obj = $this->getCmd(null, 'curve');
+          $replace["#curve#"] = $obj->execCmd();
+          $replace["#idCurve#"] = $obj->getId();
   
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }

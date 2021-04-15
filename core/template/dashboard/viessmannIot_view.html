@@ -489,7 +489,7 @@
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
-        <span class="classTitreTuile#uid#">Actions</span></br>
+        <span class="classTitreTuile#uid#">Courbe</span></br>
 
 
     </div>
@@ -2647,6 +2647,10 @@
                     {
                         name: 'Csg',
                         data: [0]
+                    },
+                    {
+                        name: 'Crb',
+                        data: [0]
                     }
                 ],
 
@@ -2671,6 +2675,16 @@
             chartStats#uid#.series[1].setData(datas);
         }
         jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
+
+        jeedom.cmd.update['#idCurve#'] = function (_options) {
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(parseFloat(item));
+            });
+            chartStats#uid#.series[2].setData(datas);
+        }
+        jeedom.cmd.update['#idCurve#']({ display_value: '#curve#' });
 
         // Click pour accès modification pente
         //
