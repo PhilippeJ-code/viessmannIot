@@ -2216,14 +2216,14 @@
           if (($outsideTemperature != 99) &&
               ($roomTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = 40 - (round($outsideTemperature, 0) + 15);
-              if (($index >=0) && ($index <= 40)) {
+              $index = 45 - (round($outsideTemperature, 0) + 20);
+              if (($index >=0) && ($index <= 45)) {
                   $obj = $this->getCmd(null, 'statsTemperature');
                   $stats = $obj->execCmd();
   
                   if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<=40; $i++) {
+                      for ($i=0; $i<=45; $i++) {
                           $lstStats[$i] = $consigneTemperature;
                       }
                   } else {
@@ -2238,14 +2238,14 @@
           if (($outsideTemperature != 99) &&
               ($consigneTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = 40 - (round($outsideTemperature, 0) + 15);
-              if (($index >=0) && ($index < 40)) {
+              $index = 45 - (round($outsideTemperature, 0) + 20);
+              if (($index >=0) && ($index < 45)) {
                   $obj = $this->getCmd(null, 'statsConsigne');
                   $stats = $obj->execCmd();
   
                   if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<=40; $i++) {
+                      for ($i=0; $i<=45; $i++) {
                           $lstStats[$i] = $consigneTemperature;
                       }
                   } else {
@@ -2260,7 +2260,7 @@
               ($slope != 99) &&
               ($shift != 99)) {
               $curve = '';
-              for ($ot=25; $ot>=-15;$ot-=5) {
+              for ($ot=25; $ot>=-20;$ot-=5) {
                   $b37 = $ot - $consigneTemperature;
                   $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37);
                   if ($curve == '') {
@@ -3788,7 +3788,7 @@
           $replace["#maxi_temperature#"] = $maxi;
   
           $temp = '';
-          for ($ot=25; $ot>=-15;$ot--) {
+          for ($ot=25; $ot>=-20;$ot--) {
               if ($temp !== '') {
                   $temp = $temp . ',';
               }
@@ -3801,7 +3801,7 @@
           $replace["#idCurve#"] = $obj->getId();
   
           $temp = '';
-          for ($ot=25; $ot>=-15;$ot-=5) {
+          for ($ot=25; $ot>=-20;$ot-=5) {
               if ($temp !== '') {
                   $temp = $temp . ',';
               }
