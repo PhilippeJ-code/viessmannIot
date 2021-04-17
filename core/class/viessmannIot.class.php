@@ -2216,14 +2216,14 @@
           if (($outsideTemperature != 99) &&
               ($roomTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = 50 - (round($outsideTemperature, 0) + 25);
-              if (($index >=0) && ($index <= 50)) {
+              $index = 40 - (round($outsideTemperature, 0) + 15);
+              if (($index >=0) && ($index <= 40)) {
                   $obj = $this->getCmd(null, 'statsTemperature');
                   $stats = $obj->execCmd();
   
                   if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<=50; $i++) {
+                      for ($i=0; $i<=40; $i++) {
                           $lstStats[$i] = $consigneTemperature;
                       }
                   } else {
@@ -2238,14 +2238,14 @@
           if (($outsideTemperature != 99) &&
               ($consigneTemperature != 99) &&
               ($heure >= 0) && ($heure < 25)) {
-              $index = 50 - (round($outsideTemperature, 0) + 25);
-              if (($index >=0) && ($index < 50)) {
+              $index = 40 - (round($outsideTemperature, 0) + 15);
+              if (($index >=0) && ($index < 40)) {
                   $obj = $this->getCmd(null, 'statsConsigne');
                   $stats = $obj->execCmd();
   
                   if ($stats == '') {
                       $lstStats = array();
-                      for ($i=0; $i<=50; $i++) {
+                      for ($i=0; $i<=40; $i++) {
                           $lstStats[$i] = $consigneTemperature;
                       }
                   } else {
@@ -2260,7 +2260,7 @@
               ($slope != 99) &&
               ($shift != 99)) {
               $curve = '';
-              for ($ot=25; $ot>=-25;$ot-=5) {
+              for ($ot=25; $ot>=-15;$ot-=5) {
                   $b37 = $ot - $consigneTemperature;
                   $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37);
                   if ($curve == '') {
@@ -3648,24 +3648,6 @@
           }
           $replace["#elec_annees#"] = $annees;
 
-          $temp = '';
-          for ($ot=25; $ot>=-25;$ot-=5) {
-              if ($temp !== '') {
-                  $temp = $temp . ',';
-              }
-              $temp = $temp . "'" . $ot . "'";
-          }
-          $replace["#range_temp#"] = $temp;
-
-          $temp = '';
-          for ($ot=25; $ot>=-25;$ot--) {
-              if ($temp !== '') {
-                  $temp = $temp . ',';
-              }
-              $temp = $temp . "'" . $ot . "'";
-          }
-          $replace["#range_temperature#"] = $temp;
-
           $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
           if (is_object($obj)) {
               $replace["#isOneTimeDhwCharge#"] = $obj->execCmd();
@@ -3769,18 +3751,64 @@
               $replace["#idIsScheduleHolidayAtHomeProgram#"] = "#idIsScheduleHolidayAtHomeProgram#";
           }
 
+          $mini = 9999;
+          $maxi = -9999;
+
           $obj = $this->getCmd(null, 'statsTemperature');
-          $replace["#statsTemperature#"] = $obj->execCmd();
+          $str = $obj->execCmd();
+          $temps = explode(',', $str);
+          foreach($temps as $temp) {
+              if ( $temp < $mini ) {
+                  $mini = $temp;
+              }
+              if ( $temp > $maxi ) {
+                  $maxi = $temp;
+              }
+          }
+          $replace["#statsTemperature#"] = $str;
           $replace["#idStatsTemperature#"] = $obj->getId();
   
           $obj = $this->getCmd(null, 'statsConsigne');
-          $replace["#statsConsigne#"] = $obj->execCmd();
+          $str = $obj->execCmd();
+          $temps = explode(',', $str);
+          foreach($temps as $temp) {
+              if ( $temp < $mini ) {
+                  $mini = $temp;
+              }
+              if ( $temp > $maxi ) {
+                  $maxi = $temp;
+              }
+          }
+          $mini = round($mini-0.6, 0);
+          $maxi = round($maxi+0.5, 0);
+
+          $replace["#statsConsigne#"] = $str;
           $replace["#idStatsConsigne#"] = $obj->getId();
+          $replace["#mini_temperature#"] = $mini;
+          $replace["#maxi_temperature#"] = $maxi;
   
+          $temp = '';
+          for ($ot=25; $ot>=-15;$ot--) {
+              if ($temp !== '') {
+                  $temp = $temp . ',';
+              }
+              $temp = $temp . "'" . $ot . "'";
+          }
+          $replace["#range_temperature#"] = $temp;
+
           $obj = $this->getCmd(null, 'curve');
           $replace["#curve#"] = $obj->execCmd();
           $replace["#idCurve#"] = $obj->getId();
   
+          $temp = '';
+          for ($ot=25; $ot>=-15;$ot-=5) {
+              if ($temp !== '') {
+                  $temp = $temp . ',';
+              }
+              $temp = $temp . "'" . $ot . "'";
+          }
+          $replace["#range_temp#"] = $temp;
+
           $obj = $this->getCmd(null, 'resetCurve');
           $replace["#idResetCurve#"] = $obj->getId();
 
