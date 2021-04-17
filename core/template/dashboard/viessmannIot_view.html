@@ -493,6 +493,7 @@
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+        <img class="classRefresh#uid# cursor" id="idResetCurve#uid#" src="plugins/viessmannIot/resources/reset.svg">
         <span class="classTitreTuile#uid#">Courbe</span></br>
 
 
@@ -3029,6 +3030,14 @@
         $('#idModeForcedNormal#uid#').on('click', function () {
             jeedom.cmd.execute({
                 id: '#idModeForcedNormal#'
+            });
+        });
+
+        // Click pour reset courbe
+        //
+        $('#idResetCurve#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idResetCurve#'
             });
         });
 
