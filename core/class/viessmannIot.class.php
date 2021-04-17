@@ -1665,6 +1665,9 @@
 
                   $heatingGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['week']['value']);
+                  if ($n > 7) {
+                      $n = 7;
+                  }
                   for ($j=0; $j<$n; $j++) {
                       $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
                   }
@@ -1757,6 +1760,9 @@
   
                   $dhwGazConsumtions = array();
                   $n = count($features["data"][$i]["properties"]['week']['value']);
+                  if ($n > 7) {
+                      $n = 7;
+                  }
                   for ($j=0; $j<$n; $j++) {
                       $dhwGazConsumtions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
                   }
@@ -1849,6 +1855,9 @@
   
                   $heatingGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['week']['value']);
+                  if ($n > 7) {
+                      $n = 7;
+                  }
                   for ($j=0; $j<$n; $j++) {
                       $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
                   }
@@ -1939,6 +1948,9 @@
         
                   $heatingPowerConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['week']['value']);
+                  if ($n > 7) {
+                      $n = 7;
+                  }
                   for ($j=0; $j<$n; $j++) {
                       $heatingPowerConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j];
                   }
@@ -3757,11 +3769,11 @@
           $obj = $this->getCmd(null, 'statsTemperature');
           $str = $obj->execCmd();
           $temps = explode(',', $str);
-          foreach($temps as $temp) {
-              if ( $temp < $mini ) {
+          foreach ($temps as $temp) {
+              if ($temp < $mini) {
                   $mini = $temp;
               }
-              if ( $temp > $maxi ) {
+              if ($temp > $maxi) {
                   $maxi = $temp;
               }
           }
@@ -3771,11 +3783,11 @@
           $obj = $this->getCmd(null, 'statsConsigne');
           $str = $obj->execCmd();
           $temps = explode(',', $str);
-          foreach($temps as $temp) {
-              if ( $temp < $mini ) {
+          foreach ($temps as $temp) {
+              if ($temp < $mini) {
                   $mini = $temp;
               }
-              if ( $temp > $maxi ) {
+              if ($temp > $maxi) {
                   $maxi = $temp;
               }
           }
