@@ -1655,7 +1655,7 @@
                       if ($day !== '') {
                           $day = ',' . $day;
                       }
-                      $day = $heatingGazConsumption*$facteurConversionGaz . $day;
+                      $day = $heatingGazConsumption . $day;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'totalGazConsumptionDay');
@@ -1678,7 +1678,7 @@
                       if ($week !== '') {
                           $week = ',' . $week;
                       }
-                      $week = $heatingGazConsumption*$facteurConversionGaz . $week;
+                      $week = $heatingGazConsumption . $week;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
@@ -1698,8 +1698,7 @@
                       if ($month !== '') {
                           $month = ',' . $month;
                       }
-                      $month = $heatingGazConsumption*$facteurConversionGaz . $month;
-                      $totalMonth[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                      $month = $heatingGazConsumption . $month;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
@@ -1719,8 +1718,7 @@
                       if ($year !== '') {
                           $year = ',' . $year;
                       }
-                      $year = $heatingGazConsumption*$facteurConversionGaz . $year;
-                      $totalYear[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                      $year = $heatingGazConsumption . $year;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'totalGazConsumptionYear');
@@ -1728,12 +1726,12 @@
                       $obj->event($year);
                   }
               } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_DHW && $features["data"][$i]["isEnabled"] == true) {
-                  $dhwGazConsumtions = array();
+                  $dhwGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['day']['value']);
                   for ($j=0; $j<$n; $j++) {
-                      $dhwGazConsumtions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
+                      $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
                   }
-                  $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumtions[0]);
+                  $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]);
   
                   $conso = $dhwGazConsumptions[0];
                   $oldConso = $this->getCache('oldConsoDhw', -1);
@@ -1746,11 +1744,11 @@
 
                   $day = '';
                   $n = 0;
-                  foreach ($dhwGazConsumtions as $dhwGazConsumtion) {
+                  foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                       if ($day !== '') {
                           $day = ',' . $day;
                       }
-                      $day = $dhwGazConsumtion*$facteurConversionGaz . $day;
+                      $day = $dhwGazConsumption . $day;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'dhwGazConsumptionDay');
@@ -1758,22 +1756,22 @@
                       $obj->event($day);
                   }
   
-                  $dhwGazConsumtions = array();
+                  $dhwGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['week']['value']);
                   if ($n > 7) {
                       $n = 7;
                   }
                   for ($j=0; $j<$n; $j++) {
-                      $dhwGazConsumtions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
+                      $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
                   }
   
                   $week = '';
                   $n = 0;
-                  foreach ($dhwGazConsumtions as $dhwGazConsumtion) {
+                  foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                       if ($week !== '') {
                           $week = ',' . $week;
                       }
-                      $week = $dhwGazConsumtion*$facteurConversionGaz . $week;
+                      $week = $dhwGazConsumption . $week;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'dhwGazConsumptionWeek');
@@ -1781,20 +1779,19 @@
                       $obj->event($week);
                   }
   
-                  $dhwGazConsumtions = array();
+                  $dhwGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['month']['value']);
                   for ($j=0; $j<$n; $j++) {
-                      $dhwGazConsumtions[$j] = $features["data"][$i]["properties"]['month']['value'][$j]*$facteurConversionGaz;
+                      $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j]*$facteurConversionGaz;
                   }
   
                   $month = '';
                   $n = 0;
-                  foreach ($dhwGazConsumtions as $dhwGazConsumtion) {
+                  foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                       if ($month !== '') {
                           $month = ',' . $month;
                       }
-                      $month = $dhwGazConsumtion*$facteurConversionGaz . $month;
-                      $totalMonth[$n] += $dhwGazConsumtion*$facteurConversionGaz;
+                      $month = $dhwGazConsumption . $month;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'dhwGazConsumptionMonth');
@@ -1802,20 +1799,19 @@
                       $obj->event($month);
                   }
   
-                  $dhwGazConsumtions = array();
+                  $dhwGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['year']['value']);
                   for ($j=0; $j<$n; $j++) {
-                      $dhwGazConsumtions[$j] = $features["data"][$i]["properties"]['year']['value'][$j]*$facteurConversionGaz;
+                      $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j]*$facteurConversionGaz;
                   }
   
                   $year = '';
                   $n = 0;
-                  foreach ($dhwGazConsumtions as $dhwGazConsumtion) {
+                  foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                       if ($year !== '') {
                           $year = ',' . $year;
                       }
-                      $year = $dhwGazConsumtion*$facteurConversionGaz . $year;
-                      $totalYear[$n] += $dhwGazConsumtion*$facteurConversionGaz;
+                      $year = $dhwGazConsumption . $year;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'dhwGazConsumptionYear');
@@ -1845,7 +1841,7 @@
                       if ($day !== '') {
                           $day = ',' . $day;
                       }
-                      $day = $heatingGazConsumption*$facteurConversionGaz . $day;
+                      $day = $heatingGazConsumption . $day;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'heatingGazConsumptionDay');
@@ -1868,10 +1864,10 @@
                       if ($week !== '') {
                           $week = ',' . $week;
                       }
-                      $week = $heatingGazConsumption*$facteurConversionGaz . $week;
+                      $week = $heatingGazConsumption . $week;
                       $n++;
                   }
-                  $obj = $this->getCmd(null, 'heatingGazConsumptionMWeek');
+                  $obj = $this->getCmd(null, 'heatingGazConsumptionWeek');
                   if (is_object($obj)) {
                       $obj->event($week);
                   }
@@ -1888,8 +1884,7 @@
                       if ($month !== '') {
                           $month = ',' . $month;
                       }
-                      $month = $heatingGazConsumption*$facteurConversionGaz . $month;
-                      $totalMonth[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                      $month = $heatingGazConsumption . $month;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'heatingGazConsumptionMonth');
@@ -1909,8 +1904,7 @@
                       if ($year !== '') {
                           $year = ',' . $year;
                       }
-                      $year = $heatingGazConsumption*$facteurConversionGaz . $year;
-                      $totalYear[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                      $year = $heatingGazConsumption . $year;
                       $n++;
                   }
                   $obj = $this->getCmd(null, 'heatingGazConsumptionYear');
