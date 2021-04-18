@@ -1648,6 +1648,16 @@
                   for ($j=0; $j<$n; $j++) {
                       $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
                   }
+                  $this->getCmd(null, 'totalGazConsumption')->event($heatingGazConsumptions[0]);
+  
+                  $conso = $heatingGazConsumptions[0];
+                  $oldConso = $this->getCache('oldConsoTotal', -1);
+                  if ($oldConso > $conso) {
+                      $dateVeille = time()-24*60*60;
+                      $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                      $this->getCmd(null, 'totalGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                  }
+                  $this->setCache('oldConsoTotal', $conso);
 
                   $day = '';
                   $n = 0;
@@ -2820,6 +2830,19 @@
           $obj->setLogicalId('programTemperature');
           $obj->save();
 
+          $obj = $this->getCmd(null, 'totalGazConsumption');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Consommation gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('totalGazConsumption');
+          $obj->save();
+  
           $obj = $this->getCmd(null, 'dhwGazConsumption');
           if (!is_object($obj)) {
               $obj = new viessmannIotCmd();
@@ -2896,6 +2919,19 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('curve');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'totalGazHistorize');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Historisation gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('totalGazHistorize');
           $obj->save();
 
           $obj = $this->getCmd(null, 'heatingGazHistorize');
