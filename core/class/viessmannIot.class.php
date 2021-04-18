@@ -2277,8 +2277,8 @@
               ($shift != 99)) {
               $curve = '';
               for ($ot=25; $ot>=-20;$ot-=5) {
-                  $b37 = $ot - $consigneTemperature;
-                  $tempDepart = $consigneTemperature + $shift - $slope * $b37 * (1.4347 + 0.021 * $b37 + 247.9 * 0.000001 * $b37 * $b37);
+                  $deltaT = $ot - $consigneTemperature;
+                  $tempDepart = $consigneTemperature + $shift - $slope * $deltaT * (1.4347 + 0.021 * $deltaT + 247.9 * 0.000001 * $deltaT * $deltaT);
                   if ($curve == '') {
                       $curve = round($tempDepart, 0);
                   } else {
@@ -2286,8 +2286,6 @@
                   }
               }
               $this->getCmd(null, 'curve')->event($curve);
-//                B37 = T°Ext.moyenne-T°cons.ambiance
-//                T°Départ = T°cons.ambiance + Parallèle - Pente x B37 x (1,4347 + 0,021 x B37 + 247,9 x 0,000001 x B37 x B37)
           }
 
           if ($heatingBurnerHours != -1) {
