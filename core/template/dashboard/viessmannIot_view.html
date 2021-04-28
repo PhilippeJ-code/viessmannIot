@@ -109,9 +109,8 @@
                 id="idEtatBruleur#uid#"></span></br>
         </div>
         <div id="showHeatingBurnerHours#uid#">
-            <span class="classSousTitre#uid#">Fonctionnement total</span><span
-                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerHours#"
-                id="idHeatingBurnerHours#uid#"></span></br>
+            <span class="classSousTitre#uid#">Fonctionnement total</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingBurnerHours#" id="idHeatingBurnerHours#uid#"></span></br>
         </div>
         <div id="showHeatingBurnerHoursPerDay#uid#">
             <span class="classSousTitre#uid#">Fonctionnement du jour (J-1)</span><span
@@ -1111,6 +1110,9 @@
 
     <script type="text/javascript">
 
+        var lstTemps = [];
+        var lstDates = [];
+
         // Affichage initial
         //
         $('#idResume#uid#').show();
@@ -1731,7 +1733,7 @@
                 text: ''
             },
             xAxis: {
-                categories: [#joursSemaine#]                
+                categories: [#joursSemaine#]
             },
             yAxis: {
                 min: 0,
@@ -2623,38 +2625,83 @@
                 }
             },
 
+            
             tooltip: {
                 headerFormat: '<span style="font-size:12px">T.Ext : {point.key}°</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f}°</b></td></tr>',
+                    '<td style="padding:0"><b>{point.y:.1f}°</b> {point.tip}</td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
             },
-
+            
+            /*
+            tooltip: {
+                formatter: function () {
+                    return this.points.reduce(function (s, point) {
+                        if (point.series.name == 'T°Int')
+                            return s +
+                                '<br/><span>Date : ' + point.tip + '</span>' +
+                                '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                        else
+                            return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                    }, '<span style="font-size:12px"><b>T.Ext :' + this.x + '°</b></span>');
+                },
+                shared: true
+            },
+            */
             series:
                 [
                     {
                         name: 'T°Int',
-                        data: [0]
+                        data: [{ y: 20.5, tip: 15 }]
                     },
                     {
                         name: 'T°Csg',
-                        data: [0]
+                        data: [{ y: 20.5, tip: 16 }]
                     }
                 ]
 
         });
 
+        function garnirDonnees() {
+            console.log(lstTemps.length + ' et ' + lstDates.length);
+            if (lstTemps.length != lstDates.length)
+                return;
+            var lstDonnees = [];
+            var i;
+            for (i = 0; i < lstTemps.length; i++) {
+                lstDonnees.push({
+                    y: lstTemps[i],
+                    tip: lstDates[i]
+                });
+            }
+            chartStats#uid#.series[0].setData(lstDonnees);
+        }
+
         jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
+
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
                 datas.push(parseFloat(item));
             });
-            chartStats#uid#.series[0].setData(datas);
+            lstTemps = datas;
+            garnirDonnees();
         }
         jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
+
+        jeedom.cmd.update['#idStatsDates#'] = function (_options) {
+
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(item);
+            });
+            lstDates = datas;
+            garnirDonnees();
+        }
+        jeedom.cmd.update['#idStatsDates#']({ display_value: '#statsDates#' });
 
         jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
             var items = _options.display_value.split(',');
@@ -2716,7 +2763,7 @@
 
             tooltip: {
                 enabled: false
-             },
+            },
 
             series:
                 [

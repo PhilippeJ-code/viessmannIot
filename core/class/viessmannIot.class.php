@@ -2227,11 +2227,8 @@
               $consigneTemperature = $reducedProgramTemperature;
           }
         
-          $now = time();
-          $heure = date("H", $now);
           if (($outsideTemperature != 99) &&
-              ($roomTemperature != 99) &&
-              ($heure >= 0) && ($heure < 25)) {
+              ($roomTemperature != 99)) {              
               $index = 45 - (round($outsideTemperature, 0) + 20);
               if (($index >=0) && ($index <= 45)) {
                   $obj = $this->getCmd(null, 'statsTemperature');
@@ -2248,12 +2245,27 @@
 
                   $lstStats[$index] = $roomTemperature;
                   $obj->event(implode(',', $lstStats));
+
+                  $obj = $this->getCmd(null, 'statsDates');
+                  $stats = $obj->execCmd();
+  
+                  if ($stats == '') {
+                      $lstStats = array();
+                      for ($i=0; $i<=45; $i++) {
+                          $lstStats[$i] = ' ';
+                      }
+                  } else {
+                      $lstStats = explode(',', $stats);
+                  }
+
+                  $lstStats[$index] = date("d-m H:i");
+                  $obj->event(implode(',', $lstStats));
+
               }
           }
   
           if (($outsideTemperature != 99) &&
-              ($consigneTemperature != 99) &&
-              ($heure >= 0) && ($heure < 25)) {
+              ($consigneTemperature != 99)) {
               $index = 45 - (round($outsideTemperature, 0) + 20);
               if (($index >=0) && ($index < 45)) {
                   $obj = $this->getCmd(null, 'statsConsigne');
@@ -2288,6 +2300,7 @@
               $this->getCmd(null, 'curve')->event($curve);
           }
 
+          $now = time();
           if ($heatingBurnerHours != -1) {
               $jour = date("d", $now);
               $oldJour = $this->getCache('oldJour', -1);
@@ -2891,6 +2904,19 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('statsTemperature');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'statsDates');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Statistiques température date', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('statsDates');
           $obj->save();
 
           $obj = $this->getCmd(null, 'statsConsigne');
@@ -3796,6 +3822,7 @@
 
           $obj = $this->getCmd(null, 'statsTemperature');
           $str = $obj->execCmd();
+          
           $temps = explode(',', $str);
           foreach ($temps as $temp) {
               if ($temp < $mini) {
@@ -3807,6 +3834,12 @@
           }
           $replace["#statsTemperature#"] = $str;
           $replace["#idStatsTemperature#"] = $obj->getId();
+  
+          $obj = $this->getCmd(null, 'statsDates');
+          $str = $obj->execCmd();
+          
+          $replace["#statsDates#"] = $str;
+          $replace["#idStatsDates#"] = $obj->getId();
   
           $obj = $this->getCmd(null, 'statsConsigne');
           $str = $obj->execCmd();
