@@ -2627,38 +2627,32 @@
 
             
             tooltip: {
-                headerFormat: '<span style="font-size:12px">T.Ext : {point.key}°</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f}°</b> {point.tip}</td></tr>',
-                footerFormat: '</table>',
+                headerFormat: '<span style="font-size:12px">T.Ext : {point.key}°</span><br/>',
+                footerFormat: '',
                 shared: true,
                 useHTML: true
             },
             
-            /*
-            tooltip: {
-                formatter: function () {
-                    return this.points.reduce(function (s, point) {
-                        if (point.series.name == 'T°Int')
-                            return s +
-                                '<br/><span>Date : ' + point.tip + '</span>' +
-                                '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                        else
-                            return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                    }, '<span style="font-size:12px"><b>T.Ext :' + this.x + '°</b></span>');
-                },
-                shared: true
-            },
-            */
-            series:
+             series:
                 [
                     {
                         name: 'T°Int',
-                        data: [{ y: 20.5, tip: 15 }]
+                        data: [{ y: 20.5, tip: 15 }],
+                        tooltip: {
+                         	pointFormatter: function() {
+                                return '<span>Date : ' + this.tip + '</span><br/>' +
+                                '<span style="color:' + this.series.color + '">' + this.series.name + ' : ' + this.y + '</span><br/>';
+      		    			}
+                        }
                     },
                     {
                         name: 'T°Csg',
-                        data: [{ y: 20.5, tip: 16 }]
+                        data: [20],
+                        tooltip: {
+					      	pointFormatter: function() {
+                                return '<span style="color:' + this.series.color + '">' + this.series.name + ' : ' + this.y + '</span>';
+      						}
+                        }
                     }
                 ]
 
