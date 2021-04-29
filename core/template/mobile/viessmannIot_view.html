@@ -2627,7 +2627,7 @@
 
             
             tooltip: {
-                headerFormat: '<span style="font-size:12px">T.Ext : {point.key}°</span><br/>',
+                headerFormat: '<span style="font-size:12px"><b>T.Ext : {point.key}°</b></span><br/>',
                 footerFormat: '',
                 shared: true,
                 useHTML: true
@@ -2641,7 +2641,7 @@
                         tooltip: {
                          	pointFormatter: function() {
                                 return '<span>Date : ' + this.tip + '</span><br/>' +
-                                '<span style="color:' + this.series.color + '">' + this.series.name + ' : ' + this.y + '</span><br/>';
+                                '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span><br/>';
       		    			}
                         }
                     },
@@ -2650,7 +2650,7 @@
                         data: [20],
                         tooltip: {
 					      	pointFormatter: function() {
-                                return '<span style="color:' + this.series.color + '">' + this.series.name + ' : ' + this.y + '</span>';
+                                return '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span>';
       						}
                         }
                     }
