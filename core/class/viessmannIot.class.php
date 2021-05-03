@@ -2228,39 +2228,66 @@
           }
         
           if (($outsideTemperature != 99) &&
-              ($roomTemperature != 99)) {              
+              ($roomTemperature != 99)) {
               $index = 45 - (round($outsideTemperature, 0) + 20);
               if (($index >=0) && ($index <= 45)) {
-                  $obj = $this->getCmd(null, 'statsTemperature');
-                  $stats = $obj->execCmd();
+                  $objMini = $this->getCmd(null, 'statsTemperature');
+                  $statsMini = $objMini->execCmd();
   
-                  if ($stats == '') {
-                      $lstStats = array();
+                  if ($statsMini == '') {
+                      $lstStatsMini = array();
                       for ($i=0; $i<=45; $i++) {
-                          $lstStats[$i] = $consigneTemperature;
+                          $lstStatsMini[$i] = $consigneTemperature;
                       }
+                      $objMini->event(implode(',', $lstStatsMini));
                   } else {
-                      $lstStats = explode(',', $stats);
+                      $lstStatsMini = explode(',', $statsMini);
                   }
 
-                  $lstStats[$index] = $roomTemperature;
-                  $obj->event(implode(',', $lstStats));
-
-                  $obj = $this->getCmd(null, 'statsDates');
-                  $stats = $obj->execCmd();
+                  $objMaxi = $this->getCmd(null, 'statsTemperatureMax');
+                  $statsMaxi = $objMaxi->execCmd();
   
-                  if ($stats == '') {
-                      $lstStats = array();
+                  if ($statsMaxi == '') {
+                      $lstStatsMaxi = array();
                       for ($i=0; $i<=45; $i++) {
-                          $lstStats[$i] = ' ';
+                          $lstStatsMaxi[$i] = $consigneTemperature;
+                          $objMaxi->event(implode(',', $lstStatsMaxi));
                       }
                   } else {
-                      $lstStats = explode(',', $stats);
+                      $lstStatsMaxi = explode(',', $statsMaxi);
                   }
 
-                  $lstStats[$index] = date("d-m H:i");
-                  $obj->event(implode(',', $lstStats));
+                  $objDates = $this->getCmd(null, 'statsDates');
+                  $statsDates = $objDates->execCmd();
+  
+                  if ($statsDates == '') {
+                      $lstStatsDates = array();
+                      for ($i=0; $i<=45; $i++) {
+                          $lstStatsDates[$i] = ' ';
+                      }
+                  } else {
+                      $lstStatsDates = explode(',', $statsDates);
+                  }
 
+                  if ($lstStatsDates[$index] == ' ') {
+                      $lstStatsMini[$index] = $roomTemperature;
+                      $objMini->event(implode(',', $lstStatsMini));
+                      $lstStatsMaxi[$index] = $roomTemperature;
+                      $objMaxi->event(implode(',', $lstStatsMaxi));
+                  } else {
+                      if ($lstStatsMini[$index] > $roomTemperature) {
+                          $lstStatsMini[$index] = $roomTemperature;
+                          $objMini->event(implode(',', $lstStatsMini));
+                      }
+  
+                      if ($lstStatsMaxi[$index] < $roomTemperature) {
+                          $lstStatsMaxi[$index] = $roomTemperature;
+                          $objMaxi->event(implode(',', $lstStatsMaxi));
+                      }
+                  }
+    
+                  $lstStatsDates[$index] = date("d-m H:i");
+                  $objDates->event(implode(',', $lstStatsDates));
               }
           }
   
@@ -2896,7 +2923,7 @@
           $obj = $this->getCmd(null, 'statsTemperature');
           if (!is_object($obj)) {
               $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température', __FILE__));
+              $obj->setName(__('Statistiques température min', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(0);
           }
@@ -2904,6 +2931,19 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('statsTemperature');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'statsTemperatureMax');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Statistiques température max', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('statsTemperatureMax');
           $obj->save();
 
           $obj = $this->getCmd(null, 'statsDates');
@@ -3835,6 +3875,21 @@
           $replace["#statsTemperature#"] = $str;
           $replace["#idStatsTemperature#"] = $obj->getId();
   
+          $obj = $this->getCmd(null, 'statsTemperatureMax');
+          $str = $obj->execCmd();
+          
+          $temps = explode(',', $str);
+          foreach ($temps as $temp) {
+              if ($temp < $mini) {
+                  $mini = $temp;
+              }
+              if ($temp > $maxi) {
+                  $maxi = $temp;
+              }
+          }
+          $replace["#statsTemperatureMax#"] = $str;
+          $replace["#idStatsTemperatureMax#"] = $obj->getId();
+  
           $obj = $this->getCmd(null, 'statsDates');
           $str = $obj->execCmd();
           
@@ -3909,7 +3964,9 @@
               }
           } elseif ($this->getLogicalId() == 'resetCurve') {
               $eqlogic->getCmd(null, 'statsTemperature')->event('');
+              $eqlogic->getCmd(null, 'statsTemperatureMax')->event('');
               $eqlogic->getCmd(null, 'statsConsigne')->event('');
+              $eqlogic->getCmd(null, 'statsDates')->event('');
               $viessmannApi = $eqlogic->getViessmann();
               if ($viessmannApi !== null) {
                   $eqlogic->rafraichir($viessmannApi);
