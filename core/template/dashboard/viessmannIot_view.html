@@ -1110,8 +1110,10 @@
 
     <script type="text/javascript">
 
-        var lstTemps = [];
-        var lstDates = [];
+        var lstTempsMini = [];
+        var lstDatesMini = [];
+        var lstTempsMaxi = [];
+        var lstDatesMaxi = [];
 
         // Affichage initial
         //
@@ -2640,18 +2642,23 @@
                 shared: true,
                 useHTML: true,
                 borderRadius: 10,
-    	        crosshairs: true
+                crosshairs: true
             },
             */
             tooltip: {
                 formatter: function () {
-                
-                  var tip = this.points[0].point.tip;
-                  
-                  return this.points.reduce(function (s, point) {
+
+                    var tipMini = this.points[0].point.tip;
+                    var tipMaxi = this.points[1].point.tip;
+
+                    return this.points.reduce(function (s, point) {
                         if (point.series.name == 'T°Int Min')
                             return s +
-                                '<br/><span>Date : ' + tip + '</span>' +
+                                '<br/><span style="color:' + point.series.color + '">Date : ' + tipMini + '</span>' +
+                                '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                        else if (point.series.name == 'T°Int Max')
+                            return s +
+                                '<br/><span style="color:' + point.series.color + '">Date : ' + tipMaxi + '</span>' +
                                 '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
                         else
                             return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
@@ -2660,13 +2667,13 @@
                 shared: true,
                 useHTML: true,
                 borderRadius: 10,
-    	        crosshairs: true
+                crosshairs: true
             },
             series:
                 [
                     {
                         name: 'T°Int Min',
-                        data: [{ y: 19.5, tip: 15 }]/*,                        
+                        data: [{ y: 19.5, tip: 'Erreur' }]/*,                        
                         tooltip: {
                          	pointFormatter: function() {
                                 return '<span>Date : ' + this.tip + '</span><br/>' +
@@ -2676,7 +2683,7 @@
                     },
                     {
                         name: 'T°Int Max',
-                        data: [20.5]/*,                        
+                        data: [{ y: 20.5, tip: 'Erreur' }]/*,                        
                         tooltip: {
                          	pointFormatter: function() {
                                 return '<span>Date : ' + this.tip + '</span><br/>' +
@@ -2697,19 +2704,32 @@
 
         });
 
-        function garnirDonnees() {
-            console.log(lstTemps.length + ' et ' + lstDates.length);
-            if (lstTemps.length != lstDates.length)
+        function garnirDonneesMini() {
+            if (lstTempsMini.length != lstDatesMini.length)
                 return;
             var lstDonnees = [];
             var i;
-            for (i = 0; i < lstTemps.length; i++) {
+            for (i = 0; i < lstTempsMini.length; i++) {
                 lstDonnees.push({
-                    y: lstTemps[i],
-                    tip: lstDates[i]
+                    y: lstTempsMini[i],
+                    tip: lstDatesMini[i]
                 });
             }
             chartStats#uid#.series[0].setData(lstDonnees);
+        }
+
+        function garnirDonneesMaxi() {
+            if (lstTempsMaxi.length != lstDatesMaxi.length)
+                return;
+            var lstDonnees = [];
+            var i;
+            for (i = 0; i < lstTempsMaxi.length; i++) {
+                lstDonnees.push({
+                    y: lstTempsMaxi[i],
+                    tip: lstDatesMaxi[i]
+                });
+            }
+            chartStats#uid#.series[1].setData(lstDonnees);
         }
 
         jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
@@ -2719,8 +2739,8 @@
             items.forEach(function (item, itemNo) {
                 datas.push(parseFloat(item));
             });
-            lstTemps = datas;
-            garnirDonnees();
+            lstTempsMini = datas;
+            garnirDonneesMini();
         }
         jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
 
@@ -2730,7 +2750,8 @@
             items.forEach(function (item, itemNo) {
                 datas.push(parseFloat(item));
             });
-            chartStats#uid#.series[1].setData(datas);
+            lstTempsMaxi = datas;
+            garnirDonneesMaxi();
         }
         jeedom.cmd.update['#idStatsTemperatureMax#']({ display_value: '#statsTemperatureMax#' });
 
@@ -2741,10 +2762,22 @@
             items.forEach(function (item, itemNo) {
                 datas.push(item);
             });
-            lstDates = datas;
-            garnirDonnees();
+            lstDatesMini = datas;
+            garnirDonneesMini();
         }
         jeedom.cmd.update['#idStatsDates#']({ display_value: '#statsDates#' });
+
+        jeedom.cmd.update['#idStatsDatesMax#'] = function (_options) {
+
+            var items = _options.display_value.split(',');
+            var datas = [];
+            items.forEach(function (item, itemNo) {
+                datas.push(item);
+            });
+            lstDatesMaxi = datas;
+            garnirDonneesMaxi();
+        }
+        jeedom.cmd.update['#idStatsDatesMax#']({ display_value: '#statsDatesMax#' });
 
         jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
             var items = _options.display_value.split(',');

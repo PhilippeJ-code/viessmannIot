@@ -2257,37 +2257,57 @@
                       $lstStatsMaxi = explode(',', $statsMaxi);
                   }
 
-                  $objDates = $this->getCmd(null, 'statsDates');
-                  $statsDates = $objDates->execCmd();
+                  $objDatesMini = $this->getCmd(null, 'statsDates');
+                  $statsDatesMini = $objDatesMini->execCmd();
   
-                  if ($statsDates == '') {
-                      $lstStatsDates = array();
+                  if ($statsDatesMini == '') {
+                      $lstStatsDatesMini = array();
                       for ($i=0; $i<=45; $i++) {
-                          $lstStatsDates[$i] = ' ';
+                          $lstStatsDatesMini[$i] = ' ';
                       }
                   } else {
-                      $lstStatsDates = explode(',', $statsDates);
+                      $lstStatsDatesMini = explode(',', $statsDatesMini);
                   }
 
-                  if ($lstStatsDates[$index] == ' ') {
+                  $objDatesMaxi = $this->getCmd(null, 'statsDatesMaxi');
+                  $statsDatesMaxi = $objDatesMaxi->execCmd();
+  
+                  if ($statsDatesMaxi == '') {
+                      $lstStatsDatesMaxi = array();
+                      for ($i=0; $i<=45; $i++) {
+                          $lstStatsDatesMaxi[$i] = ' ';
+                      }
+                  } else {
+                      $lstStatsDatesMaxi = explode(',', $statsDatesMaxi);
+                  }
+
+                  if ($lstStatsDatesMini[$index] == ' ') {
                       $lstStatsMini[$index] = $roomTemperature;
                       $objMini->event(implode(',', $lstStatsMini));
-                      $lstStatsMaxi[$index] = $roomTemperature;
-                      $objMaxi->event(implode(',', $lstStatsMaxi));
+                      $lstStatsDatesMini[$index] = date("d-m H:i");
+                      $objDatesMini->event(implode(',', $lstStatsDatesMini));
                   } else {
                       if ($lstStatsMini[$index] > $roomTemperature) {
                           $lstStatsMini[$index] = $roomTemperature;
                           $objMini->event(implode(',', $lstStatsMini));
-                      }
-  
-                      if ($lstStatsMaxi[$index] < $roomTemperature) {
-                          $lstStatsMaxi[$index] = $roomTemperature;
-                          $objMaxi->event(implode(',', $lstStatsMaxi));
+                          $lstStatsDatesMini[$index] = date("d-m H:i");
+                          $objDatesMini->event(implode(',', $lstStatsDatesMini));
                       }
                   }
     
-                  $lstStatsDates[$index] = date("d-m H:i");
-                  $objDates->event(implode(',', $lstStatsDates));
+                  if ($lstStatsDatesMaxi[$index] == ' ') {
+                      $lstStatsMaxi[$index] = $roomTemperature;
+                      $objMaxi->event(implode(',', $lstStatsMaxi));
+                      $lstStatsDatesMaxi[$index] = date("d-m H:i");
+                      $objDatesMaxi->event(implode(',', $lstStatsDatesMaxi));
+                  } else {
+                      if ($lstStatsMaxi[$index] < $roomTemperature) {
+                          $lstStatsMaxi[$index] = $roomTemperature;
+                          $objMaxi->event(implode(',', $lstStatsMaxi));
+                          $lstStatsDatesMaxi[$index] = date("d-m H:i");
+                          $objDatesMaxi->event(implode(',', $lstStatsDatesMaxi));
+                      }
+                  }
               }
           }
   
@@ -2949,7 +2969,7 @@
           $obj = $this->getCmd(null, 'statsDates');
           if (!is_object($obj)) {
               $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température date', __FILE__));
+              $obj->setName(__('Statistiques température date mini', __FILE__));
               $obj->setIsVisible(1);
               $obj->setIsHistorized(0);
           }
@@ -2957,6 +2977,19 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('statsDates');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'statsDatesMaxi');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Statistiques température date maxi', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('statsDatesMaxi');
           $obj->save();
 
           $obj = $this->getCmd(null, 'statsConsigne');
@@ -3896,6 +3929,12 @@
           $replace["#statsDates#"] = $str;
           $replace["#idStatsDates#"] = $obj->getId();
   
+          $obj = $this->getCmd(null, 'statsDatesMaxi');
+          $str = $obj->execCmd();
+          
+          $replace["#statsDatesMax#"] = $str;
+          $replace["#idStatsDatesMax#"] = $obj->getId();
+  
           $obj = $this->getCmd(null, 'statsConsigne');
           $str = $obj->execCmd();
           $temps = explode(',', $str);
@@ -3967,6 +4006,7 @@
               $eqlogic->getCmd(null, 'statsTemperatureMax')->event('');
               $eqlogic->getCmd(null, 'statsConsigne')->event('');
               $eqlogic->getCmd(null, 'statsDates')->event('');
+              $eqlogic->getCmd(null, 'statsDatesMaxi')->event('');
               $viessmannApi = $eqlogic->getViessmann();
               if ($viessmannApi !== null) {
                   $eqlogic->rafraichir($viessmannApi);
