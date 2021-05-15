@@ -2348,6 +2348,24 @@
           }
 
           $now = time();
+
+          // Historisation temperatures
+          //
+          $dateCron = time();
+          $dateCron = date('Y-m-d H:i:00', $dateCron);
+          $obj = $this->getCmd(null, 'histoTemperatureInt');
+          if (is_object($obj)) {
+              $obj->event($roomTemperature, $dateCron);
+          }
+          $obj = $this->getCmd(null, 'histoTemperatureCsg');
+          if (is_object($obj)) {
+              $obj->event($consigneTemperature, $dateCron);
+          }
+          $obj = $this->getCmd(null, 'histoTemperatureExt');
+          if (is_object($obj)) {
+              $obj->event($outsideTemperature, $dateCron);
+          }
+
           if ($heatingBurnerHours != -1) {
               $jour = date("d", $now);
               $oldJour = $this->getCache('oldJour', -1);
@@ -3079,6 +3097,45 @@
           $obj->setLogicalId('resetCurve');
           $obj->setType('action');
           $obj->setSubType('other');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'histoTemperatureInt');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Historique température intérieure', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('histoTemperatureInt');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'histoTemperatureCsg');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Historique température consigne', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('histoTemperatureCsg');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'histoTemperatureExt');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Historique température extérieure', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('histoTemperatureExt');
           $obj->save();
       }
 
@@ -3979,6 +4036,92 @@
           $obj = $this->getCmd(null, 'resetCurve');
           $replace["#idResetCurve#"] = $obj->getId();
 
+          $startTime = date("Y-m-d H:i:s", time()-10*24*60*60);
+          $endTime = date("Y-m-d H:i:s", time());
+          
+          $mini = 9999;
+          $maxi = -9999;
+
+          $dataHistoTempInt = '';
+          $dataHistoTempExt = '';
+          $dataHistoTempCsg = '';
+          $dataHistoTempIntDat = '';
+          $dataHistoTempCsgDat = '';
+
+          $cmd = $this->getCmd(null, 'histoTemperatureInt');
+          if (is_object($cmd)) {
+              $histoGraphe = $cmd->getHistory($startTime, $endTime);
+              foreach ($histoGraphe as $row) {
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $value = $row->getValue();
+                  if ($value < $mini) {
+                      $mini = $value;
+                  }
+                  if ($value > $maxi) {
+                      $maxi = $value;
+                  }
+                  if ($dataHistoTempInt !== '') {
+                      $dataHistoTempInt .= ',';
+                  }
+                  $dataHistoTempInt .= $value;
+
+                  if ($dataHistoTempIntDat !== '') {
+                      $dataHistoTempIntDat .= ';';
+                  }
+                  $dataHistoTempIntDat .= date("Y", $ts).",".(date("m", $ts)-1).","
+                    .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
+              }
+          }
+          $replace["#dataHistoTempInt#"] = $dataHistoTempInt;
+          $replace["#dataHistoTempIntDat#"] = $dataHistoTempIntDat;
+
+          $cmd = $this->getCmd(null, 'histoTemperatureCsg');
+          if (is_object($cmd)) {
+              $histoGraphe = $cmd->getHistory($startTime, $endTime);
+              foreach ($histoGraphe as $row) {
+                $datetime = $row->getDatetime();
+                $ts = strtotime($datetime);
+                $value = $row->getValue();
+                  if ($value < $mini) {
+                      $mini = $value;
+                  }
+                  if ($value > $maxi) {
+                      $maxi = $value;
+                  }
+                  if ($dataHistoTempCsg !== '') {
+                      $dataHistoTempCsg .= ',';
+                  }
+                  $dataHistoTempCsg .= $value;
+                  if ($dataHistoTempCsgDat !== '') {
+                      $dataHistoTempCsgDat .= ';';
+                  }
+                  $dataHistoTempCsgDat .= date("Y", $ts).",".(date("m", $ts)-1).","
+                  .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
+              }
+          }
+          $replace["#dataHistoTempCsg#"] = $dataHistoTempCsg;
+          $replace["#dataHistoTempCsgDat#"] = $dataHistoTempCsgDat;
+
+          $cmd = $this->getCmd(null, 'histoTemperatureExt');
+          if (is_object($cmd)) {
+              $histoGraphe = $cmd->getHistory($startTime, $endTime);
+              foreach ($histoGraphe as $row) {
+                  $value = $row->getValue();
+                  if ($dataHistoTempExt !== '') {
+                      $dataHistoTempExt .= ',';
+                  }
+                  $dataHistoTempExt .= $value;
+              }
+          }
+          $replace["#dataHistoTempExt#"] = $dataHistoTempExt;
+
+          $mini = round($mini-0.6, 0);
+          $maxi = round($maxi+0.5, 0);
+
+          $replace["#mini_temperature#"] = $mini;
+          $replace["#maxi_temperature#"] = $maxi;
+          
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }
 

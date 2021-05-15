@@ -483,7 +483,7 @@
 
     <div class="classContenant#uid#" id="idCourbe#uid#" style="display:none;">
 
-        </br></br>
+        </br>
 
         <div id="statsTemperature#uid#" style="width:100%; height:150px">
         </div>
@@ -1110,10 +1110,11 @@
 
     <script type="text/javascript">
 
-        var lstTempsMini = [];
-        var lstDatesMini = [];
-        var lstTempsMaxi = [];
-        var lstDatesMaxi = [];
+        var lstTempInt = [];
+        var lstTempCsg = [];
+        var lstTempExt = [];
+        var lstTempIntDat = [];
+        var lstTempCsgDat = [];
 
         // Affichage initial
         //
@@ -2593,38 +2594,54 @@
         });
 
         const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
-
-            title: {
-                text: ''
-            },
-
-            subtitle: {
-                text: 'Températures int/ext'
-            },
-
             navigation: {
                 buttonOptions: {
                     enabled: false
                 }
             },
+            chart: {
+                backgroundColor: 'rgb(255, 255, 255)',
+                type: 'line'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: [{ // Bottom X axis
+                type: 'datetime',
+                tickInterval: 2 * 36e5, // two hours
+                minorTickInterval: 36e5, // one hour
+                tickLength: 0,
+                gridLineWidth: 1,
+                gridLineColor: 'rgba(128, 128, 128, 0.1)',
+                startOnTick: false,
+                endOnTick: false,
+                minPadding: 0,
+                maxPadding: 0,
+                showLastLabel: true,
+                labels: {
+                    format: '{value:%H}'
+                },
+                crosshair: true
+            }, { // Top X axis
+                linkedTo: 0,
+                type: 'datetime',
+                tickInterval: 24 * 3600 * 1000,
+                labels: {
+                    format: '{value:<span style="font-size: 12px; font-weight: bold">%a</span> %e %b}',
+                    align: 'left',
+                    x: 3,
+                    y: -5
+                },
+                opposite: true,
+                tickLength: 20,
+                gridLineWidth: 1
+            }],
 
             yAxis: {
                 title: {
                     text: ''
                 },
                 tickPositions: [#mini_temperature#, #maxi_temperature#]
-            },
-
-            xAxis: {
-                categories: [#range_temperature#]
-            },
-
-            credits: {
-                enabled: false
-            },
-
-            legend: {
-                enabled: false
             },
 
             plotOptions: {
@@ -2635,159 +2652,272 @@
                 }
             },
 
-            /*            
             tooltip: {
-                headerFormat: '<span style="font-size:12px"><b>T.Ext : {point.key}°</b></span><br/>',
+                headerFormat: '<small>{point.x:%A, %e %b, %H:%M}</small><br>',
                 footerFormat: '',
                 shared: true,
                 useHTML: true,
                 borderRadius: 10,
                 crosshairs: true
             },
-            */
-            tooltip: {
-                formatter: function () {
 
-                    var tipMini = this.points[0].point.tip;
-                    var tipMaxi = this.points[1].point.tip;
-
-                    return this.points.reduce(function (s, point) {
-                        if (point.series.name == 'T°Int Min')
-                            return s +
-                                '<br/><span style="color:' + point.series.color + '">Date : ' + tipMini + '</span>' +
-                                '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                        else if (point.series.name == 'T°Int Max')
-                            return s +
-                                '<br/><span style="color:' + point.series.color + '">Date : ' + tipMaxi + '</span>' +
-                                '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                        else
-                            return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                    }, '<span style="font-size:12px"><b>T.Ext :' + this.x + '°</b></span>');
-                },
-                shared: true,
-                useHTML: true,
-                borderRadius: 10,
-                crosshairs: true
+            credits: {
+                enabled: false
             },
-            series:
-                [
-                    {
-                        name: 'T°Int Min',
-                        data: [{ y: 19.5, tip: 'Erreur' }]/*,                        
-                        tooltip: {
-                         	pointFormatter: function() {
-                                return '<span>Date : ' + this.tip + '</span><br/>' +
-                                '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span><br/>';
-      		    			}
-                        }*/
-                    },
-                    {
-                        name: 'T°Int Max',
-                        data: [{ y: 20.5, tip: 'Erreur' }]/*,                        
-                        tooltip: {
-                         	pointFormatter: function() {
-                                return '<span>Date : ' + this.tip + '</span><br/>' +
-                                '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span><br/>';
-      		    			}
-                        }*/
-                    },
-                    {
-                        name: 'T°Csg',
-                        data: [20]/*,
-                        tooltip: {
-					      	pointFormatter: function() {
-                                return '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span>';
-      						}
-                        }*/
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'T° Int',
+                yAxis: 0,
+                marker: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormatter: function () {
+                        return '<span>T° Ext : ' + this.tip + '</span><br/>' +
+                            '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span><br/>';
                     }
-                ]
-
+                },
+                data: [0]
+            }, {
+                name: 'T° Csg',
+                yAxis: 0,
+                marker: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormatter: function () {
+                        return '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span>';
+                    }
+                },
+                data: [0]
+            }]
         });
 
-        function garnirDonneesMini() {
-            if (lstTempsMini.length != lstDatesMini.length)
-                return;
-            var lstDonnees = [];
-            var i;
-            for (i = 0; i < lstTempsMini.length; i++) {
-                lstDonnees.push({
-                    y: lstTempsMini[i],
-                    tip: lstDatesMini[i]
-                });
-            }
-            chartStats#uid#.series[0].setData(lstDonnees);
-        }
+        var liste = '#dataHistoTempInt#';
+        var items = liste.split(',');
+        items.forEach(function (item, itemNo) {
+            lstTempInt.push(parseFloat(item));
+        });
+        liste = '#dataHistoTempExt#';
+        items = liste.split(',');
+        items.forEach(function (item, itemNo) {
+            lstTempExt.push(parseFloat(item));
+        });
+        liste = '#dataHistoTempCsg#';
+        items = liste.split(',');
+        items.forEach(function (item, itemNo) {
+            lstTempCsg.push(parseFloat(item));
+        });
+        liste = '#dataHistoTempIntDat#';
+        items = liste.split(';');
+        items.forEach(function (item, itemNo) {
+            lstTempIntDat.push(item);
+        });
+        liste = '#dataHistoTempCsgDat#';
+        items = liste.split(';');
+        items.forEach(function (item, itemNo) {
+            lstTempCsgDat.push(item);
+        });
 
-        function garnirDonneesMaxi() {
-            if (lstTempsMaxi.length != lstDatesMaxi.length)
-                return;
-            var lstDonnees = [];
-            var i;
-            for (i = 0; i < lstTempsMaxi.length; i++) {
-                lstDonnees.push({
-                    y: lstTempsMaxi[i],
-                    tip: lstDatesMaxi[i]
-                });
-            }
-            chartStats#uid#.series[1].setData(lstDonnees);
-        }
-
-        jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
-
-            var items = _options.display_value.split(',');
-            var datas = [];
-            items.forEach(function (item, itemNo) {
-                datas.push(parseFloat(item));
+        var serie_0 = [];
+        var i;
+        for (i = 0; i < lstTempInt.length; i++) {
+            var args = lstTempIntDat[i].split(',');
+            var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
+            serie_0.push({
+                x: xDate,
+                y: lstTempInt[i],
+                tip: lstTempExt[i]
             });
-            lstTempsMini = datas;
-            garnirDonneesMini();
         }
-        jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
 
-        jeedom.cmd.update['#idStatsTemperatureMax#'] = function (_options) {
-            var items = _options.display_value.split(',');
-            var datas = [];
-            items.forEach(function (item, itemNo) {
-                datas.push(parseFloat(item));
+        var serie_1 = [];
+        for (i = 0; i < lstTempCsg.length; i++) {
+            var args = lstTempCsgDat[i].split(',');
+            var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
+            serie_1.push({
+                x: xDate,
+                y: lstTempCsg[i]
             });
-            lstTempsMaxi = datas;
-            garnirDonneesMaxi();
         }
-        jeedom.cmd.update['#idStatsTemperatureMax#']({ display_value: '#statsTemperatureMax#' });
+        chartStats#uid#.series[0].setData(serie_0);
+        chartStats#uid#.series[1].setData(serie_1);
 
-        jeedom.cmd.update['#idStatsDates#'] = function (_options) {
 
-            var items = _options.display_value.split(',');
-            var datas = [];
-            items.forEach(function (item, itemNo) {
-                datas.push(item);
-            });
-            lstDatesMini = datas;
-            garnirDonneesMini();
-        }
-        jeedom.cmd.update['#idStatsDates#']({ display_value: '#statsDates#' });
+        /*
+       const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
 
-        jeedom.cmd.update['#idStatsDatesMax#'] = function (_options) {
+           title: {
+               text: ''
+           },
 
-            var items = _options.display_value.split(',');
-            var datas = [];
-            items.forEach(function (item, itemNo) {
-                datas.push(item);
-            });
-            lstDatesMaxi = datas;
-            garnirDonneesMaxi();
-        }
-        jeedom.cmd.update['#idStatsDatesMax#']({ display_value: '#statsDatesMax#' });
+           subtitle: {
+               text: 'Températures int/ext'
+           },
 
-        jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
-            var items = _options.display_value.split(',');
-            var datas = [];
-            items.forEach(function (item, itemNo) {
-                datas.push(parseFloat(item));
-            });
-            chartStats#uid#.series[2].setData(datas);
-        }
-        jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
+           navigation: {
+               buttonOptions: {
+                   enabled: false
+               }
+           },
+
+           yAxis: {
+               title: {
+                   text: ''
+               },
+               tickPositions: [#mini_temperature#, #maxi_temperature#]
+           },
+
+           xAxis: {
+               categories: [#range_temperature#]
+           },
+
+           credits: {
+               enabled: false
+           },
+
+           legend: {
+               enabled: false
+           },
+
+           plotOptions: {
+               series: {
+                   label: {
+                       connectorAllowed: true
+                   }
+               }
+           },
+
+           tooltip: {
+               formatter: function () {
+
+                   var tipMini = this.points[0].point.tip;
+                   var tipMaxi = this.points[1].point.tip;
+
+                   return this.points.reduce(function (s, point) {
+                       if (point.series.name == 'T°Int Min')
+                           return s +
+                               '<br/><span style="color:' + point.series.color + '">Date : ' + tipMini + '</span>' +
+                               '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                       else if (point.series.name == 'T°Int Max')
+                           return s +
+                               '<br/><span style="color:' + point.series.color + '">Date : ' + tipMaxi + '</span>' +
+                               '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                       else
+                           return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
+                   }, '<span style="font-size:12px"><b>T.Ext :' + this.x + '°</b></span>');
+               },
+               shared: true,
+               useHTML: true,
+               borderRadius: 10,
+               crosshairs: true
+           },
+           series:
+               [
+                   {
+                       name: 'T°Int Min',
+                       data: [{ y: 19.5, tip: 'Erreur' }]
+                   },
+                   {
+                       name: 'T°Int Max',
+                       data: [{ y: 20.5, tip: 'Erreur' }]
+                   },
+                   {
+                       name: 'T°Csg',
+                       data: [20]
+                   }
+               ]
+
+       });
+
+       function garnirDonneesMini() {
+           if (lstTempsMini.length != lstDatesMini.length)
+               return;
+           var lstDonnees = [];
+           var i;
+           for (i = 0; i < lstTempsMini.length; i++) {
+               lstDonnees.push({
+                   y: lstTempsMini[i],
+                   tip: lstDatesMini[i]
+               });
+           }
+           chartStats#uid#.series[0].setData(lstDonnees);
+       }
+
+       function garnirDonneesMaxi() {
+           if (lstTempsMaxi.length != lstDatesMaxi.length)
+               return;
+           var lstDonnees = [];
+           var i;
+           for (i = 0; i < lstTempsMaxi.length; i++) {
+               lstDonnees.push({
+                   y: lstTempsMaxi[i],
+                   tip: lstDatesMaxi[i]
+               });
+           }
+           chartStats#uid#.series[1].setData(lstDonnees);
+       }
+
+       jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
+
+           var items = _options.display_value.split(',');
+           var datas = [];
+           items.forEach(function (item, itemNo) {
+               datas.push(parseFloat(item));
+           });
+           lstTempsMini = datas;
+           garnirDonneesMini();
+       }
+       jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
+
+       jeedom.cmd.update['#idStatsTemperatureMax#'] = function (_options) {
+           var items = _options.display_value.split(',');
+           var datas = [];
+           items.forEach(function (item, itemNo) {
+               datas.push(parseFloat(item));
+           });
+           lstTempsMaxi = datas;
+           garnirDonneesMaxi();
+       }
+       jeedom.cmd.update['#idStatsTemperatureMax#']({ display_value: '#statsTemperatureMax#' });
+
+       jeedom.cmd.update['#idStatsDates#'] = function (_options) {
+
+           var items = _options.display_value.split(',');
+           var datas = [];
+           items.forEach(function (item, itemNo) {
+               datas.push(item);
+           });
+           lstDatesMini = datas;
+           garnirDonneesMini();
+       }
+       jeedom.cmd.update['#idStatsDates#']({ display_value: '#statsDates#' });
+
+       jeedom.cmd.update['#idStatsDatesMax#'] = function (_options) {
+
+           var items = _options.display_value.split(',');
+           var datas = [];
+           items.forEach(function (item, itemNo) {
+               datas.push(item);
+           });
+           lstDatesMaxi = datas;
+           garnirDonneesMaxi();
+       }
+       jeedom.cmd.update['#idStatsDatesMax#']({ display_value: '#statsDatesMax#' });
+
+       jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
+           var items = _options.display_value.split(',');
+           var datas = [];
+           items.forEach(function (item, itemNo) {
+               datas.push(parseFloat(item));
+           });
+           chartStats#uid#.series[2].setData(datas);
+       }
+       jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
+
+       */
 
         const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
 
