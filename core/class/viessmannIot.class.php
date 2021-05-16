@@ -4122,6 +4122,15 @@
           $replace["#mini_temperature#"] = $mini;
           $replace["#maxi_temperature#"] = $maxi;
           
+          $obj = $this->getCmd(null, 'histoTemperatureCsg');
+          $replace["#idHistoTemperatureCsg#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'histoTemperatureInt');
+          $replace["#idHistoTemperatureInt#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'histoTemperatureExt');
+          $replace["#idHistoTemperatureExt#"] = $obj->getId();
+
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }
 
