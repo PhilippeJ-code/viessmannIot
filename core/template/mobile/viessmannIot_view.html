@@ -671,8 +671,8 @@
         }
 
         .classCourbe#uid# {
-            width:540px;
-            height:540px;
+            width: 540px;
+            height: 540px;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -1129,6 +1129,13 @@
         var lstTempExt = [];
         var lstTempIntDat = [];
         var lstTempCsgDat = [];
+
+        var serie_0 = [];
+        var serie_1 = [];
+        
+        var histoTemperatureCsg = -999;
+        var histoTemperatureInt = -999;
+        var histoTemperatureExt = -999;
 
         // Affichage initial
         //
@@ -2603,7 +2610,7 @@
         // Click accès tuile courbe
         //
         $('#idOptionsCourbe#uid#').on('click', function () {
-//            $('#idResume#uid#').hide();
+            //            $('#idResume#uid#').hide();
             $('#idCourbe#uid#').show();
         });
 
@@ -2621,13 +2628,15 @@
             title: {
                 text: ''
             },
-            xAxis: [{ // Bottom X axis
+            xAxis: [{ 
                 type: 'datetime',
                 tickInterval: 2 * 36e5, // two hours
                 minorTickInterval: 36e5, // one hour
                 tickLength: 0,
                 gridLineWidth: 1,
-                gridLineColor: 'rgba(128, 128, 128, 0.1)',
+                gridLineColor: 'rgba(128, 128, 128, 0.2)',
+                minorGridLineWidth: 1,
+                minorGridLineColor: 'rgba(192, 192, 192, 0.3)',
                 startOnTick: false,
                 endOnTick: false,
                 minPadding: 0,
@@ -2636,8 +2645,11 @@
                 labels: {
                     format: '{value:%H}'
                 },
-                crosshair: true
-            }, { // Top X axis
+                crosshair: true,
+                scrollbar: {
+                   enabled: true
+                }
+             }, {
                 linkedTo: 0,
                 type: 'datetime',
                 tickInterval: 24 * 3600 * 1000,
@@ -2649,7 +2661,8 @@
                 },
                 opposite: true,
                 tickLength: 20,
-                gridLineWidth: 1
+                gridLineWidth: 1,
+                gridLineColor: 'rgba(128, 128, 128, 0.2)'
             }],
 
             yAxis: {
@@ -2736,7 +2749,6 @@
             lstTempCsgDat.push(item);
         });
 
-        var serie_0 = [];
         var i;
         for (i = 0; i < lstTempInt.length; i++) {
             var args = lstTempIntDat[i].split(',');
@@ -2748,7 +2760,6 @@
             });
         }
 
-        var serie_1 = [];
         for (i = 0; i < lstTempCsg.length; i++) {
             var args = lstTempCsgDat[i].split(',');
             var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
@@ -2757,9 +2768,62 @@
                 y: lstTempCsg[i]
             });
         }
-        chartStats#uid#.series[0].setData(serie_0);
-        chartStats#uid#.series[1].setData(serie_1);
+        chartStats#uid#.series[0].setData(serie_0, false);
+        chartStats#uid#.series[1].setData(serie_1, true);
 
+        Number.prototype.round = function (places) {
+            return +(Math.round(this + "e+" + places) + "e-" + places);
+        }
+
+        function ajouterDonnees() {
+            if (histoTemperatureCsg == -999)
+                return;
+            if (histoTemperatureInt == -999)
+                return;
+            if (histoTemperatureExt == -999)
+                return;
+
+            var date = new Date();
+            var xDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),
+                date.getHours(), date.getMinutes(), 0);
+
+            serie_0.push({
+                x: xDate,
+                y: histoTemperatureInt,
+                tip: histoTemperatureExt
+            });
+
+            serie_1.push({
+                x: xDate,
+                y: histoTemperatureCsg
+            });
+
+            chartStats#uid#.series[0].setData(serie_0, false);
+            chartStats#uid#.series[1].setData(serie_1, true);
+
+            histoTemperatureCsg = -999;
+            histoTemperatureInt = -999;
+            histoTemperatureExt = -999;
+
+        }
+
+        jeedom.cmd.update['#idHistoTemperatureCsg#'] = function (_options) {
+            histoTemperatureCsg = parseFloat(_options.display_value);
+            histoTemperatureCsg = histoTemperatureCsg.round(1);
+            ajouterDonnees();
+        }
+
+        jeedom.cmd.update['#idHistoTemperatureInt#'] = function (_options) {
+            histoTemperatureInt = parseFloat(_options.display_value);
+            histoTemperatureInt = histoTemperatureInt.round(1);
+            ajouterDonnees();
+        }
+
+        jeedom.cmd.update['#idHistoTemperatureExt#'] = function (_options) {
+            histoTemperatureExt = parseFloat(_options.display_value);
+            histoTemperatureExt = histoTemperatureExt.round(1);
+            ajouterDonnees();
+        }
 
         /*
        const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {

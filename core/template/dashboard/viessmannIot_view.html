@@ -2631,10 +2631,12 @@
             xAxis: [{ 
                 type: 'datetime',
                 tickInterval: 2 * 36e5, // two hours
-                minorTickInterval: 18e5, // one half hour
+                minorTickInterval: 36e5, // one hour
                 tickLength: 0,
                 gridLineWidth: 1,
-                gridLineColor: 'rgba(128, 128, 128, 0.1)',
+                gridLineColor: 'rgba(128, 128, 128, 0.2)',
+                minorGridLineWidth: 1,
+                minorGridLineColor: 'rgba(192, 192, 192, 0.3)',
                 startOnTick: false,
                 endOnTick: false,
                 minPadding: 0,
@@ -2659,7 +2661,8 @@
                 },
                 opposite: true,
                 tickLength: 20,
-                gridLineWidth: 1
+                gridLineWidth: 1,
+                gridLineColor: 'rgba(128, 128, 128, 0.2)'
             }],
 
             yAxis: {
