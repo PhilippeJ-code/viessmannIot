@@ -4064,7 +4064,7 @@
                   if ($dataHistoTempInt !== '') {
                       $dataHistoTempInt .= ',';
                   }
-                  $dataHistoTempInt .= $value;
+                  $dataHistoTempInt .= round($value,1);
 
                   if ($dataHistoTempIntDat !== '') {
                       $dataHistoTempIntDat .= ';';
@@ -4092,7 +4092,7 @@
                   if ($dataHistoTempCsg !== '') {
                       $dataHistoTempCsg .= ',';
                   }
-                  $dataHistoTempCsg .= $value;
+                  $dataHistoTempCsg .= round($value,1);
                   if ($dataHistoTempCsgDat !== '') {
                       $dataHistoTempCsgDat .= ';';
                   }
@@ -4111,7 +4111,7 @@
                   if ($dataHistoTempExt !== '') {
                       $dataHistoTempExt .= ',';
                   }
-                  $dataHistoTempExt .= $value;
+                  $dataHistoTempExt .= round($value,1);
               }
           }
           $replace["#dataHistoTempExt#"] = $dataHistoTempExt;
