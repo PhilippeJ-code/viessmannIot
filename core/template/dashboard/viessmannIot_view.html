@@ -2628,10 +2628,10 @@
             title: {
                 text: ''
             },
-            xAxis: [{ // Bottom X axis
+            xAxis: [{ 
                 type: 'datetime',
                 tickInterval: 2 * 36e5, // two hours
-                minorTickInterval: 36e5, // one hour
+                minorTickInterval: 18e5, // one half hour
                 tickLength: 0,
                 gridLineWidth: 1,
                 gridLineColor: 'rgba(128, 128, 128, 0.1)',
@@ -2643,8 +2643,11 @@
                 labels: {
                     format: '{value:%H}'
                 },
-                crosshair: true
-            }, { // Top X axis
+                crosshair: true,
+                scrollbar: {
+                   enabled: true
+                }
+             }, {
                 linkedTo: 0,
                 type: 'datetime',
                 tickInterval: 24 * 3600 * 1000,

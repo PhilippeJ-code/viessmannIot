@@ -1278,7 +1278,6 @@
               $expires_at = time() + $viessmannApi->getExpiresIn() - 300;
               $this->setCache('expires_at', $expires_at);
               $this->setCache('token', $viessmannApi->getNewToken());
-              log::add('viessmannIot', 'debug', 'Token expires at ' . date('d-m-Y H:i:s', $expires_at));
           }
 
           return $viessmannApi;
