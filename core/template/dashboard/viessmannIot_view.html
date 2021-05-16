@@ -481,14 +481,14 @@
 
     </div>
 
-    <div class="classContenant#uid#" id="idCourbe#uid#" style="display:none;">
+    <div class="classCourbe#uid#" id="idCourbe#uid#" style="display:none;">
 
         </br>
 
-        <div id="statsTemperature#uid#" style="width:100%; height:150px">
+        <div id="statsTemperature#uid#" style="width:100%; height:250px">
         </div>
 
-        <div id="graphePente#uid#" style="width:100%; height:200px">
+        <div id="graphePente#uid#" style="width:100%; height:250px">
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
@@ -664,6 +664,20 @@
         .classContenant#uid# {
             width: 100%;
             height: 100%;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            color: #000000;
+        }
+
+        .classCourbe#uid# {
+            width:540px;
+            height:540px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -270px;
+            margin-left: -270px;
             background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 8px;
@@ -2589,19 +2603,20 @@
         // Click accès tuile courbe
         //
         $('#idOptionsCourbe#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
+//            $('#idResume#uid#').hide();
             $('#idCourbe#uid#').show();
         });
 
         const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
+            chart: {
+                backgroundColor: 'rgb(255, 255, 255)',
+                type: 'line',
+                zoomType: 'x'
+            },
             navigation: {
                 buttonOptions: {
                     enabled: false
                 }
-            },
-            chart: {
-                backgroundColor: 'rgb(255, 255, 255)',
-                type: 'line'
             },
             title: {
                 text: ''
@@ -2639,7 +2654,7 @@
 
             yAxis: {
                 title: {
-                    text: ''
+                    text: 'Température int/csg'
                 },
                 tickPositions: [#mini_temperature#, #maxi_temperature#]
             },
@@ -2925,10 +2940,6 @@
                 text: ''
             },
 
-            subtitle: {
-                text: 'Température de départ'
-            },
-
             navigation: {
                 buttonOptions: {
                     enabled: false
@@ -2937,7 +2948,7 @@
 
             yAxis: {
                 title: {
-                    text: ''
+                    text: 'Température de départ'
                 }
             },
 
