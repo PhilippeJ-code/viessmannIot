@@ -118,8 +118,13 @@
                 id="idHeatingBurnerHoursPerDay#uid#"></span></br>
         </div>
         <div id="showHeatingBurnerStarts#uid#">
-            <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid# history cursor"
+            <span class="classSousTitre#uid#">Démarrages total</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idHeatingBurnerStarts#" id="idHeatingBurnerStarts#uid#"></span></br>
+        </div>
+        <div id="showHeatingBurnerStartsPerDay#uid#">
+            <span class="classSousTitre#uid#">Démarrages du jour (J-1)</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerStartsPerDay#"
+                id="idHeatingBurnerStartsPerDay#uid#"></span></br>
         </div>
         <div id="showHeatingBurnerModulation#uid#">
             <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor"
@@ -483,7 +488,16 @@
 
     <div class="classCourbe#uid#" id="idCourbe#uid#" style="display:none;">
 
-        </br>
+        </br></br>
+        <div>
+            <span>Date début</span>
+            <input type="date" id="idStartDate#uid#">
+            <span>Date fin</span>
+            <input type="date" id="idEndDate#uid#">
+            <input type="checkbox" id="idDynamique#uid#" name="dynam" value="dynam" checked="checked">
+            <label for="dynam">Dynamique</label>
+            <input type="button" id="idEnvoyer#uid#" value="Envoyer">
+        </div>
 
         <div id="statsTemperature#uid#" style="width:100%; height:250px">
         </div>
@@ -492,7 +506,6 @@
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
-        <img class="classRefresh#uid# cursor" id="idResetCurve#uid#" src="plugins/viessmannIot/resources/reset.svg">
         <span class="classTitreTuile#uid#">Courbe</span></br>
 
 
@@ -671,7 +684,7 @@
         }
 
         .classCourbe#uid# {
-            width: 540px;
+            width: 700px;
             height: 540px;
             position: fixed;
             top: 50%;
@@ -1132,7 +1145,7 @@
 
         var serie_0 = [];
         var serie_1 = [];
-        
+
         var histoTemperatureCsg = -999;
         var histoTemperatureInt = -999;
         var histoTemperatureExt = -999;
@@ -1325,6 +1338,15 @@
             }
         }
         jeedom.cmd.update['#idHeatingBurnerStarts#']({ display_value: '#heatingBurnerStarts#' });
+
+        jeedom.cmd.update['#idHeatingBurnerStartsPerDay#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingBurnerStartsPerDay#uid#').hide();
+            } else {
+                $('#idHeatingBurnerStartsPerDay#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idHeatingBurnerStartsPerDay#']({ display_value: '#heatingBurnerStartsPerDay#' });
 
         jeedom.cmd.update['#idHeatingBurnerModulation#'] = function (_options) {
             if (_options.display_value == -1) {
@@ -1543,25 +1565,25 @@
             if (_options.display_value == '??') {
                 $('#showStatutChauffage#uid#').hide();
             } else {
-                $('#idModeStandby#uid#').attr('checked', 'checked');
+                $('#idModeStandby#uid#').prop('checked', 'checked');
 
                 if (_options.display_value == 'standby') {
                     $('#idStatutChauffage#uid#').html('Arrêt');
                 } else if (_options.display_value == 'heating') {
                     $('#idStatutChauffage#uid#').html('Chauffage seul activé');
-                    $('#idModeHeating#uid#').attr('checked', 'checked');
+                    $('#idModeHeating#uid#').prop('checked', 'checked');
                 } else if (_options.display_value == 'dhw') {
                     $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
-                    $('#idModeDhw#uid#').attr('checked', 'checked');
+                    $('#idModeDhw#uid#').prop('checked', 'checked');
                 } else if (_options.display_value == 'dhwAndHeating') {
                     $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
-                    $('#idModeDhwAndHeating#uid#').attr('checked', 'checked');
+                    $('#idModeDhwAndHeating#uid#').prop('checked', 'checked');
                 } else if (_options.display_value == 'forcedReduced') {
                     $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
-                    $('#idModeForcedReduced#uid#').attr('checked', 'checked');
+                    $('#idModeForcedReduced#uid#').prop('checked', 'checked');
                 } else if (_options.display_value == 'forcedNormal') {
                     $('#idStatutChauffage#uid#').html('Mode jour en permanence');
-                    $('#idModeForcedNormal#uid#').attr('checked', 'checked');
+                    $('#idModeForcedNormal#uid#').prop('checked', 'checked');
                 } else {
                     $('#idStatutChauffage#uid#').html(_options.display_value);
                 }
@@ -2628,7 +2650,7 @@
             title: {
                 text: ''
             },
-            xAxis: [{ 
+            xAxis: [{
                 type: 'datetime',
                 tickInterval: 2 * 36e5, // two hours
                 minorTickInterval: 36e5, // one hour
@@ -2647,9 +2669,9 @@
                 },
                 crosshair: true,
                 scrollbar: {
-                   enabled: true
+                    enabled: true
                 }
-             }, {
+            }, {
                 linkedTo: 0,
                 type: 'datetime',
                 tickInterval: 24 * 3600 * 1000,
@@ -2723,54 +2745,6 @@
             }]
         });
 
-        var liste = '#dataHistoTempInt#';
-        var items = liste.split(',');
-        items.forEach(function (item, itemNo) {
-            lstTempInt.push(parseFloat(item));
-        });
-        liste = '#dataHistoTempExt#';
-        items = liste.split(',');
-        items.forEach(function (item, itemNo) {
-            lstTempExt.push(parseFloat(item));
-        });
-        liste = '#dataHistoTempCsg#';
-        items = liste.split(',');
-        items.forEach(function (item, itemNo) {
-            lstTempCsg.push(parseFloat(item));
-        });
-        liste = '#dataHistoTempIntDat#';
-        items = liste.split(';');
-        items.forEach(function (item, itemNo) {
-            lstTempIntDat.push(item);
-        });
-        liste = '#dataHistoTempCsgDat#';
-        items = liste.split(';');
-        items.forEach(function (item, itemNo) {
-            lstTempCsgDat.push(item);
-        });
-
-        var i;
-        for (i = 0; i < lstTempInt.length; i++) {
-            var args = lstTempIntDat[i].split(',');
-            var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
-            serie_0.push({
-                x: xDate,
-                y: lstTempInt[i],
-                tip: lstTempExt[i]
-            });
-        }
-
-        for (i = 0; i < lstTempCsg.length; i++) {
-            var args = lstTempCsgDat[i].split(',');
-            var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
-            serie_1.push({
-                x: xDate,
-                y: lstTempCsg[i]
-            });
-        }
-        chartStats#uid#.series[0].setData(serie_0, false);
-        chartStats#uid#.series[1].setData(serie_1, true);
-
         Number.prototype.round = function (places) {
             return +(Math.round(this + "e+" + places) + "e-" + places);
         }
@@ -2781,6 +2755,9 @@
             if (histoTemperatureInt == -999)
                 return;
             if (histoTemperatureExt == -999)
+                return;
+
+            if (!$("#idDynamique#uid#").is(':checked')) 
                 return;
 
             var date = new Date();
@@ -2824,179 +2801,6 @@
             histoTemperatureExt = histoTemperatureExt.round(1);
             ajouterDonnees();
         }
-
-        /*
-       const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
-
-           title: {
-               text: ''
-           },
-
-           subtitle: {
-               text: 'Températures int/ext'
-           },
-
-           navigation: {
-               buttonOptions: {
-                   enabled: false
-               }
-           },
-
-           yAxis: {
-               title: {
-                   text: ''
-               },
-               tickPositions: [#mini_temperature#, #maxi_temperature#]
-           },
-
-           xAxis: {
-               categories: [#range_temperature#]
-           },
-
-           credits: {
-               enabled: false
-           },
-
-           legend: {
-               enabled: false
-           },
-
-           plotOptions: {
-               series: {
-                   label: {
-                       connectorAllowed: true
-                   }
-               }
-           },
-
-           tooltip: {
-               formatter: function () {
-
-                   var tipMini = this.points[0].point.tip;
-                   var tipMaxi = this.points[1].point.tip;
-
-                   return this.points.reduce(function (s, point) {
-                       if (point.series.name == 'T°Int Min')
-                           return s +
-                               '<br/><span style="color:' + point.series.color + '">Date : ' + tipMini + '</span>' +
-                               '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                       else if (point.series.name == 'T°Int Max')
-                           return s +
-                               '<br/><span style="color:' + point.series.color + '">Date : ' + tipMaxi + '</span>' +
-                               '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                       else
-                           return s + '<br/><span style="color:' + point.series.color + '">' + point.series.name + ' : ' + point.y + '°</span>';
-                   }, '<span style="font-size:12px"><b>T.Ext :' + this.x + '°</b></span>');
-               },
-               shared: true,
-               useHTML: true,
-               borderRadius: 10,
-               crosshairs: true
-           },
-           series:
-               [
-                   {
-                       name: 'T°Int Min',
-                       data: [{ y: 19.5, tip: 'Erreur' }]
-                   },
-                   {
-                       name: 'T°Int Max',
-                       data: [{ y: 20.5, tip: 'Erreur' }]
-                   },
-                   {
-                       name: 'T°Csg',
-                       data: [20]
-                   }
-               ]
-
-       });
-
-       function garnirDonneesMini() {
-           if (lstTempsMini.length != lstDatesMini.length)
-               return;
-           var lstDonnees = [];
-           var i;
-           for (i = 0; i < lstTempsMini.length; i++) {
-               lstDonnees.push({
-                   y: lstTempsMini[i],
-                   tip: lstDatesMini[i]
-               });
-           }
-           chartStats#uid#.series[0].setData(lstDonnees);
-       }
-
-       function garnirDonneesMaxi() {
-           if (lstTempsMaxi.length != lstDatesMaxi.length)
-               return;
-           var lstDonnees = [];
-           var i;
-           for (i = 0; i < lstTempsMaxi.length; i++) {
-               lstDonnees.push({
-                   y: lstTempsMaxi[i],
-                   tip: lstDatesMaxi[i]
-               });
-           }
-           chartStats#uid#.series[1].setData(lstDonnees);
-       }
-
-       jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
-
-           var items = _options.display_value.split(',');
-           var datas = [];
-           items.forEach(function (item, itemNo) {
-               datas.push(parseFloat(item));
-           });
-           lstTempsMini = datas;
-           garnirDonneesMini();
-       }
-       jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
-
-       jeedom.cmd.update['#idStatsTemperatureMax#'] = function (_options) {
-           var items = _options.display_value.split(',');
-           var datas = [];
-           items.forEach(function (item, itemNo) {
-               datas.push(parseFloat(item));
-           });
-           lstTempsMaxi = datas;
-           garnirDonneesMaxi();
-       }
-       jeedom.cmd.update['#idStatsTemperatureMax#']({ display_value: '#statsTemperatureMax#' });
-
-       jeedom.cmd.update['#idStatsDates#'] = function (_options) {
-
-           var items = _options.display_value.split(',');
-           var datas = [];
-           items.forEach(function (item, itemNo) {
-               datas.push(item);
-           });
-           lstDatesMini = datas;
-           garnirDonneesMini();
-       }
-       jeedom.cmd.update['#idStatsDates#']({ display_value: '#statsDates#' });
-
-       jeedom.cmd.update['#idStatsDatesMax#'] = function (_options) {
-
-           var items = _options.display_value.split(',');
-           var datas = [];
-           items.forEach(function (item, itemNo) {
-               datas.push(item);
-           });
-           lstDatesMaxi = datas;
-           garnirDonneesMaxi();
-       }
-       jeedom.cmd.update['#idStatsDatesMax#']({ display_value: '#statsDatesMax#' });
-
-       jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
-           var items = _options.display_value.split(',');
-           var datas = [];
-           items.forEach(function (item, itemNo) {
-               datas.push(parseFloat(item));
-           });
-           chartStats#uid#.series[2].setData(datas);
-       }
-       jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
-
-       */
 
         const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
 
@@ -3362,13 +3166,142 @@
             });
         });
 
-        // Click pour reset courbe
+        // Changement courbes
         //
-        $('#idResetCurve#uid#').on('click', function () {
-            jeedom.cmd.execute({
-                id: '#idResetCurve#'
+        function Charger() {
+            lstTempInt = [];
+            lstTempIntDat = [];
+            lstTempCsg = [];
+            lstTempCsgDat = [];
+            lstTempExt = [];
+
+            $.ajax({
+                type: "POST",
+                url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
+                data: {
+                    action: "lireTempInt",
+                    id: "#id#",
+                    startDate: $('#idStartDate#uid#').val(),
+                    endDate: $('#idEndDate#uid#').val(),
+                    dynamique: $('#idDynamique#uid#').prop('checked')
+                },
+                dataType: 'json',
+                global: false,
+                async: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        return;
+                    }
+                    for (var i in data.result) {
+                        lstTempInt.push(parseFloat(data.result[i]['value']));
+                        lstTempIntDat.push(data.result[i]['ts']);
+                    }
+                },
             });
+
+            $.ajax({
+                type: "POST",
+                url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
+                data: {
+                    action: "lireTempCsg",
+                    id: "#id#",
+                    startDate: $('#idStartDate#uid#').val(),
+                    endDate: $('#idEndDate#uid#').val(),
+                    dynamique: $('#idDynamique#uid#').prop('checked')
+                },
+                dataType: 'json',
+                global: false,
+                async: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        return;
+                    }
+                    for (var i in data.result) {
+                        lstTempCsg.push(parseFloat(data.result[i]['value']));
+                        lstTempCsgDat.push(data.result[i]['ts']);
+                    }
+                },
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
+                data: {
+                    action: "lireTempExt",
+                    id: "#id#",
+                    startDate: $('#idStartDate#uid#').val(),
+                    endDate: $('#idEndDate#uid#').val(),
+                    dynamique: $('#idDynamique#uid#').prop('checked')
+                },
+                dataType: 'json',
+                global: false,
+                async: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        return;
+                    }
+                    for (var i in data.result) {
+                        lstTempExt.push(parseFloat(data.result[i]['value']));
+                    }
+                },
+            });
+
+            serie_0 = [];
+            serie_1 = [];
+
+            var i;
+            for (i = 0; i < lstTempInt.length; i++) {
+                var args = lstTempIntDat[i].split(',');
+                var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
+                serie_0.push({
+                    x: xDate,
+                    y: lstTempInt[i],
+                    tip: lstTempExt[i]
+                });
+            }
+
+            for (i = 0; i < lstTempCsg.length; i++) {
+                var args = lstTempCsgDat[i].split(',');
+                var xDate = Date.UTC(args[0], args[1], args[2], args[3], args[4], args[5]);
+                serie_1.push({
+                    x: xDate,
+                    y: lstTempCsg[i]
+                });
+            }
+            chartStats#uid#.series[0].setData(serie_0, false);
+            chartStats#uid#.series[1].setData(serie_1, true);
+
+        }
+
+        // Click pour chargement courbes
+        //
+        $('#idEnvoyer#uid#').on('click', function () {
+
+            Charger();
+
         });
+
+        // Click pour dynamique
+        //
+        $('#idDynamique#uid#').on('click', function () {
+            if ($("#idDynamique#uid#").is(':checked')) {
+                Charger();
+            }
+        });
+
+        Charger();
 
     </script>
 

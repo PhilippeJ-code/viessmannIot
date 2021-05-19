@@ -1020,6 +1020,19 @@
                   $obj->setLogicalId('heatingBurnerHours');
                   $obj->save();
             
+                  $obj = $this->getCmd(null, 'heatingBurnerStartsPerDay');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Démarrages du brûleur par jour', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('numeric');
+                  $obj->setLogicalId('heatingBurnerStartsPerDay');
+                  $obj->save();
+
                   $obj = $this->getCmd(null, 'heatingBurnerStarts');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1306,6 +1319,7 @@
           $activeProgram = '';
 
           $heatingBurnerHours = -1;
+          $heatingBurnerStarts = -1;
 
           $viessmannApi->getFeatures();
           $features = $viessmannApi->getArrayFeatures();
@@ -2114,6 +2128,7 @@
                       $obj->event($val);
                   }
                   $val = $features["data"][$i]["properties"]["starts"]["value"];
+                  $heatingBurnerStarts = $val;
                   $obj = $this->getCmd(null, 'heatingBurnerStarts');
                   if (is_object($obj)) {
                       $obj->event($val);
@@ -2225,111 +2240,7 @@
               $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
               $consigneTemperature = $reducedProgramTemperature;
           }
-        
-          if (($outsideTemperature != 99) &&
-              ($roomTemperature != 99)) {
-              $index = 45 - (round($outsideTemperature, 0) + 20);
-              if (($index >=0) && ($index <= 45)) {
-                  $objMini = $this->getCmd(null, 'statsTemperature');
-                  $statsMini = $objMini->execCmd();
-  
-                  if ($statsMini == '') {
-                      $lstStatsMini = array();
-                      for ($i=0; $i<=45; $i++) {
-                          $lstStatsMini[$i] = $consigneTemperature;
-                      }
-                      $objMini->event(implode(',', $lstStatsMini));
-                  } else {
-                      $lstStatsMini = explode(',', $statsMini);
-                  }
-
-                  $objMaxi = $this->getCmd(null, 'statsTemperatureMax');
-                  $statsMaxi = $objMaxi->execCmd();
-  
-                  if ($statsMaxi == '') {
-                      $lstStatsMaxi = array();
-                      for ($i=0; $i<=45; $i++) {
-                          $lstStatsMaxi[$i] = $consigneTemperature;
-                          $objMaxi->event(implode(',', $lstStatsMaxi));
-                      }
-                  } else {
-                      $lstStatsMaxi = explode(',', $statsMaxi);
-                  }
-
-                  $objDatesMini = $this->getCmd(null, 'statsDates');
-                  $statsDatesMini = $objDatesMini->execCmd();
-  
-                  if ($statsDatesMini == '') {
-                      $lstStatsDatesMini = array();
-                      for ($i=0; $i<=45; $i++) {
-                          $lstStatsDatesMini[$i] = ' ';
-                      }
-                  } else {
-                      $lstStatsDatesMini = explode(',', $statsDatesMini);
-                  }
-
-                  $objDatesMaxi = $this->getCmd(null, 'statsDatesMaxi');
-                  $statsDatesMaxi = $objDatesMaxi->execCmd();
-  
-                  if ($statsDatesMaxi == '') {
-                      $lstStatsDatesMaxi = array();
-                      for ($i=0; $i<=45; $i++) {
-                          $lstStatsDatesMaxi[$i] = ' ';
-                      }
-                  } else {
-                      $lstStatsDatesMaxi = explode(',', $statsDatesMaxi);
-                  }
-
-                  if ($lstStatsDatesMini[$index] == ' ') {
-                      $lstStatsMini[$index] = $roomTemperature;
-                      $objMini->event(implode(',', $lstStatsMini));
-                      $lstStatsDatesMini[$index] = date("d-m H:i");
-                      $objDatesMini->event(implode(',', $lstStatsDatesMini));
-                  } else {
-                      if ($lstStatsMini[$index] > $roomTemperature) {
-                          $lstStatsMini[$index] = $roomTemperature;
-                          $objMini->event(implode(',', $lstStatsMini));
-                          $lstStatsDatesMini[$index] = date("d-m H:i");
-                          $objDatesMini->event(implode(',', $lstStatsDatesMini));
-                      }
-                  }
-    
-                  if ($lstStatsDatesMaxi[$index] == ' ') {
-                      $lstStatsMaxi[$index] = $roomTemperature;
-                      $objMaxi->event(implode(',', $lstStatsMaxi));
-                      $lstStatsDatesMaxi[$index] = date("d-m H:i");
-                      $objDatesMaxi->event(implode(',', $lstStatsDatesMaxi));
-                  } else {
-                      if ($lstStatsMaxi[$index] < $roomTemperature) {
-                          $lstStatsMaxi[$index] = $roomTemperature;
-                          $objMaxi->event(implode(',', $lstStatsMaxi));
-                          $lstStatsDatesMaxi[$index] = date("d-m H:i");
-                          $objDatesMaxi->event(implode(',', $lstStatsDatesMaxi));
-                      }
-                  }
-              }
-          }
-  
-          if (($outsideTemperature != 99) &&
-              ($consigneTemperature != 99)) {
-              $index = 45 - (round($outsideTemperature, 0) + 20);
-              if (($index >=0) && ($index < 45)) {
-                  $obj = $this->getCmd(null, 'statsConsigne');
-                  $stats = $obj->execCmd();
-  
-                  if ($stats == '') {
-                      $lstStats = array();
-                      for ($i=0; $i<=45; $i++) {
-                          $lstStats[$i] = $consigneTemperature;
-                      }
-                  } else {
-                      $lstStats = explode(',', $stats);
-                  }
-                  $lstStats[$index] = $consigneTemperature;
-                  $obj->event(implode(',', $lstStats));
-              }
-          }
-  
+          
           if (($consigneTemperature != 99) &&
               ($slope != 99) &&
               ($shift != 99)) {
@@ -2365,20 +2276,28 @@
               $obj->event($outsideTemperature, $dateCron);
           }
 
-          if ($heatingBurnerHours != -1) {
+          if (($heatingBurnerHours != -1) && ($heatingBurnerStarts != -1)) {
               $jour = date("d", $now);
               $oldJour = $this->getCache('oldJour', -1);
               $oldHours = $this->getCache('oldHours', -1);
+              $oldStarts = $this->getCache('oldStarts', -1);
               if ($oldJour != $jour) {
+                  $dateVeille = time()-24*60*60;
+                  $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                   if ($oldHours != -1) {
-                      $dateVeille = time()-24*60*60;
-                      $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                       if (is_object($obj)) {
                           $obj->event(round($heatingBurnerHours-$oldHours, 1), $dateVeille);
                       }
                   }
+                  if ($oldStarts != -1) {
+                      $obj = $this->getCmd(null, 'heatingBurnerStartsPerDay');
+                      if (is_object($obj)) {
+                          $obj->event($heatingBurnerStarts-$oldStarts, $dateVeille);
+                      }
+                  }
                   $this->setCache('oldHours', $heatingBurnerHours);
+                  $this->setCache('oldStarts', $heatingBurnerStarts);
                   $this->setCache('oldJour', $jour);
               }
           }
@@ -2957,71 +2876,6 @@
           $obj->setLogicalId('heatingPowerConsumption');
           $obj->save();
 
-          $obj = $this->getCmd(null, 'statsTemperature');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température min', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('statsTemperature');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'statsTemperatureMax');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température max', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('statsTemperatureMax');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'statsDates');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température date mini', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('statsDates');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'statsDatesMaxi');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques température date maxi', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('statsDatesMaxi');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'statsConsigne');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Statistiques consigne', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('string');
-          $obj->setLogicalId('statsConsigne');
-          $obj->save();
-
           $obj = $this->getCmd(null, 'curve');
           if (!is_object($obj)) {
               $obj = new viessmannIotCmd();
@@ -3085,17 +2939,6 @@
           $obj->setType('info');
           $obj->setSubType('numeric');
           $obj->setLogicalId('heatingPowerHistorize');
-          $obj->save();
-
-          $obj = $this->getCmd(null, 'resetCurve');
-          if (!is_object($obj)) {
-              $obj = new viessmannIotCmd();
-              $obj->setName(__('Reset courbe', __FILE__));
-          }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setLogicalId('resetCurve');
-          $obj->setType('action');
-          $obj->setSubType('other');
           $obj->save();
 
           $obj = $this->getCmd(null, 'histoTemperatureInt');
@@ -3283,6 +3126,15 @@
           } else {
               $replace["#heatingBurnerStarts#"] = -1;
               $replace["#idHeatingBurnerStarts#"] = "#idHeatingBurnerStarts#";
+          }
+        
+          $obj = $this->getCmd(null, 'heatingBurnerStartsPerDay');
+          if (is_object($obj)) {
+              $replace["#heatingBurnerStartsPerDay#"] = $obj->execCmd();
+              $replace["#idHeatingBurnerStartsPerDay#"] = $obj->getId();
+          } else {
+              $replace["#heatingBurnerStartsPerDay#"] = -1;
+              $replace["#idHeatingBurnerStartsPerDay#"] = "#idHeatingBurnerStartsPerDay#";
           }
         
           $obj = $this->getCmd(null, 'heatingBurnerModulation');
@@ -3946,70 +3798,6 @@
               $replace["#idIsScheduleHolidayAtHomeProgram#"] = "#idIsScheduleHolidayAtHomeProgram#";
           }
 
-          $mini = 9999;
-          $maxi = -9999;
-
-          $obj = $this->getCmd(null, 'statsTemperature');
-          $str = $obj->execCmd();
-          
-          $temps = explode(',', $str);
-          foreach ($temps as $temp) {
-              if ($temp < $mini) {
-                  $mini = $temp;
-              }
-              if ($temp > $maxi) {
-                  $maxi = $temp;
-              }
-          }
-          $replace["#statsTemperature#"] = $str;
-          $replace["#idStatsTemperature#"] = $obj->getId();
-  
-          $obj = $this->getCmd(null, 'statsTemperatureMax');
-          $str = $obj->execCmd();
-          
-          $temps = explode(',', $str);
-          foreach ($temps as $temp) {
-              if ($temp < $mini) {
-                  $mini = $temp;
-              }
-              if ($temp > $maxi) {
-                  $maxi = $temp;
-              }
-          }
-          $replace["#statsTemperatureMax#"] = $str;
-          $replace["#idStatsTemperatureMax#"] = $obj->getId();
-  
-          $obj = $this->getCmd(null, 'statsDates');
-          $str = $obj->execCmd();
-          
-          $replace["#statsDates#"] = $str;
-          $replace["#idStatsDates#"] = $obj->getId();
-  
-          $obj = $this->getCmd(null, 'statsDatesMaxi');
-          $str = $obj->execCmd();
-          
-          $replace["#statsDatesMax#"] = $str;
-          $replace["#idStatsDatesMax#"] = $obj->getId();
-  
-          $obj = $this->getCmd(null, 'statsConsigne');
-          $str = $obj->execCmd();
-          $temps = explode(',', $str);
-          foreach ($temps as $temp) {
-              if ($temp < $mini) {
-                  $mini = $temp;
-              }
-              if ($temp > $maxi) {
-                  $maxi = $temp;
-              }
-          }
-          $mini = round($mini-0.6, 0);
-          $maxi = round($maxi+0.5, 0);
-
-          $replace["#statsConsigne#"] = $str;
-          $replace["#idStatsConsigne#"] = $obj->getId();
-          $replace["#mini_temperature#"] = $mini;
-          $replace["#maxi_temperature#"] = $maxi;
-  
           $temp = '';
           for ($ot=25; $ot>=-20;$ot--) {
               if ($temp !== '') {
@@ -4031,9 +3819,6 @@
               $temp = $temp . "'" . $ot . "'";
           }
           $replace["#range_temp#"] = $temp;
-
-          $obj = $this->getCmd(null, 'resetCurve');
-          $replace["#idResetCurve#"] = $obj->getId();
 
           $startTime = date("Y-m-d H:i:s", time()-10*24*60*60);
           $endTime = date("Y-m-d H:i:s", time());
@@ -4063,7 +3848,7 @@
                   if ($dataHistoTempInt !== '') {
                       $dataHistoTempInt .= ',';
                   }
-                  $dataHistoTempInt .= round($value,1);
+                  $dataHistoTempInt .= round($value, 1);
 
                   if ($dataHistoTempIntDat !== '') {
                       $dataHistoTempIntDat .= ';';
@@ -4079,9 +3864,9 @@
           if (is_object($cmd)) {
               $histoGraphe = $cmd->getHistory($startTime, $endTime);
               foreach ($histoGraphe as $row) {
-                $datetime = $row->getDatetime();
-                $ts = strtotime($datetime);
-                $value = $row->getValue();
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $value = $row->getValue();
                   if ($value < $mini) {
                       $mini = $value;
                   }
@@ -4091,7 +3876,7 @@
                   if ($dataHistoTempCsg !== '') {
                       $dataHistoTempCsg .= ',';
                   }
-                  $dataHistoTempCsg .= round($value,1);
+                  $dataHistoTempCsg .= round($value, 1);
                   if ($dataHistoTempCsgDat !== '') {
                       $dataHistoTempCsgDat .= ';';
                   }
@@ -4110,7 +3895,7 @@
                   if ($dataHistoTempExt !== '') {
                       $dataHistoTempExt .= ',';
                   }
-                  $dataHistoTempExt .= round($value,1);
+                  $dataHistoTempExt .= round($value, 1);
               }
           }
           $replace["#dataHistoTempExt#"] = $dataHistoTempExt;
@@ -4137,8 +3922,102 @@
       {
           return self::HEATING_CIRCUITS . "." . $circuitId . "." . $feature;
       }
-  }
+
+      // Lire les températures intérieures
+      //
+      public function lireTempInt($startDate, $endDate, $dynamique)
+      {
+          $array = array();
+
+          if (($this->validateDate($startDate, 'Y-m-d') == true) &&
+              ($this->validateDate($endDate, 'Y-m-d') == true) && 
+              ($dynamique == 'false' )) {
+              $startTime = $startDate . " 00:00:00";
+              $endTime = $endDate . " 00:00:00";
+          } else {
+              $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+              $endTime = date("Y-m-d H:i:s", time());
+          }
+      
+          $cmd = $this->getCmd(null, 'histoTemperatureInt');
+          if (is_object($cmd)) {
+              $histo = $cmd->getHistory($startTime, $endTime);
+              foreach ($histo as $row) {
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $value = round($row->getValue(),1);
+                  $date = date("Y", $ts).",".(date("m", $ts)-1).","
+                    .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
+                  $array[] = array('ts'=>$date,'value'=>$value);
+              }
+          }
+          return ($array);
+      }
+
+      // Lire les températures extérieures
+      //
+      public function lireTempExt($startDate, $endDate, $dynamique)
+      {
+          $array = array();
+
+          if (($this->validateDate($startDate, 'Y-m-d') == true) &&
+              ($this->validateDate($endDate, 'Y-m-d') == true) && 
+              ($dynamique == 'false' )) {
+              $startTime = $startDate . " 00:00:00";
+              $endTime = $endDate . " 00:00:00";
+          } else {
+              $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+              $endTime = date("Y-m-d H:i:s", time());
+          }
+      
+          $cmd = $this->getCmd(null, 'histoTemperatureExt');
+          if (is_object($cmd)) {
+              $histo = $cmd->getHistory($startTime, $endTime);
+              foreach ($histo as $row) {
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $value = round($row->getValue(),1);
+                  $date = date("Y", $ts).",".(date("m", $ts)-1).","
+                    .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
+                  $array[] = array('ts'=>$date,'value'=>$value);
+              }
+          }
+          return ($array);
+      }
+
+      // Lire les températures de consigne
+      //
+      public function lireTempCsg($startDate, $endDate, $dynamique)
+      {
+          $array = array();
+
+          if (($this->validateDate($startDate, 'Y-m-d') == true) &&
+              ($this->validateDate($endDate, 'Y-m-d') == true) && 
+              ($dynamique == 'false' )) {
+              $startTime = $startDate . " 00:00:00";
+              $endTime = $endDate . " 00:00:00";
+          } else {
+              $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+              $endTime = date("Y-m-d H:i:s", time());
+          }
+      
+          $cmd = $this->getCmd(null, 'histoTemperatureCsg');
+          if (is_object($cmd)) {
+              $histo = $cmd->getHistory($startTime, $endTime);
+              foreach ($histo as $row) {
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $value = round($row->getValue(),1);
+                  $date = date("Y", $ts).",".(date("m", $ts)-1).","
+                    .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
+                  $array[] = array('ts'=>$date,'value'=>$value);
+              }
+          }
+          return ($array);
+      }
+    }
   
+
   class viessmannIotCmd extends cmd
   {
       // Exécution d'une commande
@@ -4147,17 +4026,6 @@
       {
           $eqlogic = $this->getEqLogic();
           if ($this->getLogicalId() == 'refresh') {
-              $viessmannApi = $eqlogic->getViessmann();
-              if ($viessmannApi !== null) {
-                  $eqlogic->rafraichir($viessmannApi);
-                  unset($viessmannApi);
-              }
-          } elseif ($this->getLogicalId() == 'resetCurve') {
-              $eqlogic->getCmd(null, 'statsTemperature')->event('');
-              $eqlogic->getCmd(null, 'statsTemperatureMax')->event('');
-              $eqlogic->getCmd(null, 'statsConsigne')->event('');
-              $eqlogic->getCmd(null, 'statsDates')->event('');
-              $eqlogic->getCmd(null, 'statsDatesMaxi')->event('');
               $viessmannApi = $eqlogic->getViessmann();
               if ($viessmannApi !== null) {
                   $eqlogic->rafraichir($viessmannApi);
