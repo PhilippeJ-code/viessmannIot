@@ -3915,6 +3915,11 @@
           $obj = $this->getCmd(null, 'histoTemperatureExt');
           $replace["#idHistoTemperatureExt#"] = $obj->getId();
 
+          $top = $this->getCache('top', '200px');
+          $replace["#top#"] = $top;
+          $left = $this->getCache('left', '200px');
+          $replace["#left#"] = $left;
+
           return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmannIot_view', 'viessmannIot')));
       }
 

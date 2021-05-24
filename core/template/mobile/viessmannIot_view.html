@@ -687,10 +687,8 @@
             width: 650px;
             height: 560px;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            margin-top: -270px;
-            margin-left: -270px;
+            top: #top#;
+            left: #left#;
             background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 8px;
@@ -3304,11 +3302,38 @@
         Charger();
   
         $( function() {
-            $( "#idCourbe#uid#" ).draggable({
+            $("#idCourbe#uid#").draggable({
              cancel: "#statsTemperature#uid#",
              cursor: "crosshair",
              opacity: 0.9
             });
+        } );
+
+        $("#idCourbe#uid#").on( "dragstop", function( event, ui ) {
+
+            $.ajax({
+                type: "POST",
+                url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
+                data: {
+                    action: "topLeft",
+                    id: "#id#",
+                    top: $('#idCourbe#uid#').css('top'),
+                    left: $('#idCourbe#uid#').css('left')
+                },
+                dataType: 'json',
+                global: false,
+                async: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        return;
+                    }
+                },
+            });
+
         } );
 
    </script>
