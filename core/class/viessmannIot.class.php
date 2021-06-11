@@ -2276,14 +2276,19 @@
               $obj->event($outsideTemperature, $dateCron);
           }
 
-          if (($heatingBurnerHours != -1) && ($heatingBurnerStarts != -1)) {
-              $jour = date("d", $now);
-              $oldJour = $this->getCache('oldJour', -1);
-              $oldHours = $this->getCache('oldHours', -1);
-              $oldStarts = $this->getCache('oldStarts', -1);
-              if ($oldJour != $jour) {
-                  $dateVeille = time()-24*60*60;
-                  $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+          $outsideMinTemperature = $this->getCache('outsideMinTemperature', 99);
+          $outsideMaxTemperature = $this->getCache('outsideMaxTemperature', -99);
+
+          $jour = date("d", $now);
+          $oldJour = $this->getCache('oldJour', -1);
+
+          if ($oldJour != $jour) {
+              $dateVeille = time()-24*60*60;
+              $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+
+              if (($heatingBurnerHours != -1) && ($heatingBurnerStarts != -1)) {
+                  $oldHours = $this->getCache('oldHours', -1);
+                  $oldStarts = $this->getCache('oldStarts', -1);
                   if ($oldHours != -1) {
                       $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                       if (is_object($obj)) {
@@ -2298,8 +2303,33 @@
                   }
                   $this->setCache('oldHours', $heatingBurnerHours);
                   $this->setCache('oldStarts', $heatingBurnerStarts);
-                  $this->setCache('oldJour', $jour);
               }
+
+              if ($outsideMinTemperature != 99) {
+                  $obj = $this->getCmd(null, 'outsideMinTemperature');
+                  if (is_object($obj)) {
+                      $obj->event($outsideMinTemperature, $dateVeille);
+                  }
+                  $this->setCache('outsideMinTemperature', $outsideTemperature);
+              }
+
+              if (($outsideMaxTemperature != 99) && ($outsideMaxTemperature != -99)) {
+                  $obj = $this->getCmd(null, 'outsideMaxTemperature');
+                  if (is_object($obj)) {
+                      $obj->event($outsideMaxTemperature, $dateVeille);
+                  }
+                  $this->setCache('outsideMaxTemperature', $outsideTemperature);
+              }
+
+              $this->setCache('oldJour', $jour);
+          }
+
+          if ($outsideTemperature < $outsideMinTemperature) {
+              $this->setCache('outsideMinTemperature', $outsideTemperature);
+          }
+
+          if ($outsideTemperature > $outsideMaxTemperature) {
+              $this->setCache('outsideMaxTemperature', $outsideTemperature);
           }
 
           $date = new DateTime();
@@ -2795,6 +2825,34 @@
           $obj->setType('info');
           $obj->setSubType('numeric');
           $obj->setLogicalId('outsideTemperature');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'outsideMinTemperature');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Température extérieure minimum', __FILE__));
+              $obj->setUnite('°C');
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('outsideMinTemperature');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'outsideMaxTemperature');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Température extérieure maximum', __FILE__));
+              $obj->setUnite('°C');
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(1);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('outsideMaxTemperature');
           $obj->save();
 
           $obj = $this->getCmd(null, 'roomTemperature');
@@ -3820,91 +3878,53 @@
           }
           $replace["#range_temp#"] = $temp;
 
-          $startTime = date("Y-m-d H:i:s", time()-10*24*60*60);
+          $startTime = date("Y-m-d H:i:s", time()-7*24*60*60);
           $endTime = date("Y-m-d H:i:s", time());
           
-          $mini = 9999;
-          $maxi = -9999;
-
-          $dataHistoTempInt = '';
-          $dataHistoTempExt = '';
-          $dataHistoTempCsg = '';
-          $dataHistoTempIntDat = '';
-          $dataHistoTempCsgDat = '';
-
-          $cmd = $this->getCmd(null, 'histoTemperatureInt');
-          if (is_object($cmd)) {
-              $histoGraphe = $cmd->getHistory($startTime, $endTime);
-              foreach ($histoGraphe as $row) {
-                  $datetime = $row->getDatetime();
-                  $ts = strtotime($datetime);
-                  $value = $row->getValue();
-                  if ($value < $mini) {
-                      $mini = $value;
-                  }
-                  if ($value > $maxi) {
-                      $maxi = $value;
-                  }
-                  if ($dataHistoTempInt !== '') {
-                      $dataHistoTempInt .= ',';
-                  }
-                  $dataHistoTempInt .= round($value, 1);
-
-                  if ($dataHistoTempIntDat !== '') {
-                      $dataHistoTempIntDat .= ';';
-                  }
-                  $dataHistoTempIntDat .= date("Y", $ts).",".(date("m", $ts)-1).","
-                    .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
-              }
-          }
-          $replace["#dataHistoTempInt#"] = $dataHistoTempInt;
-          $replace["#dataHistoTempIntDat#"] = $dataHistoTempIntDat;
-
-          $cmd = $this->getCmd(null, 'histoTemperatureCsg');
-          if (is_object($cmd)) {
-              $histoGraphe = $cmd->getHistory($startTime, $endTime);
-              foreach ($histoGraphe as $row) {
-                  $datetime = $row->getDatetime();
-                  $ts = strtotime($datetime);
-                  $value = $row->getValue();
-                  if ($value < $mini) {
-                      $mini = $value;
-                  }
-                  if ($value > $maxi) {
-                      $maxi = $value;
-                  }
-                  if ($dataHistoTempCsg !== '') {
-                      $dataHistoTempCsg .= ',';
-                  }
-                  $dataHistoTempCsg .= round($value, 1);
-                  if ($dataHistoTempCsgDat !== '') {
-                      $dataHistoTempCsgDat .= ';';
-                  }
-                  $dataHistoTempCsgDat .= date("Y", $ts).",".(date("m", $ts)-1).","
-                  .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
-              }
-          }
-          $replace["#dataHistoTempCsg#"] = $dataHistoTempCsg;
-          $replace["#dataHistoTempCsgDat#"] = $dataHistoTempCsgDat;
-
-          $cmd = $this->getCmd(null, 'histoTemperatureExt');
+          $listeMinTemp = array();
+          $listeMaxTemp = array();
+          $cmd = $this->getCmd(null, 'outsideMinTemperature');
           if (is_object($cmd)) {
               $histoGraphe = $cmd->getHistory($startTime, $endTime);
               foreach ($histoGraphe as $row) {
                   $value = $row->getValue();
-                  if ($dataHistoTempExt !== '') {
-                      $dataHistoTempExt .= ',';
-                  }
-                  $dataHistoTempExt .= round($value, 1);
+                  $listeMinTemp[] = round($value, 1);
               }
           }
-          $replace["#dataHistoTempExt#"] = $dataHistoTempExt;
+          $cmd = $this->getCmd(null, 'outsideMaxTemperature');
+          if (is_object($cmd)) {
+              $histoGraphe = $cmd->getHistory($startTime, $endTime);
+              foreach ($histoGraphe as $row) {
+                  $value = $row->getValue();
+                  $listeMaxTemp[] = round($value, 1);
+              }
+          }
+          $datasMinMax = '';
+          if (count($listeMinTemp) == count($listeMaxTemp)) {
+              for ($i=0; $i < count($listeMinTemp); $i++) {
+                  if ($datasMinMax !== '') {
+                      $datasMinMax = $datasMinMax . ',';
+                  }
+                  $datasMinMax .= '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']';
+              }
+          }        
+          $replace["#datasMinMax#"] = $datasMinMax;
 
-          $mini = round($mini-0.6, 0);
-          $maxi = round($maxi+0.5, 0);
-
-          $replace["#mini_temperature#"] = $mini;
-          $replace["#maxi_temperature#"] = $maxi;
+          $maintenant = time();
+          $jour = date("N", $maintenant) - 2;
+          $joursMinMax = '';
+  
+          for ($i=0; $i<7; $i++) {
+              if ($jour < 0) {
+                  $jour = 6;
+              }
+              if ($joursMinMax !== '') {
+                  $joursMinMax = $joursMinMax . ',';
+              }
+              $joursMinMax = $joursMinMax . "'" . $jours[$jour] . "'";
+              $jour--;
+          }
+          $replace["#joursMinMax#"] = $joursMinMax;
           
           $obj = $this->getCmd(null, 'histoTemperatureCsg');
           $replace["#idHistoTemperatureCsg#"] = $obj->getId();
@@ -3935,8 +3955,8 @@
           $array = array();
 
           if (($this->validateDate($startDate, 'Y-m-d') == true) &&
-              ($this->validateDate($endDate, 'Y-m-d') == true) && 
-              ($dynamique == 'false' )) {
+              ($this->validateDate($endDate, 'Y-m-d') == true) &&
+              ($dynamique == 'false')) {
               $startTime = $startDate . " 00:00:00";
               $endTime = $endDate . " 00:00:00";
           } else {
@@ -3950,7 +3970,7 @@
               foreach ($histo as $row) {
                   $datetime = $row->getDatetime();
                   $ts = strtotime($datetime);
-                  $value = round($row->getValue(),1);
+                  $value = round($row->getValue(), 1);
                   $date = date("Y", $ts).",".(date("m", $ts)-1).","
                     .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
                   $array[] = array('ts'=>$date,'value'=>$value);
@@ -3966,8 +3986,8 @@
           $array = array();
 
           if (($this->validateDate($startDate, 'Y-m-d') == true) &&
-              ($this->validateDate($endDate, 'Y-m-d') == true) && 
-              ($dynamique == 'false' )) {
+              ($this->validateDate($endDate, 'Y-m-d') == true) &&
+              ($dynamique == 'false')) {
               $startTime = $startDate . " 00:00:00";
               $endTime = $endDate . " 00:00:00";
           } else {
@@ -3981,7 +4001,7 @@
               foreach ($histo as $row) {
                   $datetime = $row->getDatetime();
                   $ts = strtotime($datetime);
-                  $value = round($row->getValue(),1);
+                  $value = round($row->getValue(), 1);
                   $date = date("Y", $ts).",".(date("m", $ts)-1).","
                     .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
                   $array[] = array('ts'=>$date,'value'=>$value);
@@ -3997,8 +4017,8 @@
           $array = array();
 
           if (($this->validateDate($startDate, 'Y-m-d') == true) &&
-              ($this->validateDate($endDate, 'Y-m-d') == true) && 
-              ($dynamique == 'false' )) {
+              ($this->validateDate($endDate, 'Y-m-d') == true) &&
+              ($dynamique == 'false')) {
               $startTime = $startDate . " 00:00:00";
               $endTime = $endDate . " 00:00:00";
           } else {
@@ -4012,7 +4032,7 @@
               foreach ($histo as $row) {
                   $datetime = $row->getDatetime();
                   $ts = strtotime($datetime);
-                  $value = round($row->getValue(),1);
+                  $value = round($row->getValue(), 1);
                   $date = date("Y", $ts).",".(date("m", $ts)-1).","
                     .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
                   $array[] = array('ts'=>$date,'value'=>$value);
@@ -4020,7 +4040,7 @@
           }
           return ($array);
       }
-    }
+  }
   
 
   class viessmannIotCmd extends cmd

@@ -505,6 +505,9 @@
         <div id="graphePente#uid#" style="width:100%; height:250px">
         </div>
 
+        <div id="grapheMinMax#uid#" style="width:100%; height:250px">
+        </div>
+
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
         <span class="classTitreTuile#uid#">Courbe</span></br>
 
@@ -685,7 +688,7 @@
 
         .classCourbe#uid# {
             width: 650px;
-            height: 560px;
+            height: 800px;
             position: fixed;
             top: #top#;
             left: #left#;
@@ -2688,8 +2691,7 @@
             yAxis: {
                 title: {
                     text: 'Température int/csg'
-                },
-                tickPositions: [#mini_temperature#, #maxi_temperature#]
+                }
             },
 
             plotOptions: {
@@ -2755,7 +2757,7 @@
             if (histoTemperatureExt == -999)
                 return;
 
-            if (!$("#idDynamique#uid#").is(':checked')) 
+            if (!$("#idDynamique#uid#").is(':checked'))
                 return;
 
             var date = new Date();
@@ -2868,6 +2870,61 @@
         }
         jeedom.cmd.update['#idCurve#']({ display_value: '#curve#' });
 
+        const chartMinMax#uid# = Highcharts.chart('grapheMinMax#uid#', {
+
+            chart: {
+                type: 'columnrange',
+                inverted: true
+            },
+
+
+            title: {
+                text: ''
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+
+            xAxis: {
+                categories: [#joursMinMax#],
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Température extérieure min/max'
+                }                
+            },
+
+            tooltip: {
+                valueSuffix: '°C'
+            },
+
+            plotOptions: {
+                columnrange: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '{y}°C'
+                    }
+                }
+            },
+
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'Temperatures',
+                data: [#datasMinMax#]
+            }]
+
+        });
         // Click pour accès modification pente
         //
         $('#idModifierPente#uid#').on('click', function () {
@@ -3300,16 +3357,16 @@
         });
 
         Charger();
-  
-        $( function() {
-            $("#idCourbe#uid#").draggable({
-             cancel: "#statsTemperature#uid#",
-             cursor: "crosshair",
-             opacity: 0.9
-            });
-        } );
 
-        $("#idCourbe#uid#").on( "dragstop", function( event, ui ) {
+        $(function () {
+            $("#idCourbe#uid#").draggable({
+                cancel: "#statsTemperature#uid#",
+                cursor: "crosshair",
+                opacity: 0.9
+            });
+        });
+
+        $("#idCourbe#uid#").on("dragstop", function (event, ui) {
 
             $.ajax({
                 type: "POST",
@@ -3334,8 +3391,8 @@
                 },
             });
 
-        } );
+        });
 
-   </script>
+    </script>
 
 </div>
