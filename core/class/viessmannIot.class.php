@@ -3903,9 +3903,9 @@
           if (count($listeMinTemp) == count($listeMaxTemp)) {
               for ($i=0; $i < count($listeMinTemp); $i++) {
                   if ($datasMinMax !== '') {
-                      $datasMinMax = $datasMinMax . ',';
+                      $datasMinMax = ',' . $datasMinMax;
                   }
-                  $datasMinMax .= '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']';
+                  $datasMinMax = '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']' . $datasMinMax;
               }
           }        
           $replace["#datasMinMax#"] = $datasMinMax;
