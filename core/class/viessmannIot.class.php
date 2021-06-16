@@ -3900,6 +3900,7 @@
               }
           }
           $datasMinMax = '';
+          log::add('viessmannIot', 'debug', 'Nbre Min/Max : ' . count($listeMinTemp) . '/' . count($listeMaxTemp));
           if (count($listeMinTemp) == count($listeMaxTemp)) {
               for ($i=0; $i < count($listeMinTemp); $i++) {
                   if ($datasMinMax !== '') {
@@ -3907,7 +3908,8 @@
                   }
                   $datasMinMax = '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']' . $datasMinMax;
               }
-          }        
+          }     
+
           $replace["#datasMinMax#"] = $datasMinMax;
 
           $maintenant = time();
