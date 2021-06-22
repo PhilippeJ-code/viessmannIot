@@ -2313,7 +2313,7 @@
                   $this->setCache('outsideMinTemperature', $outsideTemperature);
               }
 
-              if (($outsideMaxTemperature != 99) && ($outsideMaxTemperature != -99)) {
+              if ($outsideMaxTemperature != -99) {
                   $obj = $this->getCmd(null, 'outsideMaxTemperature');
                   if (is_object($obj)) {
                       $obj->event($outsideMaxTemperature, $dateVeille);
@@ -2324,12 +2324,14 @@
               $this->setCache('oldJour', $jour);
           }
 
-          if ($outsideTemperature < $outsideMinTemperature) {
-              $this->setCache('outsideMinTemperature', $outsideTemperature);
-          }
+          if ($outsideTemperature != 99) {
+              if ($outsideTemperature < $outsideMinTemperature) {
+                  $this->setCache('outsideMinTemperature', $outsideTemperature);
+              }
 
-          if ($outsideTemperature > $outsideMaxTemperature) {
-              $this->setCache('outsideMaxTemperature', $outsideTemperature);
+              if ($outsideTemperature > $outsideMaxTemperature) {
+                  $this->setCache('outsideMaxTemperature', $outsideTemperature);
+              }
           }
 
           $date = new DateTime();
@@ -3878,17 +3880,26 @@
           }
           $replace["#range_temp#"] = $temp;
 
-          $startTime = date("Y-m-d H:i:s", time()-7*24*60*60);
+          $startTime = date("Y-m-d H:i:s", time()-8*24*60*60);
           $endTime = date("Y-m-d H:i:s", time());
           
           $listeMinTemp = array();
           $listeMaxTemp = array();
+          for ($i=0; $i<7; $i++) {
+              $listeMinTemp[] = -99;
+              $listeMaxTemp[] = 99;
+          }
+
           $cmd = $this->getCmd(null, 'outsideMinTemperature');
           if (is_object($cmd)) {
               $histoGraphe = $cmd->getHistory($startTime, $endTime);
               foreach ($histoGraphe as $row) {
                   $value = $row->getValue();
-                  $listeMinTemp[] = round($value, 1);
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $i = time() - $ts;
+                  $i = floor($i / (24*60*60))-1;
+                  $listeMinTemp[$i] = round($value, 1);
               }
           }
           $cmd = $this->getCmd(null, 'outsideMaxTemperature');
@@ -3896,19 +3907,21 @@
               $histoGraphe = $cmd->getHistory($startTime, $endTime);
               foreach ($histoGraphe as $row) {
                   $value = $row->getValue();
-                  $listeMaxTemp[] = round($value, 1);
+                  $datetime = $row->getDatetime();
+                  $ts = strtotime($datetime);
+                  $i = time() - $ts;
+                  $i = floor($i / (24*60*60))-1;
+                  $listeMaxTemp[$i] = round($value, 1);
               }
           }
           $datasMinMax = '';
-          log::add('viessmannIot', 'debug', 'Nbre Min/Max : ' . count($listeMinTemp) . '/' . count($listeMaxTemp));
-          if (count($listeMinTemp) == count($listeMaxTemp)) {
-              for ($i=0; $i < count($listeMinTemp); $i++) {
-                  if ($datasMinMax !== '') {
-                      $datasMinMax = ',' . $datasMinMax;
-                  }
-                  $datasMinMax = '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']' . $datasMinMax;
+          for ($i=0; $i < count($listeMinTemp); $i++) {
+              if ($datasMinMax !== '') {
+                  $datasMinMax = ',' . $datasMinMax;
               }
-          }     
+              $datasMinMax = '[' . $listeMinTemp[$i] . ',' . $listeMaxTemp[$i] . ']' . $datasMinMax;
+          }
+              
 
           $replace["#datasMinMax#"] = $datasMinMax;
 
