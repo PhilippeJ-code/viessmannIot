@@ -2305,7 +2305,7 @@
                   $this->setCache('oldStarts', $heatingBurnerStarts);
               }
 
-              if ($outsideMinTemperature != 99) {
+              if (($outsideMinTemperature != 99) && ($outsideTemperature != 99)) {
                   $obj = $this->getCmd(null, 'outsideMinTemperature');
                   if (is_object($obj)) {
                       $obj->event($outsideMinTemperature, $dateVeille);
@@ -2313,7 +2313,7 @@
                   $this->setCache('outsideMinTemperature', $outsideTemperature);
               }
 
-              if ($outsideMaxTemperature != -99) {
+              if (($outsideMaxTemperature != -99) && ($outsideTemperature != 99)) {
                   $obj = $this->getCmd(null, 'outsideMaxTemperature');
                   if (is_object($obj)) {
                       $obj->event($outsideMaxTemperature, $dateVeille);
@@ -3883,12 +3883,18 @@
           $startTime = date("Y-m-d H:i:s", time()-8*24*60*60);
           $endTime = date("Y-m-d H:i:s", time());
           
+          $outsideMinTemperature = $this->getCache('outsideMinTemperature', -1);
+          $outsideMaxTemperature = $this->getCache('outsideMaxTemperature', 1);
+
           $listeMinTemp = array();
           $listeMaxTemp = array();
-          for ($i=0; $i<7; $i++) {
+          for ($i=0; $i<8; $i++) {
               $listeMinTemp[] = -99;
               $listeMaxTemp[] = 99;
           }
+
+          $listeMinTemp[7] = $outsideMinTemperature;
+          $listeMaxTemp[7] = $outsideMaxTemperature;
 
           $cmd = $this->getCmd(null, 'outsideMinTemperature');
           if (is_object($cmd)) {
@@ -3898,7 +3904,7 @@
                   $datetime = $row->getDatetime();
                   $ts = strtotime($datetime);
                   $i = time() - $ts;
-                  $i = floor($i / (24*60*60))-1;
+                  $i = 7-floor($i / (24*60*60));
                   $listeMinTemp[$i] = round($value, 1);
               }
           }
@@ -3910,7 +3916,7 @@
                   $datetime = $row->getDatetime();
                   $ts = strtotime($datetime);
                   $i = time() - $ts;
-                  $i = floor($i / (24*60*60))-1;
+                  $i = 7-floor($i / (24*60*60));
                   $listeMaxTemp[$i] = round($value, 1);
               }
           }
@@ -3926,10 +3932,10 @@
           $replace["#datasMinMax#"] = $datasMinMax;
 
           $maintenant = time();
-          $jour = date("N", $maintenant) - 2;
+          $jour = date("N", $maintenant) - 1;
           $joursMinMax = '';
   
-          for ($i=0; $i<7; $i++) {
+          for ($i=0; $i<8; $i++) {
               if ($jour < 0) {
                   $jour = 6;
               }
