@@ -37,6 +37,7 @@
             en m3, l'unité est gardée et le facteur de conversion est donc de 1. On pourrait faire le choix des kWh
             et indiquer le facteur de conversion qui permet de passer des m3 aux kWh.
         Utiliser le widget fourni par le plugin ou le widget standard de jeedom
+        Afficher ou non la tuile eau chaude
         Afficher ou non la tuile gaz
         Afficher on non la tuile électricité
     
