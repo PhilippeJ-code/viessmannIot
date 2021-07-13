@@ -1,7 +1,7 @@
 # Plugin viessmann pour Jeedom
 
     Ce plugin permet de récupérer les informations de votre chaudière Viessmann connectée avec VitoConnect, 
-    cette récupération de données s'effectue par le biais des API Viessmann écrite par thetrueavatar.
+    cette récupération de données s'effectue par le biais des API Viessmann.
 
     Le nombre d'appels au service Viessmann est limité à 1450, le dépassement de cette limite est 
     sanctionnée par un bannissement d'une journée. J'ai donc volontairement choisi de ne pas implémenter 
@@ -15,9 +15,12 @@
 
 ## 2. Configuration de l'équipement
 
-    Pour l'accès au serveur Viessmann, le nom d'utilisateur et le mot de passe doivent être spécifiés 
+    Pour l'accès au serveur Viessmann, l'id client, le code challenge, le nom d'utilisateur et le mot de passe doivent être spécifiés 
     dans les paramètres. Les Ids d'installation et du gateway peuvent être introduits mais ils seront de 
     toute façon récupérés et stockés lors de la première récupération des données sur le serveur.
+
+    Vous pouvez obtenir l'id client et le code challenge en vous inscrivant sur le portail développeur de Viessmann, 
+    https://developer.viessmann.com/en . 
 
     On peut introduire l'id du device et l'id du circuit, par défaut une valeur nulle est utilisée par le plugin.
     Les personnes qui auraient deux circuits de chauffage peuvent créer deux équipements avec un id de circuit différent.
