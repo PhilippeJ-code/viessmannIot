@@ -22,6 +22,7 @@
   class viessmannIot extends eqLogic
   {
       const HEATING_CIRCUITS = "heating.circuits";
+      const HEATING_BURNERS = "heating.burners";
 
       const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
       const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
@@ -57,13 +58,13 @@
       const HEATING_GAS_CONSUMPTION_DHW = "heating.gas.consumption.dhw";
       const HEATING_GAS_CONSUMPTION_HEATING = "heating.gas.consumption.heating";
       const HEATING_GAS_CONSUMPTION_TOTAL = "heating.gas.consumption.total";
-      const HEATING_POWER_CONSUMPTION_TOTAL = "heating.power.consumption.total";
+      const HEATING_POWER_CONSUMPTION = "heating.power.consumption";
       const HEATING_ERRORS_ACTIVE = "heating.errors.active";
       const HEATING_ERRORS = "heating.errors";
       const HEATING_ERRORS_HISTORY = "heating.errors.history";
       const HEATING_SERVICE_TIMEBASED = "heating.service.timeBased";
-      const HEATING_BURNER_STATISTICS = "heating.burner.statistics";
-      const HEATING_BURNER_MODULATION = "heating.burner.modulation";
+      const STATISTICS = "statistics";
+      const MODULATION = "modulation";
       const HOLIDAY_PROGRAM =  "heating.operating.programs.holiday";
       const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
       
@@ -875,7 +876,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingGazConsumptionYear');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -993,7 +994,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('monthSinceService');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER_STATISTICS && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1045,7 +1046,7 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('heatingBurnerStarts');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER_MODULATION && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] ==  $this->buildFeatureBurner($circuitId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingBurnerModulation');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1934,7 +1935,7 @@
                   if (is_object($obj)) {
                       $obj->event($year);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION && $features["data"][$i]["isEnabled"] == true) {
                   $heatingPowerConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['day']['value']);
                   for ($j=0; $j<$n; $j++) {
@@ -2120,7 +2121,7 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER_STATISTICS && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["hours"]["value"];
                   $heatingBurnerHours = $val;
                   $obj = $this->getCmd(null, 'heatingBurnerHours');
@@ -2133,7 +2134,7 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER_MODULATION && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["value"]["value"];
                   $obj = $this->getCmd(null, 'heatingBurnerModulation');
                   if (is_object($obj)) {
@@ -3967,6 +3968,11 @@
       private function buildFeature($circuitId, $feature)
       {
           return self::HEATING_CIRCUITS . "." . $circuitId . "." . $feature;
+      }
+
+      private function buildFeatureBurner($circuitId, $feature)
+      {
+          return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
       }
 
       // Lire les températures intérieures
