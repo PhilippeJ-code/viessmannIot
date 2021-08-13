@@ -20,7 +20,9 @@
     toute façon récupérés et stockés lors de la première récupération des données sur le serveur.
 
     Vous pouvez obtenir l'id client et le code challenge en vous inscrivant sur le portail développeur de Viessmann, 
-    https://developer.viessmann.com/en . 
+    https://developer.viessmann.com/en. 
+    Le code challenge peut-être généré avec cet utilitaire https://tonyxu-io.github.io/pkce-generator/, 
+    introduire l’id client dans code verifier et cliquer sur « Generate code challenge » .
 
     On peut introduire l'id du device et l'id du circuit, par défaut une valeur nulle est utilisée par le plugin.
     Les personnes qui auraient deux circuits de chauffage peuvent créer deux équipements avec un id de circuit différent.
