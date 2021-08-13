@@ -3491,8 +3491,8 @@
               $replace["#totalGazConsumptionDay#"] = $obj->execCmd();
               $replace["#idTotalGazConsumptionDay#"] = $obj->getId();
           } else {
-              $replace["#dhwGazConsumptionDay#"] = '';
-              $replace["#idDhwGazConsumptionDay#"] = "#idDhwGazConsumptionDay#";
+              $replace["#totalGazConsumptionDay#"] = '';
+              $replace["#idTotalGazConsumptionDay#"] = "#idTotalGazConsumptionDay#";
           }
   
           $jours = array("Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim");
