@@ -58,7 +58,9 @@
       const HEATING_GAS_CONSUMPTION_DHW = "heating.gas.consumption.dhw";
       const HEATING_GAS_CONSUMPTION_HEATING = "heating.gas.consumption.heating";
       const HEATING_GAS_CONSUMPTION_TOTAL = "heating.gas.consumption.total";
-      const HEATING_POWER_CONSUMPTION = "heating.power.consumption";
+      const HEATING_POWER_CONSUMPTION_DHW = "heating.power.consumption.dhw";
+      const HEATING_POWER_CONSUMPTION_HEATING = "heating.power.consumption.heating";
+      const HEATING_POWER_CONSUMPTION_TOTAL = "heating.power.consumption.total";
       const HEATING_ERRORS_ACTIVE = "heating.errors.active";
       const HEATING_ERRORS = "heating.errors";
       const HEATING_ERRORS_HISTORY = "heating.errors.history";
@@ -876,7 +878,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingGazConsumptionYear');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1935,7 +1937,7 @@
                   if (is_object($obj)) {
                       $obj->event($year);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $heatingPowerConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['day']['value']);
                   for ($j=0; $j<$n; $j++) {
