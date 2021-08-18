@@ -1668,7 +1668,7 @@
   
                   $conso = $heatingGazConsumptions[0];
                   $oldConso = $this->getCache('oldConsoTotal', -1);
-                  if ($oldConso > $conso) {
+                  if ($oldConso >= $conso) {
                       $dateVeille = time()-24*60*60;
                       $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $this->getCmd(null, 'totalGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
@@ -1761,7 +1761,7 @@
   
                   $conso = $dhwGazConsumptions[0];
                   $oldConso = $this->getCache('oldConsoDhw', -1);
-                  if ($oldConso > $conso) {
+                  if ($oldConso >= $conso) {
                       $dateVeille = time()-24*60*60;
                       $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $this->getCmd(null, 'dhwGazHistorize')->event($dhwGazConsumptions[1], $dateVeille);
@@ -1854,7 +1854,7 @@
 
                   $conso = $heatingGazConsumptions[0];
                   $oldConso = $this->getCache('oldConsoHeating', -1);
-                  if ($oldConso > $conso) {
+                  if ($oldConso >= $conso) {
                       $dateVeille = time()-24*60*60;
                       $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
@@ -1947,7 +1947,7 @@
                   
                   $conso = $heatingPowerConsumptions[0];
                   $oldConso = $this->getCache('oldConsoPower', -1);
-                  if ($oldConso > $conso) {
+                  if ($oldConso >= $conso) {
                       $dateVeille = time()-24*60*60;
                       $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                       $this->getCmd(null, 'heatingPowerHistorize')->event($heatingPowerConsumptions[1], $dateVeille);
