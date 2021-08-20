@@ -1229,13 +1229,17 @@
                   $obj->save();
               }
           }
+
+          log::add('viessmannIot', 'info', 'Commandes (re)créées');
+
       }
         
       // Accès au serveur Viessmann
       //
       public function getViessmann()
       {
-          $clientId = trim($this->getConfiguration('clientId', ''));
+
+        $clientId = trim($this->getConfiguration('clientId', ''));
           $codeChallenge = trim($this->getConfiguration('codeChallenge', ''));
 
           $userName = trim($this->getConfiguration('userName', ''));
@@ -1251,7 +1255,10 @@
           if ($logFeatures === 'Oui') {
               $this->setConfiguration('logFeatures', '')->save();
           }
-          $isVicare = $this->getConfiguration('isVicare', false);
+          $createCommands = $this->getConfiguration('createCommands', '');
+          if ($createCommands === 'Oui') {
+              $this->setConfiguration('createCommands', '')->save();
+          }
 
           $expires_at = $this->getCache('expires_at', 0);
           $token = $this->getCache('token', '');
@@ -1271,13 +1278,12 @@
           "circuitId" => $circuitId,
           "expires_at" => $expires_at,
           "token" => $token,
-          "logFeatures" => $logFeatures,
-          "vicare" => $isVicare
+          "logFeatures" => $logFeatures
         ];
 
           $viessmannApi = new ViessmannApi($params);
                         
-          if ((empty($installationId)) || (empty($serial))) {
+          if ( (empty($installationId)) || (empty($serial)) || ($createCommands === "Oui") ) {
               $viessmannApi->getFeatures();
             
               $installationId = $viessmannApi->getInstallationId();
@@ -2346,6 +2352,7 @@
 
       public static function periodique()
       {
+
           $oldUserName = '';
           $oldPassword = '';
   
@@ -4078,6 +4085,7 @@
       //
       public function execute($_options = array())
       {
+
           $eqlogic = $this->getEqLogic();
           if ($this->getLogicalId() == 'refresh') {
               $viessmannApi = $eqlogic->getViessmann();

@@ -137,7 +137,7 @@
               <label class="col-sm-3 control-label">{{Nom d'utilisateur}}</label>
               <div class="col-sm-3">
                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="userName"
-                  placeholder="Nom d'utilisateur Vicare" />
+                  placeholder="Nom d'utilisateur Viessmann" />
               </div>
             </div>
 
@@ -145,7 +145,7 @@
               <label class="col-sm-3 control-label">{{Mot de passe}}</label>
               <div class="col-sm-3">
                 <input type="password" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="password"
-                  placeholder="Mot de passe Vicare" />
+                  placeholder="Mot de passe Viessmann" />
               </div>
             </div>
 
@@ -193,10 +193,13 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-3 control-label">{{Utiliser les identifiants Vicare}}</label>
-              <div class="col-sm-3 form-check-input">
-                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="isVicare"
-                  unchecked /></label>
+              <label class="col-sm-3 control-label">{{(Re)Créer Commandes}}
+                <sup><i class="fas fa-question-circle tooltips"
+                    title="{{En cas d'ajout d'informations par Viessmann par exemple}}"></i></sup>
+              </label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="createCommands"
+                  placeholder="Mettre Oui" />
               </div>
             </div>
 

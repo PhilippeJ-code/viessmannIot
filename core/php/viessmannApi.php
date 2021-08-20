@@ -56,8 +56,7 @@ class ViessmannApi
     private $features;
 
     private $logFeatures;
-    private $vicare;
-
+ 
     // Constructeur
     //
     public function __construct($params)
@@ -141,21 +140,10 @@ class ViessmannApi
             $this->expires_at = intval($params['expires_at']);
         }
 
-        if (!array_key_exists('vicare', $params)) {
-            $this->vicare = false;
-        } else {
-            $this->vicare = $params['vicare'];
-        }
-
         if (!array_key_exists('logFeatures', $params)) {
             $this->logFeatures = '';
         } else {
             $this->logFeatures = $params['logFeatures'];
-        }
-
-        if ($this->vicare == true) {
-            $this->clientId = '79742319e39245de5f91d15ff4cac2a8';
-            $this->codeChallenge = '8ad97aceb92c5892e102b093c7c083fa';
         }
             
         $this->identity = array();
@@ -196,13 +184,9 @@ class ViessmannApi
     {
         // Paramètres code
         //
-        if ($this->vicare == true) {
-            $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&scope=openid&redirect_uri=vicare://oauth-callback/everest" .
-            "&response_type=code";
-        } else {
-            $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
-            self::CALLBACK_URI . "&response_type=code";
-        }
+        $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
+        self::CALLBACK_URI . "&response_type=code";
+        
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -239,13 +223,9 @@ class ViessmannApi
     {
         // Paramètres Token
         //
-        if ($this->vicare == true) {
-            $url = self::TOKEN_URL . "?grant_type=authorization_code&client_id=" .
-          $this->clientId . "&client_secret=" . $this->codeChallenge .  "&redirect_uri=vicare://oauth-callback/everest&code=" . $code;
-        } else {
-            $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
-          $this->clientId . "&redirect_uri=" . self::CALLBACK_URI . "&code=" . $code;
-        }
+        $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
+        $this->clientId . "&redirect_uri=" . self::CALLBACK_URI . "&code=" . $code;
+        
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -375,11 +355,7 @@ class ViessmannApi
         $this->features = json_decode($response, true);
 
         if ($this->logFeatures == 'Oui') {
-            if ($this->vicare == true) {
-                $json_file = __DIR__ . '/../../data/features_vic.json';
-            } else {
-                $json_file = __DIR__ . '/../../data/features_iot.json';
-            }
+            $json_file = __DIR__ . '/../../data/features.json';            
             $response = str_replace($this->installationId, 'XXXXXX', $response);
             $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
             file_put_contents($json_file, $response);
