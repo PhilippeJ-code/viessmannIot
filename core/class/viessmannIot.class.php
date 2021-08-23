@@ -2093,7 +2093,7 @@
 
           $maintenant = time();
           $minute = date("i", $maintenant);
-          if ($minute >= 0) {
+          if ($minute == 0) {
               $viessmannApi->getEvents();
               $events = $viessmannApi->getArrayEvents();
               $nbrEvents = count($events["data"]);
