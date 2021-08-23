@@ -24,6 +24,8 @@ class ViessmannApi
     const GATEWAY_URL = "https://api.viessmann.com/iot/v1/equipment/gateways";
 
     const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
+ 
+    const EVENTS_URL = "https://api.viessmann.com/iot/v1/events-history/events";
     
     // Les paramètres d'accès au serveur
     //
@@ -54,6 +56,7 @@ class ViessmannApi
     private $identity;
     private $gateway;
     private $features;
+    private $events;
 
     private $logFeatures;
  
@@ -149,6 +152,7 @@ class ViessmannApi
         $this->identity = array();
         $this->gateway = array();
         $this->features = array();
+        $this->events = array();
         
         // Si c'est possible on réutilise l'ancien token
         //
@@ -366,6 +370,44 @@ class ViessmannApi
         }
     }
 
+    // Lire les events
+    //
+    public function getEvents()
+    {
+        // Lire les données events
+        //   
+        $url = self::EVENTS_URL . "?gatewaySerial=" . $this->serial . "&limit=1000";
+        $header = array("Authorization: Bearer " . $this->token);
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+        );
+
+        // Appel Curl Données
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $this->events = json_decode($response, true);
+
+        if ($this->logFeatures == 'Oui') {
+            $json_file = __DIR__ . '/../../data/events.json';            
+            $response = str_replace($this->installationId, 'XXXXXX', $response);
+            $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
+            file_put_contents($json_file, $response);
+        }
+        
+        if (array_key_exists('statusCode', $this->features)) {
+            throw new ViessmannApiException($this->features["message"], 2);
+        }
+    }
+
     // Ecrire une feature
     //
     public function setFeature($feature, $action, $data)
@@ -458,5 +500,12 @@ class ViessmannApi
     public function getArrayFeatures()
     {
         return $this->features;
+    }
+
+    // Get Array Events
+    //
+    public function getArrayEvents()
+    {
+        return $this->events;
     }
 }

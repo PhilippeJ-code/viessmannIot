@@ -930,33 +930,6 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingPowerConsumptionYear');
                   $obj->save();
-              } elseif (($features["data"][$i]["feature"] == self::HEATING_ERRORS_ACTIVE && $features["data"][$i]["isEnabled"] == true) ||
-                    ($features["data"][$i]["feature"] == self::HEATING_ERRORS_HISTORY && $features["data"][$i]["isEnabled"] == true)) {
-                  $obj = $this->getCmd(null, 'errors');
-                  if (!is_object($obj)) {
-                      $obj = new viessmannIotCmd();
-                      $obj->setName(__('Erreurs', __FILE__));
-                      $obj->setIsVisible(1);
-                      $obj->setIsHistorized(0);
-                  }
-                  $obj->setEqLogic_id($this->getId());
-                  $obj->setType('info');
-                  $obj->setSubType('string');
-                  $obj->setLogicalId('errors');
-                  $obj->save();
-                
-                  $obj = $this->getCmd(null, 'currentError');
-                  if (!is_object($obj)) {
-                      $obj = new viessmannIotCmd();
-                      $obj->setName(__('Erreur courante', __FILE__));
-                      $obj->setIsVisible(1);
-                      $obj->setIsHistorized(0);
-                  }
-                  $obj->setEqLogic_id($this->getId());
-                  $obj->setType('info');
-                  $obj->setSubType('string');
-                  $obj->setLogicalId('currentError');
-                  $obj->save();
               } elseif ($features["data"][$i]["feature"] == self::HEATING_SERVICE_TIMEBASED && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'lastServiceDate');
                   if (!is_object($obj)) {
@@ -1231,15 +1204,13 @@
           }
 
           log::add('viessmannIot', 'info', 'Commandes (re)créées');
-
       }
         
       // Accès au serveur Viessmann
       //
       public function getViessmann()
       {
-
-        $clientId = trim($this->getConfiguration('clientId', ''));
+          $clientId = trim($this->getConfiguration('clientId', ''));
           $codeChallenge = trim($this->getConfiguration('codeChallenge', ''));
 
           $userName = trim($this->getConfiguration('userName', ''));
@@ -1283,7 +1254,8 @@
 
           $viessmannApi = new ViessmannApi($params);
                         
-          if ( (empty($installationId)) || (empty($serial)) || ($createCommands === "Oui") ) {
+          if ((empty($installationId)) || (empty($serial)) || ($createCommands === "Oui")) {
+              $viessmannApi->getFeatures();
               $viessmannApi->getFeatures();
             
               $installationId = $viessmannApi->getInstallationId();
@@ -2025,92 +1997,6 @@
                   if (is_object($obj)) {
                       $obj->event($year);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_ERRORS_ACTIVE && $features["data"][$i]["isEnabled"] == true) {
-                  $n = count($features["data"][$i]['entries']['value']['new']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['new'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['new'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'AN;' . $timeStamp . ';' . $errorCode;
-                          if ($erreurCourante == '') {
-                              $erreurCourante = $errorCode;
-                          }
-                          $nbr++;
-                      }
-                  }
-                  $n = count($features["data"][$i]['entries']['value']['current']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['current'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['current'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'AC;' . $timeStamp . ';' . $errorCode;
-                          $nbr++;
-                      }
-                  }
-                  $n = count($features["data"][$i]['entries']['value']['gone']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['gone'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['gone'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'AG;' . $timeStamp . ';' . $errorCode;
-                          $nbr++;
-                      }
-                  }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_ERRORS_HISTORY && $features["data"][$i]["isEnabled"] == true) {
-                  $n = count($features["data"][$i]['entries']['value']['new']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['new'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['new'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'HN;' . $timeStamp . ';' . $errorCode;
-                          if ($erreurCourante == '') {
-                              $erreurCourante = $errorCode;
-                          }
-                          $nbr++;
-                      }
-                  }
-                  $n = count($features["data"][$i]['entries']['value']['current']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['current'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['current'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'HC;' . $timeStamp . ';' . $errorCode;
-                          $nbr++;
-                      }
-                  }
-                  $n = count($features["data"][$i]['entries']['value']['gone']);
-                  for ($j=0; $j<$n; $j++) {
-                      $timeStamp = substr($features["data"][$i]['entries']['value']['gone'][$j]['timestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
-                      $errorCode = $features["data"][$i]['entries']['value']['gone'][$j]['errorCode'];
-                      if ($nbr < 10) {
-                          if ($nbr > 0) {
-                              $erreurs .= ';';
-                          }
-                          $erreurs .= 'HG;' . $timeStamp . ';' . $errorCode;
-                          $nbr++;
-                      }
-                  }
               } elseif ($features["data"][$i]["feature"] == self::HEATING_SERVICE_TIMEBASED && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["lastService"]["value"];
                   $val = substr($val, 0, 19);
@@ -2200,6 +2086,35 @@
                       $obj = $this->getCmd(null, 'isScheduleHolidayAtHomeProgram');
                       if (is_object($obj)) {
                           $obj->event(0);
+                      }
+                  }
+              }
+          }
+
+          $maintenant = time();
+          $minute = date("i", $maintenant);
+          if ($minute >= 0) {
+              $viessmannApi->getEvents();
+              $events = $viessmannApi->getArrayEvents();
+              $nbrEvents = count($events["data"]);
+              for ($i=0; $i<$nbrEvents; $i++) {
+                  if ($events["data"][$i]["eventType"] == "device-error") {
+                      $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
+                      $timeStamp = str_replace('T', ' ', $timeStamp);
+                      $errorCode = $events["data"][$i]['body']['errorCode'];
+                      if ($nbr < 10) {
+                          if ($nbr > 0) {
+                              $erreurs .= ';';
+                          }
+                          if ($events["data"][$i]['body']['active'] == true) {
+                              $erreurs .= 'AC;' . $timeStamp . ';' . $errorCode;
+                          } else {
+                              $erreurs .= 'IN;' . $timeStamp . ';' . $errorCode;
+                          }
+                          if ($erreurCourante == '') {
+                              $erreurCourante = $errorCode;
+                          }
+                          $nbr++;
                       }
                   }
               }
@@ -2352,7 +2267,6 @@
 
       public static function periodique()
       {
-
           $oldUserName = '';
           $oldPassword = '';
   
@@ -3048,6 +2962,32 @@
           $obj->setType('info');
           $obj->setSubType('numeric');
           $obj->setLogicalId('histoTemperatureExt');
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'errors');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Erreurs', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('errors');
+          $obj->save();
+        
+          $obj = $this->getCmd(null, 'currentError');
+          if (!is_object($obj)) {
+              $obj = new viessmannIotCmd();
+              $obj->setName(__('Erreur courante', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('currentError');
           $obj->save();
       }
 
@@ -4085,7 +4025,6 @@
       //
       public function execute($_options = array())
       {
-
           $eqlogic = $this->getEqLogic();
           if ($this->getLogicalId() == 'refresh') {
               $viessmannApi = $eqlogic->getViessmann();
