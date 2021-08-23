@@ -2097,7 +2097,7 @@
               $viessmannApi->getEvents();
               $events = $viessmannApi->getArrayEvents();
               $nbrEvents = count($events["data"]);
-              for ($i=0; $i<$nbrEvents; $i++) {
+              for ($i=$nbrEvents-1; $i>=0; $i--) {
                   if ($events["data"][$i]["eventType"] == "device-error") {
                       $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
                       $timeStamp = str_replace('T', ' ', $timeStamp);
@@ -2108,11 +2108,12 @@
                           }
                           if ($events["data"][$i]['body']['active'] == true) {
                               $erreurs .= 'AC;' . $timeStamp . ';' . $errorCode;
+                              $erreurCourante = $errorCode;
                           } else {
                               $erreurs .= 'IN;' . $timeStamp . ';' . $errorCode;
-                          }
-                          if ($erreurCourante == '') {
-                              $erreurCourante = $errorCode;
+                              if ($erreurCourante == $errorCode) {
+                                  $erreurCourante = '';
+                              }
                           }
                           $nbr++;
                       }
