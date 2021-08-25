@@ -2099,8 +2099,16 @@
               $nbrEvents = count($events["data"]);
               for ($i=$nbrEvents-1; $i>=0; $i--) {
                   if ($events["data"][$i]["eventType"] == "device-error") {
+
                       $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
-                      $timeStamp = str_replace('T', ' ', $timeStamp);
+                      $timeStamp = str_replace('T', ' ', $timeStamp) . ' GMT';
+                      $timeZone = 'Europe/Warsaw';  // +2 hours
+          
+                      $dateTime = new DateTime($timeStamp);
+                      $dateTime->setTimeZone(new DateTimeZone($timeZone));
+
+                      $timeStamp = $dateTime->format('d/m/Y H:i:s');
+
                       $errorCode = $events["data"][$i]['body']['errorCode'];
                       if ($nbr < 10) {
                           if ($nbr > 0) {
@@ -2119,14 +2127,14 @@
                       }
                   }
               }
-          }
-          $obj = $this->getCmd(null, 'errors');
-          if (is_object($obj)) {
-              $obj->event($erreurs);
-          }
-          $obj = $this->getCmd(null, 'currentError');
-          if (is_object($obj)) {
-              $obj->event($erreurCourante);
+              $obj = $this->getCmd(null, 'errors');
+              if (is_object($obj)) {
+                  $obj->event($erreurs);
+              }
+              $obj = $this->getCmd(null, 'currentError');
+              if (is_object($obj)) {
+                  $obj->event($erreurCourante);
+              }
           }
 
           if ($outsideTemperature == 99) {
