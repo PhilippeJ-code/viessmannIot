@@ -8,5 +8,9 @@
 
     Première mouture
 
+# 14-09-2021
 
+    Correction de quelques bugs mineurs
+
+    
     

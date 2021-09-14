@@ -370,6 +370,13 @@ class ViessmannApi
         }
     }
 
+    // Lire log features
+    //
+    public function getLogFeatures()
+    {
+        return $this->logFeatures;
+    }
+
     // Lire les events
     //
     public function getEvents()

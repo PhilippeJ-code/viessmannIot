@@ -2093,13 +2093,12 @@
 
           $maintenant = time();
           $minute = date("i", $maintenant);
-          if ($minute == 0) {
+          if (($minute == 0) || ($viessmannApi->getLogFeatures() == 'Oui')) {
               $viessmannApi->getEvents();
               $events = $viessmannApi->getArrayEvents();
               $nbrEvents = count($events["data"]);
               for ($i=$nbrEvents-1; $i>=0; $i--) {
                   if ($events["data"][$i]["eventType"] == "device-error") {
-
                       $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
                       $timeStamp = str_replace('T', ' ', $timeStamp) . ' GMT';
                       $timeZone = 'Europe/Warsaw';  // +2 hours
@@ -2145,9 +2144,12 @@
                   $outsideTemperature = round($outsideTemperature, 1);
               }
           }
-          $obj = $this->getCmd(null, 'outsideTemperature');
-          if (is_object($obj)) {
-              $obj->event($outsideTemperature);
+          
+          if ($outsideTemperature != 99) {
+              $obj = $this->getCmd(null, 'outsideTemperature');
+              if (is_object($obj)) {
+                  $obj->event($outsideTemperature);
+              }
           }
 
           if ($roomTemperature == 99) {
@@ -2158,11 +2160,14 @@
                   $roomTemperature = round($roomTemperature, 1);
               }
           }
-          $obj = $this->getCmd(null, 'roomTemperature');
-          if (is_object($obj)) {
-              $obj->event($roomTemperature);
-          }
 
+          if ($roomTemperature != 99) {
+              $obj = $this->getCmd(null, 'roomTemperature');
+              if (is_object($obj)) {
+                  $obj->event($roomTemperature);
+              }
+          }
+        
           if ($activeProgram === 'comfort') {
               $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
               $consigneTemperature = $comfortProgramTemperature;
@@ -2196,19 +2201,24 @@
           //
           $dateCron = time();
           $dateCron = date('Y-m-d H:i:00', $dateCron);
-          $obj = $this->getCmd(null, 'histoTemperatureInt');
-          if (is_object($obj)) {
-              $obj->event($roomTemperature, $dateCron);
-          }
-          $obj = $this->getCmd(null, 'histoTemperatureCsg');
-          if (is_object($obj)) {
-              $obj->event($consigneTemperature, $dateCron);
-          }
-          $obj = $this->getCmd(null, 'histoTemperatureExt');
-          if (is_object($obj)) {
-              $obj->event($outsideTemperature, $dateCron);
-          }
+          if (($roomTemperature != 99) &&
+              ($consigneTemperature != 99) &&
+              ($outsideTemperature != 99)) {
+              $obj = $this->getCmd(null, 'histoTemperatureInt');
+              if (is_object($obj)) {
+                  $obj->event($roomTemperature, $dateCron);
+              }
+        
+              $obj = $this->getCmd(null, 'histoTemperatureCsg');
+              if (is_object($obj)) {
+                  $obj->event($consigneTemperature, $dateCron);
+              }
 
+              $obj = $this->getCmd(null, 'histoTemperatureExt');
+              if (is_object($obj)) {
+                  $obj->event($outsideTemperature, $dateCron);
+              }
+          }
           $outsideMinTemperature = $this->getCache('outsideMinTemperature', 99);
           $outsideMaxTemperature = $this->getCache('outsideMaxTemperature', -99);
 
@@ -2238,21 +2248,24 @@
                   $this->setCache('oldStarts', $heatingBurnerStarts);
               }
 
-              if (($outsideMinTemperature != 99) && ($outsideTemperature != 99)) {
+              if ($outsideMinTemperature != 99) {
                   $obj = $this->getCmd(null, 'outsideMinTemperature');
                   if (is_object($obj)) {
                       $obj->event($outsideMinTemperature, $dateVeille);
                   }
-                  $this->setCache('outsideMinTemperature', $outsideTemperature);
               }
 
-              if (($outsideMaxTemperature != -99) && ($outsideTemperature != 99)) {
+              if ($outsideMaxTemperature != -99) {
                   $obj = $this->getCmd(null, 'outsideMaxTemperature');
                   if (is_object($obj)) {
                       $obj->event($outsideMaxTemperature, $dateVeille);
                   }
-                  $this->setCache('outsideMaxTemperature', $outsideTemperature);
               }
+
+              $outsideMinTemperature = 99;
+              $this->setCache('outsideMinTemperature', $outsideMinTemperature);
+              $outsideMaxTemperature = -99;
+              $this->setCache('outsideMaxTemperature', $outsideMaxTemperature);
 
               $this->setCache('oldJour', $jour);
           }
@@ -2374,6 +2387,15 @@
           $viessmannApi->setFeature($this->buildFeature($circuitId, self::COMFORT_PROGRAM), "setTemperature", $data);
 
           unset($viessmannApi);
+
+          $obj = $this->getCmd(null, 'activeProgram');
+          $activeProgram = '';
+          if (is_object($obj)) {
+              $activeProgram = $obj->execCmd();
+          }
+          if ($activeProgram === 'comfort') {
+              $this->getCmd(null, 'programTemperature')->event($temperature);
+          }
       }
 
       // Set Normal Program Temperature
@@ -2391,6 +2413,15 @@
           $viessmannApi->setFeature($this->buildFeature($circuitId, self::NORMAL_PROGRAM), "setTemperature", $data);
 
           unset($viessmannApi);
+
+          $obj = $this->getCmd(null, 'activeProgram');
+          $activeProgram = '';
+          if (is_object($obj)) {
+              $activeProgram = $obj->execCmd();
+          }
+          if ($activeProgram === 'normal') {
+              $this->getCmd(null, 'programTemperature')->event($temperature);
+          }
       }
 
       // Set Reduced Program Temperature
@@ -2408,6 +2439,14 @@
           $viessmannApi->setFeature($this->buildFeature($circuitId, self::REDUCED_PROGRAM), "setTemperature", $data);
 
           unset($viessmannApi);
+          $obj = $this->getCmd(null, 'activeProgram');
+          $activeProgram = '';
+          if (is_object($obj)) {
+              $activeProgram = $obj->execCmd();
+          }
+          if (($activeProgram !== 'comfort') && ($activeProgram !== 'normal')) {
+              $this->getCmd(null, 'programTemperature')->event($temperature);
+          }
       }
 
       // Start One Time Dhw Charge

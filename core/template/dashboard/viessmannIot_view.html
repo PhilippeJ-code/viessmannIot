@@ -1566,25 +1566,25 @@
             if (_options.display_value == '??') {
                 $('#showStatutChauffage#uid#').hide();
             } else {
-                $('#idModeStandby#uid#').prop('checked', 'checked');
+                $('#idModeStandby#uid#').prop('checked', true);
 
                 if (_options.display_value == 'standby') {
                     $('#idStatutChauffage#uid#').html('Arrêt');
                 } else if (_options.display_value == 'heating') {
                     $('#idStatutChauffage#uid#').html('Chauffage seul activé');
-                    $('#idModeHeating#uid#').prop('checked', 'checked');
+                    $('#idModeHeating#uid#').prop('checked', true);
                 } else if (_options.display_value == 'dhw') {
                     $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
-                    $('#idModeDhw#uid#').prop('checked', 'checked');
+                    $('#idModeDhw#uid#').prop('checked', true);
                 } else if (_options.display_value == 'dhwAndHeating') {
                     $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
-                    $('#idModeDhwAndHeating#uid#').prop('checked', 'checked');
+                    $('#idModeDhwAndHeating#uid#').prop('checked', true);
                 } else if (_options.display_value == 'forcedReduced') {
                     $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
-                    $('#idModeForcedReduced#uid#').prop('checked', 'checked');
+                    $('#idModeForcedReduced#uid#').prop('checked', true);
                 } else if (_options.display_value == 'forcedNormal') {
                     $('#idStatutChauffage#uid#').html('Mode jour en permanence');
-                    $('#idModeForcedNormal#uid#').prop('checked', 'checked');
+                    $('#idModeForcedNormal#uid#').prop('checked', true);
                 } else {
                     $('#idStatutChauffage#uid#').html(_options.display_value);
                 }
