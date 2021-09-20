@@ -2108,7 +2108,9 @@
 
                       $timeStamp = $dateTime->format('d/m/Y H:i:s');
 
-                      $errorCode = $events["data"][$i]['body']['errorCode'];
+                      $errorCode = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
+                      $errorCode = str_replace(';', ' ', $errorCode);
+                      
                       if ($nbr < 10) {
                           if ($nbr > 0) {
                               $erreurs .= ';';
