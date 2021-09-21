@@ -21,6 +21,8 @@
 
   class viessmannIot extends eqLogic
   {
+      const REFRESH_TIME = 10;
+
       const HEATING_CIRCUITS = "heating.circuits";
       const HEATING_BURNERS = "heating.burners";
 
@@ -70,6 +72,69 @@
       const HOLIDAY_PROGRAM =  "heating.operating.programs.holiday";
       const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
       
+      public static function deamon_info()
+      {
+          $return = array();
+          $return['log'] = '';
+          $return['state'] = 'nok';
+          $cron = cron::byClassAndFunction(__CLASS__, 'salsa');
+          if (is_object($cron) && $cron->running()) {
+              $return['state'] = 'ok';
+          }
+          $return['launchable'] = 'ok';
+          return $return;
+      }
+
+      public static function deamon_start()
+      {
+          self::deamon_stop();
+          $deamon_info = self::deamon_info();
+          if ($deamon_info['launchable'] != 'ok') {
+              throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+          }
+          $cron = cron::byClassAndFunction(__CLASS__, 'salsa');
+          if (!is_object($cron)) {
+              $cron = new cron();
+              $cron->setClass(__CLASS__);
+              $cron->setFunction('salsa');
+              $cron->setEnable(1);
+              $cron->setDeamon(1);
+              $cron->setTimeout(1440);
+              $cron->setSchedule('* * * * *');
+              $cron->save();
+          }
+          $cron->run();
+      }
+
+      public static function deamon_stop()
+      {
+          $cron = cron::byClassAndFunction(__CLASS__, 'salsa');
+          if (is_object($cron)) {
+              $cron->halt();
+          }
+      }
+
+      public static function salsa()
+      {
+          foreach (viessmannIot::byType('viessmannIot', true) as $viessmannIot) {
+              if ($viessmannIot->getIsEnable() == 1) {
+                  $tempsRestant = $viessmannIot->getCache('tempsRestant', 10);
+                  if ($tempsRestant > 0) {
+                      $tempsRestant--;
+                      if ($tempsRestant == 0) {
+                          $viessmannApi = $viessmannIot->getViessmann();
+                          if ($viessmannApi !== null) {
+                              $viessmannIot->rafraichir($viessmannApi);
+                              unset($viessmannApi);
+                          }
+                      }
+                      $viessmannIot->setCache('tempsRestant', $tempsRestant);
+                  }
+              }
+          }
+          sleep(1);
+      }
+
       public function validateDate($date, $format = 'Y-m-d H:i:s')
       {
           $d = DateTime::createFromFormat($format, $date);
@@ -1279,6 +1344,8 @@
 
       public function rafraichir($viessmannApi)
       {
+          $this->setCache('tempsRestant', 0);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
           $facteurConversionGaz = floatval($this->getConfiguration('facteurConversionGaz', 1));
           if ($facteurConversionGaz == 0) {
@@ -2108,18 +2175,19 @@
 
                       $timeStamp = $dateTime->format('d/m/Y H:i:s');
 
-                      $errorCode = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
-                      $errorCode = str_replace(';', ' ', $errorCode);
+                      $errorCode = $events["data"][$i]['body']['errorCode'];
+                      $errorDescription = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
+                      $errorDescription = str_replace(';', ' ', $errorDescription);
                       
                       if ($nbr < 10) {
                           if ($nbr > 0) {
                               $erreurs .= ';';
                           }
                           if ($events["data"][$i]['body']['active'] == true) {
-                              $erreurs .= 'AC;' . $timeStamp . ';' . $errorCode;
+                              $erreurs .= 'AC;' . $timeStamp . ';' . $errorDescription;
                               $erreurCourante = $errorCode;
                           } else {
-                              $erreurs .= 'IN;' . $timeStamp . ';' . $errorCode;
+                              $erreurs .= 'IN;' . $timeStamp . ';' . $errorDescription;
                               if ($erreurCourante == $errorCode) {
                                   $erreurCourante = '';
                               }
@@ -2345,6 +2413,8 @@
       //
       public function setDhwTemperature($temperature)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
@@ -2360,6 +2430,8 @@
       //
       public function setMode($mode)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2378,6 +2450,8 @@
       //
       public function setComfortProgramTemperature($temperature)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2404,6 +2478,8 @@
       //
       public function setNormalProgramTemperature($temperature)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2430,6 +2506,8 @@
       //
       public function setReducedProgramTemperature($temperature)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+        
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2455,6 +2533,8 @@
       //
       public function startOneTimeDhwCharge()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
@@ -2471,6 +2551,8 @@
       //
       public function stopOneTimeDhwCharge()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
@@ -2487,6 +2569,8 @@
       //
       public function activateComfortProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2505,6 +2589,8 @@
       //
       public function deActivateComfortProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2523,6 +2609,8 @@
       //
       public function activateEcoProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2541,6 +2629,8 @@
       //
       public function deActivateEcoProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2559,6 +2649,8 @@
       //
       public function setSlope($slope)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2579,6 +2671,8 @@
       //
       public function setShift($shift)
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           $viessmannApi = $this->getViessmann();
@@ -2599,6 +2693,8 @@
       //
       public function scheduleHolidayProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $obj = $this->getCmd(null, 'startHoliday');
           $startHoliday = $obj->execCmd();
           if ($this->validateDate($startHoliday, 'Y-m-d') == false) {
@@ -2634,6 +2730,8 @@
       //
       public function unscheduleHolidayProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;
@@ -2650,6 +2748,8 @@
       //
       public function scheduleHolidayAtHomeProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $obj = $this->getCmd(null, 'startHolidayAtHome');
           $startHolidayAtHome = $obj->execCmd();
           if ($this->validateDate($startHolidayAtHome, 'Y-m-d') == false) {
@@ -2685,6 +2785,8 @@
       //
       public function unscheduleHolidayAtHomeProgram()
       {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
           $viessmannApi = $this->getViessmann();
           if ($viessmannApi == null) {
               return;

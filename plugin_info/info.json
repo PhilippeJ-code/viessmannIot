@@ -7,7 +7,7 @@
 	"require" : "4.0",
 	"category" : "wellness",
 	"hasDependency" : false,
-	"hasOwnDeamon" : false,
+	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
     "changelog": "https:\/\/github.com\/PhilippeJ-code\/viessmannIot\/blob\/master\/docs\/#language#\/changelog.md",
     "documentation": "https:\/\/github.com\/PhilippeJ-code\/viessmannIot\/blob\/master\/docs\/#language#\/index.md",

@@ -28,6 +28,19 @@ function viessmannIot_install()
     config::save('functionality::cron15::enable', 0, 'viessmannIot');
     config::save('functionality::cron30::enable', 1, 'viessmannIot');
     config::save('functionality::cronHourly::enable', 0, 'viessmannIot');
+
+	$cron = cron::byClassAndFunction('viessmannIot', 'salsa');
+	if (!is_object($cron)) {
+		$cron = new cron();
+		$cron->setClass('viessmannIot');
+		$cron->setFunction('salsa');
+		$cron->setEnable(1);
+		$cron->setDeamon(1);
+		$cron->setTimeout(1440);
+		$cron->setSchedule('* * * * *');
+		$cron->save();
+	}
+	$cron->start();
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
@@ -62,12 +75,30 @@ function viessmannIot_update()
         $viessmann->save();
     }
 
+	$cron = cron::byClassAndFunction('viessmannIot', 'salsa');
+	if (!is_object($cron)) {
+		$cron = new cron();
+		$cron->setClass('viessmannIot');
+		$cron->setFunction('salsa');
+		$cron->setEnable(1);
+		$cron->setDeamon(1);
+		$cron->setDeamonSleepTime(1);
+		$cron->setSchedule('* * * * *');
+		$cron->setTimeout(1440);
+		$cron->save();
+	}
+	$cron->start();
+
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 //
 function viessmannIot_remove() 
 {
+	$cron = cron::byClassAndFunction('viessmannIot', 'salsa');
+	if (is_object($cron)) {
+		$cron->remove();
+	}
 }
 
 ?>

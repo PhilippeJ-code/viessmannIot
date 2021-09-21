@@ -359,7 +359,7 @@ class ViessmannApi
         $this->features = json_decode($response, true);
 
         if ($this->logFeatures == 'Oui') {
-            $json_file = __DIR__ . '/../../data/features.json';            
+            $json_file = __DIR__ . '/../../data/features.json';
             $response = str_replace($this->installationId, 'XXXXXX', $response);
             $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
             file_put_contents($json_file, $response);
@@ -382,7 +382,7 @@ class ViessmannApi
     public function getEvents()
     {
         // Lire les données events
-        //   
+        //
         $url = self::EVENTS_URL . "?gatewaySerial=" . $this->serial . "&limit=1000";
         $header = array("Authorization: Bearer " . $this->token);
 
@@ -400,11 +400,55 @@ class ViessmannApi
         curl_setopt_array($curl, $curloptions);
         $response = curl_exec($curl);
         curl_close($curl);
-
+/*
+        $response = '{
+            "data": [        
+                
+        {
+            "eventType": "device-error",
+            "gatewaySerial": "XXXXXXXXXXXXXXXX",
+            "body": {
+                "errorCode": "80",
+                "deviceId": "0",
+                "modelId": "VScotHO1_200_11",
+                "active": false,
+                "equipmentType": "Boiler",
+                "errorEventType": "Error",
+                "errorDescription": "No flame formation – gas pressure absent/low"
+            },
+            "createdAt": "2021-08-23T21:39:26.498Z",
+            "eventTimestamp": "2021-08-23T21:38:56.000Z",
+            "editedBy": "system",
+            "origin": "system"
+        },
+        
+        {
+            "eventType": "device-error",
+            "gatewaySerial": "XXXXXXXXXXXXXXXX",
+            "body": {
+                "errorCode": "80",
+                "deviceId": "0",
+                "modelId": "VScotHO1_200_11",
+                "active": true,
+                "equipmentType": "Boiler",
+                "errorEventType": "Error",
+                "errorDescription": "No flame formation – gas pressure absent/low"
+            },
+            "createdAt": "2021-08-23T21:38:47.061Z",
+            "eventTimestamp": "2021-08-23T21:28:45.000Z",
+            "editedBy": "system",
+            "origin": "system"
+        }
+    ],
+    "cursor": {
+        "next": ""
+    }
+}';
+*/
         $this->events = json_decode($response, true);
 
         if ($this->logFeatures == 'Oui') {
-            $json_file = __DIR__ . '/../../data/events.json';            
+            $json_file = __DIR__ . '/../../data/events.json';
             $response = str_replace($this->installationId, 'XXXXXX', $response);
             $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
             file_put_contents($json_file, $response);
