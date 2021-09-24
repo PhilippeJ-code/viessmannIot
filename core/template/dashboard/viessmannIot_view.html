@@ -1837,14 +1837,17 @@
             },
             series: [{
                 name: 'Rad',
+                color: '#4572A7',
                 data: [0]
 
             }, {
                 name: 'Eau',
+                color: '#AA4643',
                 data: [0]
 
             }, {
                 name: 'Tot',
+                color: '#89A54E',
                 data: [0]
 
             }]
@@ -1894,14 +1897,17 @@
             },
             series: [{
                 name: 'Rad',
+                color: '#4572A7',
                 data: [0]
 
             }, {
                 name: 'Eau',
+                color: '#AA4643',
                 data: [0]
 
             }, {
                 name: 'Tot',
+                color: '#89A54E',
                 data: [0]
 
             }]
@@ -1951,14 +1957,16 @@
             },
             series: [{
                 name: 'Rad',
+                color: '#4572A7',
                 data: [0]
-
             }, {
                 name: 'Eau',
+                color: '#AA4643',
                 data: [0]
 
             }, {
                 name: 'Tot',
+                color: '#89A54E',
                 data: [0]
 
             }]
@@ -2008,14 +2016,16 @@
             },
             series: [{
                 name: 'Rad',
+                color: '#4572A7',
                 data: [0]
-
             }, {
                 name: 'Eau',
+                color: '#AA4643',
                 data: [0]
 
             }, {
                 name: 'Tot',
+                color: '#89A54E',
                 data: [0]
 
             }]
@@ -2143,13 +2153,6 @@
         }
         jeedom.cmd.update['#idTotalGazConsumptionYear#']({ display_value: '#totalGazConsumptionYear#' });
 
-        // Tuile électricité
-        //
-        jeedom.cmd.update['#idHeatingPowerConsumption#'] = function (_options) {
-            $('#idHeatingPowerConsumption#uid#').html(_options.display_value);
-        }
-        jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
-
         // Tuile rafraichir
         //
         jeedom.cmd.update['#idRefreshDate#'] = function (_options) {
@@ -2257,6 +2260,7 @@
             },
             series: [{
                 name: 'Elec',
+                color: '#4572A7',
                 data: [0]
 
             }]
@@ -2306,6 +2310,7 @@
             },
             series: [{
                 name: 'Elec',
+                color: '#4572A7',
                 data: [0]
 
             }]
@@ -2355,6 +2360,7 @@
             },
             series: [{
                 name: 'Elec',
+                color: '#4572A7',
                 data: [0]
 
             }]
@@ -2404,6 +2410,7 @@
             },
             series: [{
                 name: 'Elec',
+                color: '#4572A7',
                 data: [0]
 
             }]
@@ -2755,6 +2762,7 @@
                             '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span><br/>';
                     }
                 },
+                color: '#4572A7',
                 data: [0]
             }, {
                 name: 'T° Csg',
@@ -2767,6 +2775,7 @@
                         return '<span style="color:' + this.series.color + '">' + this.series.name + ' : <b>' + this.y + '°</b></span>';
                     }
                 },
+                color: '#AA4643',
                 data: [0]
             }]
         });
@@ -2880,6 +2889,7 @@
                 [
                     {
                         name: 'T°Dep',
+                        color: '#4572A7',
                         data: [0]
                     }
                 ]
@@ -2947,6 +2957,7 @@
 
             series: [{
                 name: 'Temperatures',
+                color: '#4572A7',
                 data: [#datasMinMax#]
             }]
 
