@@ -29,7 +29,6 @@
       const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
       const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
       const DHW_TEMPERATURE = "heating.dhw.temperature.main";
-      const HEATING_BURNER = "heating.burner";
       const HEATING_DHW_ONETIMECHARGE = "heating.dhw.oneTimeCharge";
       const HEATING_DHW_SCHEDULE = "heating.dhw.schedule";
 
@@ -319,7 +318,7 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('activeProgram');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, '') && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1408,7 +1407,7 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_BURNER && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, '') && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                   if (is_object($obj)) {
@@ -4073,7 +4072,10 @@
 
       private function buildFeatureBurner($circuitId, $feature)
       {
-          return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
+            if ( $feature == '' ) {
+                return HEATING_BURNERS . "." . $circuitId;    
+            }
+            return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
       }
 
       // Lire les températures intérieures
