@@ -734,6 +734,17 @@
                   $obj->setSubType('string');
                   $obj->setLogicalId('dhwSchedule');
                   $obj->save();
+
+                  $obj = $this->getCmd(null, 'setDhwSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Set Prog Eau Chaude', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('setDhwSchedule');
+                  $obj->setType('action');
+                  $obj->setSubType('message');
+                  $obj->save();
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_SCHEDULE) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'heatingSchedule');
                   if (!is_object($obj)) {
@@ -746,6 +757,17 @@
                   $obj->setType('info');
                   $obj->setSubType('string');
                   $obj->setLogicalId('heatingSchedule');
+                  $obj->save();
+
+                  $obj = $this->getCmd(null, 'setHeatingSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Set Prog Chauffage', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('setHeatingSchedule');
+                  $obj->setType('action');
+                  $obj->setSubType('message');
                   $obj->save();
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::HEATING_FROSTPROTECTION) && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'frostProtection');
@@ -2798,6 +2820,117 @@
           $this->getCmd(null, 'isScheduleHolidayAtHomeProgram')->event(0);
       }
 
+      //
+      //
+      public function setHeatingSchedule($titre, $message)
+      {
+        
+        $obj = $this->getCmd(null, 'heatingSchedule');
+        if (!is_object($obj)) return('Object non trouvé');        
+        $str = $obj->execCmd();
+        $elements = explode(';', $str);
+        if (count($elements) != 7) return('Nombre d\'élements <> 7');
+
+        $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+        $commande = '{"newSchedule": {';
+        for ($i=0; $i<7; $i++) {
+            if ( $titre == $jours[$i]) {
+                $subElements = explode(',', $message);
+            } else {
+                $subElements = explode(',', $elements[$i]);
+            }
+            $n = count($subElements);
+            if (($n % 3) != 0 ) return('Nombre de sous éléments <> 3');
+            $commande .= '"'.$jours[$i].'": [';
+            for ($j=0; $j<$n; $j+=3) {
+                $mode = $subElements[$j];
+                $start = $subElements[$j+1];
+                $end = $subElements[$j+2];
+                $commande .= '{';
+                if ($mode == 'n') {
+                    $commande .= '"mode": "normal",';
+                } else {
+                    $commande .= '"mode": "comfort",';
+                }
+                $commande .= '"start": "'.$start.'",';
+                $commande .= '"end": "'.$end.'",';
+                $commande .= '"position": '.$j/3.;
+                $commande .= '}';
+                if ($j < $n-3) $commande .= ',';                
+            }
+            $commande .= ']';
+            if ( $i<6 ) $commande .= ',';
+        }
+        $commande .= '}}';
+
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $this->setCache('tempsRestant', self::REFRESH_TIME);
+
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+      
+        $viessmannApi->setFeature($this->buildFeature($circuitId, self::HEATING_SCHEDULE), "setSchedule", $commande);
+        unset($viessmannApi);
+
+        return ($commande);
+
+      }
+
+      //
+      //
+      public function setDhwSchedule($titre, $message)
+      {
+        $obj = $this->getCmd(null, 'dhwSchedule');
+        if (!is_object($obj)) return('Object non trouvé');        
+        $str = $obj->execCmd();
+        $elements = explode(';', $str);
+        if (count($elements) != 7) return('Nombre d\'élements <> 7');
+
+        $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+        $commande = '{"newSchedule": {';
+        for ($i=0; $i<7; $i++) {
+            if ( $titre == $jours[$i]) {
+                $subElements = explode(',', $message);
+            } else {
+                $subElements = explode(',', $elements[$i]);
+            }
+            $n = count($subElements);
+            if (($n % 3) != 0 ) return('Nombre de sous éléments <> 3');
+            $commande .= '"'.$jours[$i].'": [';
+            for ($j=0; $j<$n; $j+=3) {
+                $mode = $subElements[$j];
+                $start = $subElements[$j+1];
+                $end = $subElements[$j+2];
+                $commande .= '{';
+                $commande .= '"mode": "on",';
+                $commande .= '"start": "'.$start.'",';
+                $commande .= '"end": "'.$end.'",';
+                $commande .= '"position": '.$j/3.;
+                $commande .= '}';
+                if ($j < $n-3) $commande .= ',';                
+            }
+            $commande .= ']';
+            if ( $i<6 ) $commande .= ',';
+        }
+        $commande .= '}}';
+
+        $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $this->setCache('tempsRestant', self::REFRESH_TIME);
+
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+      
+        $viessmannApi->setFeature(self::HEATING_DHW_SCHEDULE, "setSchedule", $commande);
+        unset($viessmannApi);
+
+        return ($commande);
+
+      }
+
       public static function cron()
       {
           $maintenant = time();
@@ -3505,65 +3638,35 @@
           $obj = $this->getCmd(null, 'heatingSchedule');
           if (is_object($obj)) {
               $str = $obj->execCmd();
-              $schedules = explode(";", $str);
-            
-              if (count($schedules) == 7) {
-                  $replace["#heaSchLun#"] = $schedules[0];
-                  $replace["#heaSchMar#"] = $schedules[1];
-                  $replace["#heaSchMer#"] = $schedules[2];
-                  $replace["#heaSchJeu#"] = $schedules[3];
-                  $replace["#heaSchVen#"] = $schedules[4];
-                  $replace["#heaSchSam#"] = $schedules[5];
-                  $replace["#heaSchDim#"] = $schedules[6];
-              } else {
-                  $replace["#heaSchLunSta#"] = '';
-                  $replace["#heaSchMarSta#"] = '';
-                  $replace["#heaSchMerSta#"] = '';
-                  $replace["#heaSchJeuSta#"] = '';
-                  $replace["#heaSchVenSta#"] = '';
-                  $replace["#heaSchSamSta#"] = '';
-                  $replace["#heaSchDimSta#"] = '';
-              }
+              $replace["#heatingSchedule#"] = $str;
+              $replace["#idHeatingSchedule#"] = $obj->getId();
           } else {
-              $replace["#heaSchLunSta#"] = '';
-              $replace["#heaSchMarSta#"] = '';
-              $replace["#heaSchMerSta#"] = '';
-              $replace["#heaSchJeuSta#"] = '';
-              $replace["#heaSchVenSta#"] = '';
-              $replace["#heaSchSamSta#"] = '';
-              $replace["#heaSchDimSta#"] = '';
+              $replace["#heatingSchedule#"] = "";
+              $replace["#idHeatingSchedule#"] = '#idHeatingSchedule#';
           }
-  
+   
           $obj = $this->getCmd(null, 'dhwSchedule');
           if (is_object($obj)) {
               $str = $obj->execCmd();
-              $schedules = explode(";", $str);
-
-              if (count($schedules) == 7) {
-                  $replace["#dhwSchLun#"] = $schedules[0];
-                  $replace["#dhwSchMar#"] = $schedules[1];
-                  $replace["#dhwSchMer#"] = $schedules[2];
-                  $replace["#dhwSchJeu#"] = $schedules[3];
-                  $replace["#dhwSchVen#"] = $schedules[4];
-                  $replace["#dhwSchSam#"] = $schedules[5];
-                  $replace["#dhwSchDim#"] = $schedules[6];
-              } else {
-                  $replace["#dhwSchLun#"] = '';
-                  $replace["#dhwSchMar#"] = '';
-                  $replace["#dhwSchMer#"] = '';
-                  $replace["#dhwSchJeu#"] = '';
-                  $replace["#dhwSchVen#"] = '';
-                  $replace["#dhwSchSam#"] = '';
-                  $replace["#dhwSchDim#"] = '';
-              }
+              $replace["#dhwSchedule#"] = $str;
+              $replace["#idDhwSchedule#"] = $obj->getId();
           } else {
-              $replace["#dhwSchLun#"] = '';
-              $replace["#dhwSchMar#"] = '';
-              $replace["#dhwSchMer#"] = '';
-              $replace["#dhwSchJeu#"] = '';
-              $replace["#dhwSchVen#"] = '';
-              $replace["#dhwSchSam#"] = '';
-              $replace["#dhwSchDim#"] = '';
+              $replace["#dhwSchedule#"] = "";
+              $replace["#idDhwSchedule#"] = '#idDhwSchedule#';
+          }
+
+          $obj = $this->getCmd(null, 'setHeatingSchedule');
+          if (is_object($obj)) {
+              $replace["#idSetHeatingSchedule#"] = $obj->getId();
+          } else {
+              $replace["#idSetHeatingSchedule#"] = '#idSetHeatingSchedule#';
+          }
+   
+          $obj = $this->getCmd(null, 'setDhwSchedule');
+          if (is_object($obj)) {
+              $replace["#idSetDhwSchedule#"] = $obj->getId();
+          } else {
+              $replace["#idSetDhwSchedule#"] = '#idSetDhwSchedule#';
           }
 
           $str = '';
@@ -4072,10 +4175,10 @@
 
       private function buildFeatureBurner($circuitId, $feature)
       {
-            if ( $feature == '' ) {
-                return HEATING_BURNERS . "." . $circuitId;    
-            }
-            return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
+          if ($feature == '') {
+              return HEATING_BURNERS . "." . $circuitId;
+          }
+          return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
       }
 
       // Lire les températures intérieures
@@ -4274,6 +4377,36 @@
                   return;
               }
               $eqlogic->getCmd(null, 'endHolidayAtHome')->event($_options['text']);
+          } elseif ($this->getLogicalId() == 'setHeatingSchedule') {
+              if ($this->getSubType() === 'message') {
+                  if ($_options !== null) {
+                      $titre = '';
+                      if (isset($_options['title'])) {
+                          $titre = $_options['title'];
+                      }
+                      $message = '';
+                      if (isset($_options['message'])) {
+                          $message = $_options['message'];
+                      }
+                      $str = $eqlogic->setHeatingSchedule($titre, $message);
+                      log::add('viessmannIot', 'info', $str);
+                  }
+              }
+          } elseif ($this->getLogicalId() == 'setDhwSchedule') {
+              if ($this->getSubType() === 'message') {
+                  if ($_options !== null) {
+                      $titre = '';
+                      if (isset($_options['title'])) {
+                          $titre = $_options['title'];
+                      }
+                      $message = '';
+                      if (isset($_options['message'])) {
+                          $message = $_options['message'];
+                      }
+                      $str = $eqlogic->setDhwSchedule($titre, $message);
+                      log::add('viessmannIot', 'info', $str);
+                  }
+              }
           }
       }
   }
