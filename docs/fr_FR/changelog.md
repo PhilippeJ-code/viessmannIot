@@ -12,5 +12,11 @@
 
     Correction de quelques bugs mineurs
 
+# 27-10-2021
+
+    Ajout affichage programmation sur mise à jour
+    Ajout commandes pour programmer la chaudière
+    Ajout widget pour changer la programmation
+
     
     
