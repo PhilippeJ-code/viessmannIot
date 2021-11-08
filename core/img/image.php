@@ -18,9 +18,9 @@ $image = imagecreate($width, $height);
 
 $blanc = imagecolorallocate($image, 255, 255, 255);
 
-$orange = imagecolorallocate($image, 255, 125, 39);
+$orange = imagecolorallocate($image, 247, 163, 92);
 $rouge = imagecolorallocate($image, 255, 0, 0);
-$bleuclair = imagecolorallocate($image, 156, 227, 254);
+$bleuclair = imagecolorallocate($image, 124, 182, 236);
 
 $gris = imagecolorallocate($image, 128, 128, 128);
 $grisClair = imagecolorallocate($image, 192, 192, 192);

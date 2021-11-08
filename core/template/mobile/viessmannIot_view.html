@@ -447,6 +447,15 @@
             <img class="classCrayon#uid# cursor" id="idDeActivateEcoProgram#uid#"
                 src="plugins/viessmannIot/core/img/stop.svg"></br>
         </div>
+
+        <div id="showLastSchedule#uid#">
+            <span class="classSousTitre#uid#">Prolonger programme</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idIsActivateLastSchedule#" id="idIsActivateLastSchedule#uid#"></span>
+            <img class="classCrayon#uid# cursor" id="idActivateLastSchedule#uid#"
+                src="plugins/viessmannIot/core/img/start.svg">
+            <img class="classCrayon#uid# cursor" id="idDeActivateLastSchedule#uid#"
+                src="plugins/viessmannIot/core/img/stop.svg"></br>
+        </div>
         <div class="gap-10"></div>
 
         <div id="showHolidayProgram#uid#">
@@ -2674,6 +2683,21 @@
         }
         jeedom.cmd.update['#idIsActivateEcoProgram#']({ display_value: '#isActivateEcoProgram#' });
 
+        jeedom.cmd.update['#idIsActivateLastSchedule#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showLastSchedule#uid#').hide();
+            } else if (_options.display_value == 1) {
+                $('#idIsActivateLastSchedule#uid#').html("Activé");
+                $('#idActivateLastSchedule#uid#').hide();
+                $('#idDeActivateLastSchedule#uid#').show();
+            } else {
+                $('#idIsActivateLastSchedule#uid#').html("Désactivé");
+                $('#idActivateLastSchedule#uid#').show();
+                $('#idDeActivateLastSchedule#uid#').hide();
+            }
+        }
+        jeedom.cmd.update['#idIsActivateLastSchedule#']({ display_value: '#isActivateLastSchedule#' });
+
         // Click pour activer eco program
         //
         $('#idActivateEcoProgram#uid#').on('click', function () {
@@ -2687,6 +2711,22 @@
         $('#idDeActivateEcoProgram#uid#').on('click', function () {
             jeedom.cmd.execute({
                 id: '#idDeActivateEcoProgram#'
+            });
+        });
+
+        // Click pour activer prolonger programme
+        //
+        $('#idActivateLastSchedule#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idActivateLastSchedule#'
+            });
+        });
+
+        // Click pour désactiver prolonger programme
+        //
+        $('#idDeActivateLastSchedule#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idDeActivateLastSchedule#'
             });
         });
 
@@ -3563,6 +3603,13 @@
 
         });
 
+        $(function () {
+            $("#idPopupProgChauffage#uid#").draggable({                
+                cursor: "crosshair",
+                opacity: 0.9
+            });
+        });
+        
         $('#idPchOk#uid#').on('click', function () {
 
             var val = $("#selectionProgChauffage#uid#").val();
@@ -3602,6 +3649,13 @@
 
             $('#idPopupProgEauChaude#uid#').show();
 
+        });
+
+        $(function () {
+            $("#idPopupProgEauChaude#uid#").draggable({                
+                cursor: "crosshair",
+                opacity: 0.9
+            });
         });
 
         $('#idPecOk#uid#').on('click', function () {

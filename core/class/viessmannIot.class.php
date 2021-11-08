@@ -70,6 +70,7 @@
       const MODULATION = "modulation";
       const HOLIDAY_PROGRAM =  "heating.operating.programs.holiday";
       const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
+      const FORCED_LAST_FROM_SCHEDULE = "operating.programs.forcedLastFromSchedule";
       
       public static function deamon_info()
       {
@@ -615,6 +616,41 @@
                   }
                   $obj->setEqLogic_id($this->getId());
                   $obj->setLogicalId('deActivateEcoProgram');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::FORCED_LAST_FROM_SCHEDULE) && $features["data"][$i]["isEnabled"] == true) {
+                  $obj = $this->getCmd(null, 'isActivateLastSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Prolonger programme actif', __FILE__));
+                      $obj->setIsVisible(1);
+                      $obj->setIsHistorized(0);
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setType('info');
+                  $obj->setSubType('binary');
+                  $obj->setLogicalId('isActivateLastSchedule');
+                  $obj->save();
+  
+                  $obj = $this->getCmd(null, 'activateLastSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Activer prolonger programme', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('activateLastSchedule');
+                  $obj->setType('action');
+                  $obj->setSubType('other');
+                  $obj->save();
+            
+                  $obj = $this->getCmd(null, 'deActivateLastSchedule');
+                  if (!is_object($obj)) {
+                      $obj = new viessmannIotCmd();
+                      $obj->setName(__('Désactiver prolonger programme', __FILE__));
+                  }
+                  $obj->setEqLogic_id($this->getId());
+                  $obj->setLogicalId('deActivateLastSchedule');
                   $obj->setType('action');
                   $obj->setSubType('other');
                   $obj->save();
@@ -1518,6 +1554,12 @@
               } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ECO_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                   $val = $features["data"][$i]["properties"]["active"]["value"];
                   $obj = $this->getCmd(null, 'isActivateEcoProgram');
+                  if (is_object($obj)) {
+                      $obj->event($val);
+                  }
+              } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::FORCED_LAST_FROM_SCHEDULE) && $features["data"][$i]["isEnabled"] == true) {
+                  $val = $features["data"][$i]["properties"]["active"]["value"];
+                  $obj = $this->getCmd(null, 'isActivateLastSchedule');
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
@@ -2666,6 +2708,46 @@
           $this->getCmd(null, 'isActivateEcoProgram')->event(0);
       }
 
+      // Activate Last Schedule
+      //
+      public function activateLastSchedule()
+      {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::FORCED_LAST_FROM_SCHEDULE), "activate", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isActivateLastSchedule')->event(1);
+      }
+
+      // deActivate Last Schedule
+      //
+      public function deActivateLastSchedule()
+      {
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
+
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
+        
+          $data = "{}";
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::FORCED_LAST_FROM_SCHEDULE), "deactivate", $data);
+          unset($viessmannApi);
+
+          $this->getCmd(null, 'isActivateLastSchedule')->event(0);
+      }
+
       // Set Slope
       //
       public function setSlope($slope)
@@ -2824,111 +2906,128 @@
       //
       public function setHeatingSchedule($titre, $message)
       {
-        
-        $obj = $this->getCmd(null, 'heatingSchedule');
-        if (!is_object($obj)) return('Object non trouvé');        
-        $str = $obj->execCmd();
-        $elements = explode(';', $str);
-        if (count($elements) != 7) return('Nombre d\'élements <> 7');
+          $obj = $this->getCmd(null, 'heatingSchedule');
+          if (!is_object($obj)) {
+              return('Object non trouvé');
+          }
+          $str = $obj->execCmd();
+          $elements = explode(';', $str);
+          if (count($elements) != 7) {
+              return('Nombre d\'élements <> 7');
+          }
 
-        $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-        $commande = '{"newSchedule": {';
-        for ($i=0; $i<7; $i++) {
-            if ( $titre == $jours[$i]) {
-                $subElements = explode(',', $message);
-            } else {
-                $subElements = explode(',', $elements[$i]);
-            }
-            $n = count($subElements);
-            if (($n % 3) != 0 ) return('Nombre de sous éléments <> 3');
-            $commande .= '"'.$jours[$i].'": [';
-            for ($j=0; $j<$n; $j+=3) {
-                $mode = $subElements[$j];
-                $start = $subElements[$j+1];
-                $end = $subElements[$j+2];
-                $commande .= '{';
-                if ($mode == 'n') {
-                    $commande .= '"mode": "normal",';
-                } else {
-                    $commande .= '"mode": "comfort",';
-                }
-                $commande .= '"start": "'.$start.'",';
-                $commande .= '"end": "'.$end.'",';
-                $commande .= '"position": '.$j/3.;
-                $commande .= '}';
-                if ($j < $n-3) $commande .= ',';                
-            }
-            $commande .= ']';
-            if ( $i<6 ) $commande .= ',';
-        }
-        $commande .= '}}';
+          $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+          $commande = '{"newSchedule": {';
+          for ($i=0; $i<7; $i++) {
+              if ($titre == $jours[$i]) {
+                  $subElements = explode(',', $message);
+              } else {
+                  $subElements = explode(',', $elements[$i]);
+              }
+              $n = count($subElements);
+              if (($n % 3) != 0) {
+                  return('Nombre de sous éléments <> 3');
+              }
+              $commande .= '"'.$jours[$i].'": [';
+              for ($j=0; $j<$n; $j+=3) {
+                  $mode = $subElements[$j];
+                  $start = $subElements[$j+1];
+                  $end = $subElements[$j+2];
+                  $commande .= '{';
+                  if ($mode == 'n') {
+                      $commande .= '"mode": "normal",';
+                  } else {
+                      $commande .= '"mode": "comfort",';
+                  }
+                  $commande .= '"start": "'.$start.'",';
+                  $commande .= '"end": "'.$end.'",';
+                  $commande .= '"position": '.$j/3.;
+                  $commande .= '}';
+                  if ($j < $n-3) {
+                      $commande .= ',';
+                  }
+              }
+              $commande .= ']';
+              if ($i<6) {
+                  $commande .= ',';
+              }
+          }
+          $commande .= '}}';
 
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
-        $this->setCache('tempsRestant', self::REFRESH_TIME);
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
 
-        $viessmannApi = $this->getViessmann();
-        if ($viessmannApi == null) {
-            return;
-        }
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
       
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::HEATING_SCHEDULE), "setSchedule", $commande);
-        unset($viessmannApi);
+          $viessmannApi->setFeature($this->buildFeature($circuitId, self::HEATING_SCHEDULE), "setSchedule", $commande);
+          unset($viessmannApi);
 
-        return ($commande);
-
+          return ($commande);
       }
 
       //
       //
       public function setDhwSchedule($titre, $message)
       {
-        $obj = $this->getCmd(null, 'dhwSchedule');
-        if (!is_object($obj)) return('Object non trouvé');        
-        $str = $obj->execCmd();
-        $elements = explode(';', $str);
-        if (count($elements) != 7) return('Nombre d\'élements <> 7');
+          $obj = $this->getCmd(null, 'dhwSchedule');
+          if (!is_object($obj)) {
+              return('Object non trouvé');
+          }
+          $str = $obj->execCmd();
+          $elements = explode(';', $str);
+          if (count($elements) != 7) {
+              return('Nombre d\'élements <> 7');
+          }
 
-        $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-        $commande = '{"newSchedule": {';
-        for ($i=0; $i<7; $i++) {
-            if ( $titre == $jours[$i]) {
-                $subElements = explode(',', $message);
-            } else {
-                $subElements = explode(',', $elements[$i]);
-            }
-            $n = count($subElements);
-            if (($n % 3) != 0 ) return('Nombre de sous éléments <> 3');
-            $commande .= '"'.$jours[$i].'": [';
-            for ($j=0; $j<$n; $j+=3) {
-                $mode = $subElements[$j];
-                $start = $subElements[$j+1];
-                $end = $subElements[$j+2];
-                $commande .= '{';
-                $commande .= '"mode": "on",';
-                $commande .= '"start": "'.$start.'",';
-                $commande .= '"end": "'.$end.'",';
-                $commande .= '"position": '.$j/3.;
-                $commande .= '}';
-                if ($j < $n-3) $commande .= ',';                
-            }
-            $commande .= ']';
-            if ( $i<6 ) $commande .= ',';
-        }
-        $commande .= '}}';
+          $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+          $commande = '{"newSchedule": {';
+          for ($i=0; $i<7; $i++) {
+              if ($titre == $jours[$i]) {
+                  $subElements = explode(',', $message);
+              } else {
+                  $subElements = explode(',', $elements[$i]);
+              }
+              $n = count($subElements);
+              if (($n % 3) != 0) {
+                  return('Nombre de sous éléments <> 3');
+              }
+              $commande .= '"'.$jours[$i].'": [';
+              for ($j=0; $j<$n; $j+=3) {
+                  $mode = $subElements[$j];
+                  $start = $subElements[$j+1];
+                  $end = $subElements[$j+2];
+                  $commande .= '{';
+                  $commande .= '"mode": "on",';
+                  $commande .= '"start": "'.$start.'",';
+                  $commande .= '"end": "'.$end.'",';
+                  $commande .= '"position": '.$j/3.;
+                  $commande .= '}';
+                  if ($j < $n-3) {
+                      $commande .= ',';
+                  }
+              }
+              $commande .= ']';
+              if ($i<6) {
+                  $commande .= ',';
+              }
+          }
+          $commande .= '}}';
 
-        $circuitId = trim($this->getConfiguration('circuitId', '0'));
-        $this->setCache('tempsRestant', self::REFRESH_TIME);
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
+          $this->setCache('tempsRestant', self::REFRESH_TIME);
 
-        $viessmannApi = $this->getViessmann();
-        if ($viessmannApi == null) {
-            return;
-        }
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
+              return;
+          }
       
-        $viessmannApi->setFeature(self::HEATING_DHW_SCHEDULE, "setSchedule", $commande);
-        unset($viessmannApi);
+          $viessmannApi->setFeature(self::HEATING_DHW_SCHEDULE, "setSchedule", $commande);
+          unset($viessmannApi);
 
-        return ($commande);
-
+          return ($commande);
       }
 
       public static function cron()
@@ -4004,6 +4103,21 @@
               $replace["#idIsActivateEcoProgram#"] = "#idIsActivateEcoProgram#";
           }
    
+          $obj = $this->getCmd(null, 'isActivateLastSchedule');
+          if (is_object($obj)) {
+              $replace["#isActivateLastSchedule#"] = $obj->execCmd();
+              $replace["#idIsActivateLastSchedule#"] = $obj->getId();
+
+              $obj = $this->getCmd(null, 'activateLastSchedule');
+              $replace["#idActivateLastSchedule#"] = $obj->getId();
+      
+              $obj = $this->getCmd(null, 'deActivateLastSchedule');
+              $replace["#idDeActivateLastSchedule#"] = $obj->getId();
+          } else {
+              $replace["#isActivateLastSchedule#"] = -1;
+              $replace["#idIsActivateLastSchedule#"] = "#idIsActivateLastSchedule#";
+          }
+   
           $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
           if (is_object($obj)) {
               $replace["#isScheduleHolidayProgram#"] = $obj->execCmd();
@@ -4301,6 +4415,10 @@
               $eqlogic->activateEcoProgram();
           } elseif ($this->getLogicalId() == 'deActivateEcoProgram') {
               $eqlogic->deActivateEcoProgram();
+          } elseif ($this->getLogicalId() == 'activateLastSchedule') {
+              $eqlogic->activateLastSchedule();
+          } elseif ($this->getLogicalId() == 'deActivateLastSchedule') {
+              $eqlogic->deActivateLastSchedule();
           } elseif ($this->getLogicalId() == 'modeStandby') {
               $eqlogic->setMode('standby');
           } elseif ($this->getLogicalId() == 'modeDhw') {
@@ -4389,7 +4507,6 @@
                           $message = $_options['message'];
                       }
                       $str = $eqlogic->setHeatingSchedule($titre, $message);
-                      log::add('viessmannIot', 'info', $str);
                   }
               }
           } elseif ($this->getLogicalId() == 'setDhwSchedule') {
@@ -4404,7 +4521,6 @@
                           $message = $_options['message'];
                       }
                       $str = $eqlogic->setDhwSchedule($titre, $message);
-                      log::add('viessmannIot', 'info', $str);
                   }
               }
           }
