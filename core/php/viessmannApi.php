@@ -328,8 +328,17 @@ class ViessmannApi
         file_put_contents($json_file, $response);
 
         if (array_key_exists('statusCode', $this->gateway)) {
-            throw new ViessmannApiException($this->gateway["message"], 2);
+            $json_file = __DIR__ . '/../../data/erreur.json';
+            $response = str_replace($this->installationId, 'XXXXXX', $response);
+            $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
+            file_put_contents($json_file, $response);
+
+            return $this->gateway["message"];
+
         }
+
+        return true;
+        
     }
 
     // Lire les features
@@ -366,8 +375,25 @@ class ViessmannApi
         }
         
         if (array_key_exists('statusCode', $this->features)) {
-            throw new ViessmannApiException($this->features["message"], 2);
+            $json_file = __DIR__ . '/../../data/erreur.json';
+            $response = str_replace($this->installationId, 'XXXXXX', $response);
+            $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
+            file_put_contents($json_file, $response);
+
+            $message = $this->features["message"];
+            if (array_key_exists('extendedPayload', $this->features)) {
+                $array = $this->features["extendedPayload"];
+                if (array_key_exists('details', $array)) {
+                    $message .= ' ( ' . $array['details'] . ' ) ';
+                }
+            }
+
+            return $message;
+
         }
+
+        return true;
+
     }
 
     // Lire log features

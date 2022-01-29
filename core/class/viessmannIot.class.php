@@ -1377,8 +1377,14 @@
           $viessmannApi = new ViessmannApi($params);
                         
           if ((empty($installationId)) || (empty($serial)) || ($createCommands === "Oui")) {
-              $viessmannApi->getFeatures();
-              $viessmannApi->getFeatures();
+
+              $return = $viessmannApi->getFeatures();
+              if ( is_string($return))
+              {
+                  unset($viessmannApi);
+                  log::add('viessmannIot', 'warning', $return);                 
+                  return null;
+              }
             
               $installationId = $viessmannApi->getInstallationId();
               $serial = $viessmannApi->getSerial();
@@ -1426,7 +1432,13 @@
           $heatingBurnerHours = -1;
           $heatingBurnerStarts = -1;
 
-          $viessmannApi->getFeatures();
+          $return = $viessmannApi->getFeatures();
+          if ( is_string($return))
+          {
+              log::add('viessmannIot', 'warning', $return);                 
+              return;
+          }
+      
           $features = $viessmannApi->getArrayFeatures();
           $nbrFeatures = count($features["data"]);
           for ($i=0; $i<$nbrFeatures; $i++) {
@@ -2270,6 +2282,7 @@
           }
 
           if ($outsideTemperature == 99) {
+ 
               $outsideTemperature = jeedom::evaluateExpression($this->getConfiguration('temperature_exterieure'));
               if (!is_numeric($outsideTemperature)) {
                   $outsideTemperature = 99;
