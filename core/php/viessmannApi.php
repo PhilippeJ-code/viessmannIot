@@ -45,7 +45,8 @@ class ViessmannApi
     //
     // Gestion du token
     //
-    private $token;
+    private $accessToken;
+    private $refreshToken;
     private $expires_at;
     private $expires_in;
     private $if_new_token;
@@ -131,10 +132,16 @@ class ViessmannApi
             $this->circuitId = trim($params['circuitId']);
         }
 
-        if (!array_key_exists('token', $params)) {
-            $this->token = '';
+        if (!array_key_exists('access_token', $params)) {
+            $this->accessToken = '';
         } else {
-            $this->token = trim($params['token']);
+            $this->accessToken = trim($params['access_token']);
+        }
+
+        if (!array_key_exists('refresh_token', $params)) {
+            $this->refreshToken = '';
+        } else {
+            $this->refreshToken = trim($params['refresh_token']);
         }
 
         if (!array_key_exists('expires_at', $params)) {
@@ -158,19 +165,22 @@ class ViessmannApi
         //
         $this->if_new_token = false;
 
-        if ((time() <= $this->expires_at) && !empty($this->token) && !empty($this->installationId) && !empty($this->serial)) {
+        if ((time() <= $this->expires_at) && !empty($this->accessToken) && !empty($this->installationId) && !empty($this->serial)) {
             return;
         }
 
-        $code = $this->getCode();
-        if ($code == false) {
-            throw new ViessmannApiException("Erreur acquisition code sur le serveur Viessmann", 2);
-        }
-        
-        $return = $this->getToken($code);
+        $return = $this->refreshToken();
         if ($return == false) {
-            throw new ViessmannApiException("Erreur acquisition token sur le serveur Viessmann", 2);
-        }
+            $code = $this->getCode();
+            if ($code == false) {
+                throw new ViessmannApiException("Erreur acquisition code sur le serveur Viessmann", 2);
+            }
+        
+            $return = $this->getToken($code);
+            if ($return == false) {
+                throw new ViessmannApiException("Erreur acquisition token sur le serveur Viessmann", 2);
+            }
+        }   
 
         $this->if_new_token = true;
 
@@ -184,11 +194,11 @@ class ViessmannApi
 
     // Lire le code d'accès au serveur Viessmann
     //
-    private function getCode() : string
+    private function getCode()
     {
         // Paramètres code
         //
-        $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User&redirect_uri=" .
+        $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User%20offline_access&redirect_uri=" .
         self::CALLBACK_URI . "&response_type=code";
         
         $header = array("Content-Type: application/x-www-form-urlencoded");
@@ -223,7 +233,7 @@ class ViessmannApi
 
     // Lire le token d'accès au serveur Viessmann
     //
-    private function getToken($code) : string
+    private function getToken($code)
     {
         // Paramètres Token
         //
@@ -258,7 +268,72 @@ class ViessmannApi
         if (!array_key_exists('access_token', $json) || !array_key_exists('expires_in', $json)) {
             return false;
         }
-        $this->token = $json['access_token'];
+        $this->accessToken = $json['access_token'];
+
+        if (array_key_exists('refresh_token', $json)) {
+            $this->refreshToken = $json['refresh_token'];
+        } else {
+            $this->refreshToken = '';
+            log::add('viessmannIot', 'debug', 'No Refresh token ');
+        }
+
+        $this->expires_in = $json['expires_in'];
+
+        return true;
+    }
+
+    // Rafraichir le token d'accès au serveur Viessmann 
+    //
+    private function refreshToken()
+    {
+        if ( $this->refreshToken == '' ) {
+            return false;
+        }
+
+        // Paramètres Token
+        //
+        $url = self::TOKEN_URL . "?grant_type=refresh_token&refresh_token=" . $this->refreshToken . "&client_id=" .
+        $this->clientId;
+        
+        $header = array("Content-Type: application/x-www-form-urlencoded");
+
+        $curloptions = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_POST => true,
+        );
+
+        // Appel Curl Token
+        //
+        $curl = curl_init();
+        curl_setopt_array($curl, $curloptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Extraction Token
+        //
+        $json = json_decode($response, true);
+        if (array_key_exists('error', $json)) {
+            log::add('viessmannIot', 'debug', 'Refresh token error');
+            return false;
+        }
+
+        if (!array_key_exists('access_token', $json) || !array_key_exists('expires_in', $json)) {
+            log::add('viessmannIot', 'debug', 'Refresh token data error');
+            return false;
+        }
+        $this->accessToken = $json['access_token'];
+
+        if (array_key_exists('refresh_token', $json)) {
+            $this->refreshToken = $json['refresh_token'];
+        } else {
+            $this->refreshToken = '';
+            log::add('viessmannIot', 'debug', 'No Refresh token ');
+        }
+
         $this->expires_in = $json['expires_in'];
 
         return true;
@@ -271,7 +346,7 @@ class ViessmannApi
         // Lire les données utilisateur
         //
         $url = self::IDENTITY_URL;
-        $header = array("Authorization: Bearer " . $this->token);
+        $header = array("Authorization: Bearer " . $this->accessToken);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -304,7 +379,7 @@ class ViessmannApi
         // Lire les données du gateway
         //
         $url = self::GATEWAY_URL;
-        $header = array("Authorization: Bearer " . $this->token);
+        $header = array("Authorization: Bearer " . $this->accessToken);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -348,7 +423,7 @@ class ViessmannApi
         // Lire les données features
         //
         $url = self::FEATURES_URL . "/installations/" . $this->installationId . "/gateways/" . $this->serial . "/devices/" . $this->deviceId . "/features";
-        $header = array("Authorization: Bearer " . $this->token);
+        $header = array("Authorization: Bearer " . $this->accessToken);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -410,7 +485,7 @@ class ViessmannApi
         // Lire les données events
         //
         $url = self::EVENTS_URL . "?gatewaySerial=" . $this->serial . "&limit=1000";
-        $header = array("Authorization: Bearer " . $this->token);
+        $header = array("Authorization: Bearer " . $this->accessToken);
 
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -497,7 +572,7 @@ class ViessmannApi
         $header = array(
             "Content-Type: application/json",
             "Accept : application/vnd.siren+json",
-            "Authorization: Bearer " . $this->token);
+            "Authorization: Bearer " . $this->accessToken);
  
         $curloptions = array(
             CURLOPT_URL => $url,
@@ -544,11 +619,18 @@ class ViessmannApi
         return $this->if_new_token;
     }
 
-    // Get Token
+    // Get Access Token
     //
-    public function getNewToken()
+    public function getAccessToken()
     {
-        return $this->token;
+        return $this->accessToken;
+    }
+
+    // Get Refresh Token
+    //
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
     }
 
     // Expires In

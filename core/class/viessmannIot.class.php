@@ -71,7 +71,8 @@
       const HOLIDAY_PROGRAM =  "heating.operating.programs.holiday";
       const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
       const FORCED_LAST_FROM_SCHEDULE = "operating.programs.forcedLastFromSchedule";
-      
+      const SOLAR_TEMPERATURE = "heating.solar.sensors.temperature.collector";       
+
       public static function deamon_info()
       {
           $return = array();
@@ -844,7 +845,20 @@
                   $obj->setSubType('numeric');
                   $obj->setLogicalId('pressureSupply');
                   $obj->save();
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::SOLAR_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                    $obj = $this->getCmd(null, 'solarTemperature');
+                    if (!is_object($obj)) {
+                        $obj = new viessmannIotCmd();
+                        $obj->setName(__('Température panneaux solaires', __FILE__));
+                        $obj->setIsVisible(1);
+                        $obj->setIsHistorized(0);
+                    }
+                    $obj->setEqLogic_id($this->getId());
+                    $obj->setType('info');
+                    $obj->setSubType('numeric');
+                    $obj->setLogicalId('solarTemperature');
+                    $obj->save();
+                } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'totalGazConsumptionDay');
                   if (!is_object($obj)) {
                       $obj = new viessmannIotCmd();
@@ -1354,7 +1368,8 @@
           }
 
           $expires_at = $this->getCache('expires_at', 0);
-          $token = $this->getCache('token', '');
+          $accessToken = $this->getCache('access_token', '');
+          $refreshToken = $this->getCache('refresh_token', '');
 
           if (($userName === '') || ($password === '') || ($clientId === '') || ($codeChallenge === '')) {
               return null;
@@ -1370,7 +1385,8 @@
           "deviceId" => $deviceId,
           "circuitId" => $circuitId,
           "expires_at" => $expires_at,
-          "token" => $token,
+          "access_token" => $accessToken,
+          "refresh_token" => $refreshToken,
           "logFeatures" => $logFeatures
         ];
 
@@ -1399,7 +1415,8 @@
           if ($viessmannApi->isNewToken()) {
               $expires_at = time() + $viessmannApi->getExpiresIn() - 300;
               $this->setCache('expires_at', $expires_at);
-              $this->setCache('token', $viessmannApi->getNewToken());
+              $this->setCache('access_token', $viessmannApi->getAccessToken());
+              $this->setCache('refresh_token', $viessmannApi->getRefreshToken());
           }
 
           return $viessmannApi;
@@ -1778,7 +1795,13 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
+              } elseif ($features["data"][$i]["feature"] == self::SOLAR_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                    $val = $features["data"][$i]["properties"]["value"]["value"];
+                    $obj = $this->getCmd(null, 'solarTemperature');
+                    if (is_object($obj)) {
+                        $obj->event($val);
+                    }
+                } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $heatingGazConsumptions = array();
                   $n = count($features["data"][$i]["properties"]['day']['value']);
                   for ($j=0; $j<$n; $j++) {
@@ -3385,6 +3408,7 @@
           $obj->setSubType('string');
           $obj->setLogicalId('currentError');
           $obj->save();
+
       }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -3587,6 +3611,15 @@
           } else {
               $replace["#pressureSupply#"] = 99;
               $replace["#idPressureSupply#"] = "#idPressureSupply#";
+          }
+  
+          $obj = $this->getCmd(null, 'solarTemperature');
+          if (is_object($obj)) {
+              $replace["#solarTemperature#"] = $obj->execCmd();
+              $replace["#idSolarTemperature#"] = $obj->getId();
+          } else {
+              $replace["#solarTemperature#"] = 99;
+              $replace["#idSolarTemperature#"] = "#idSolarTemperature#";
           }
   
           $obj = $this->getCmd(null, 'lastServiceDate');
@@ -4303,7 +4336,7 @@
       private function buildFeatureBurner($circuitId, $feature)
       {
           if ($feature == '') {
-              return HEATING_BURNERS . "." . $circuitId;
+              return self::HEATING_BURNERS . "." . $circuitId;
           }
           return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
       }

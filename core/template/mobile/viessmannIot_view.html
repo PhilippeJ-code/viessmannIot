@@ -149,6 +149,10 @@
             <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
         </div>
+        <div id="showSolarTemperature#uid#">
+            <span class="classSousTitre#uid#">T° panneaux solaires</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idSolarTemperature#" id="idSolarTemperature#uid#"></span></br>
+        </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/core/img/previous.svg">
         <span class="classTitreTuile#uid#">Chaudière</span></br>
@@ -1546,6 +1550,15 @@
             }
         }
         jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+
+        jeedom.cmd.update['#idSolarTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showSolarTemperature#uid#').hide();
+            } else {
+                $('#idSolarTemperature#uid#').html(_options.display_value + " °C");
+            }
+        }
+        jeedom.cmd.update['#idSolarTemperature#']({ display_value: '#solarTemperature#' });
 
         jeedom.cmd.update['#idCurrentError#'] = function (_options) {
             if (_options.display_value == '') {
@@ -2949,7 +2962,7 @@
             return +(Math.round(this + "e+" + places) + "e-" + places);
         }
 
-        function ajouterDonnees() {
+        function ajouterDonnees#uid#() {
             if (histoTemperatureCsg == -999)
                 return;
             if (histoTemperatureInt == -999)
@@ -2987,19 +3000,19 @@
         jeedom.cmd.update['#idHistoTemperatureCsg#'] = function (_options) {
             histoTemperatureCsg = parseFloat(_options.display_value);
             histoTemperatureCsg = histoTemperatureCsg.round(1);
-            ajouterDonnees();
+            ajouterDonnees#uid#();
         }
 
         jeedom.cmd.update['#idHistoTemperatureInt#'] = function (_options) {
             histoTemperatureInt = parseFloat(_options.display_value);
             histoTemperatureInt = histoTemperatureInt.round(1);
-            ajouterDonnees();
+            ajouterDonnees#uid#();
         }
 
         jeedom.cmd.update['#idHistoTemperatureExt#'] = function (_options) {
             histoTemperatureExt = parseFloat(_options.display_value);
             histoTemperatureExt = histoTemperatureExt.round(1);
-            ajouterDonnees();
+            ajouterDonnees#uid#();
         }
 
         const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
@@ -3425,7 +3438,7 @@
 
         // Changement courbes
         //
-        function Charger() {
+        function Charger#uid#() {
             lstTempInt = [];
             lstTempIntDat = [];
             lstTempCsg = [];
@@ -3546,7 +3559,7 @@
         //
         $('#idEnvoyer#uid#').on('click', function () {
 
-            Charger();
+            Charger#uid#();
 
         });
 
@@ -3554,11 +3567,11 @@
         //
         $('#idDynamique#uid#').on('click', function () {
             if ($("#idDynamique#uid#").is(':checked')) {
-                Charger();
+                Charger#uid#();
             }
         });
 
-        Charger();
+        Charger#uid#();
 
         $(function () {
             $("#idCourbe#uid#").draggable({

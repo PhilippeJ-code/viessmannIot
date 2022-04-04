@@ -243,7 +243,7 @@
               <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
-                  data-l2key="isWidgetPlugin" checked /></label>
+                  data-l2key="isWidgetPlugin" checked />
               </div>
             </div>
 
@@ -251,7 +251,7 @@
               <label class="col-sm-3 control-label">{{Afficher la tuile eau chaude}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayWater"
-                  checked /></label>
+                  checked />
               </div>
             </div>
 
@@ -259,7 +259,7 @@
               <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayGas"
-                  checked /></label>
+                  checked />
               </div>
             </div>
 
@@ -267,7 +267,7 @@
               <label class="col-sm-3 control-label">{{Afficher la tuile électricité}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayPower"
-                  checked /></label>
+                  checked />
               </div>
             </div>
 
