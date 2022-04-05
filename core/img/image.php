@@ -26,6 +26,7 @@ $grisClair = "#C0C0C0";
 $noir = "#000000";
 
 $strY = 12;
+$titleX = 0;
 $titleY = 35;
 
 function SvgTxt($x, $y, $str, $size, $color, $fontname, $anchor)
