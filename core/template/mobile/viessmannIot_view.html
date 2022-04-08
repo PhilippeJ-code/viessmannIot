@@ -102,7 +102,7 @@
 
         </br></br>
         <span class="classTitre#uid#">Brûleur</span></br>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <div id="showEtatBruleur#uid#">
             <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
                 id="idEtatBruleur#uid#"></span></br>
@@ -129,9 +129,9 @@
             <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idHeatingBurnerModulation#" id="idHeatingBurnerModulation#uid#"></span></br>
         </div>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <span class="classTitre#uid#">Courbes</span></br>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <div id="showSlope#uid#">
             <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idSlope#" id="idSlope#uid#"></span></span><img class="classCrayon#uid# cursor"
@@ -142,16 +142,27 @@
                 data-cmd_id="#idShift#" id="idShift#uid#"></span></span><img class="classCrayon#uid# cursor"
                 id="idModifierParallele#uid#" src="plugins/viessmannIot/core/img/crayon.svg"></br>
         </div>
-        <div class="gap-10"></div>
-        <span class="classTitre#uid#">Installation</span></br>
-        <div class="gap-10"></div>
         <div id="showPressureSupply#uid#">
-            <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
+            <div class="gap-5"></div>
+            <span class="classTitre#uid#">Installation</span></br>
+            <div class="gap-5"></div>
+                <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
         </div>
+
+        <div id="showSolar#uid#" style="display:none;">
+        <div class="gap-5"></div>
+        <span class="classTitre#uid#">Panneaux solaires</span></br>
+        <div class="gap-5"></div>
+        </div>
+        
         <div id="showSolarTemperature#uid#">
-            <span class="classSousTitre#uid#">T° panneaux solaires</span><span class="classValeur#uid# history cursor"
+            <span class="classSousTitre#uid#">T° collecteur solaire</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idSolarTemperature#" id="idSolarTemperature#uid#"></span></br>
+        </div>
+        <div id="showSolarDhwTemperature#uid#">
+            <span class="classSousTitre#uid#">T° eau chaude solaire</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idSolarDhwTemperature#" id="idSolarDhwTemperature#uid#"></span></br>
         </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/core/img/previous.svg">
@@ -165,14 +176,14 @@
 
         <div id="showEntretien#uid#">
             <span class="classTitre#uid#">Entretien</span></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Date dernier entretien</span><span class="classValeur#uid#"
                 id="idLastServiceDate#uid#"></span></br>
             <span class="classSousTitre#uid#">Mois entre entretiens</span><span class="classValeur#uid#"
                 id="idServiceInterval#uid#"></span></br>
             <span class="classSousTitre#uid#">Mois depuis l'entretien</span><span class="classValeur#uid#"
                 id="idMonthSinceService#uid#"></span></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
         </div>
 
         <span class="classTitre#uid#">Dysfonctionnements</span></br>
@@ -207,14 +218,14 @@
         </br></br>
         <div id="showStatutChauffage#uid#">
             <span class="classTitre#uid#">Statut</span></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></span><img
                 class="classCrayon#uid# cursor" id="idModifierStatut#uid#"
                 src="plugins/viessmannIot/core/img/crayon.svg"></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
         </div>
         <span class="classTitre#uid#">Températures</span></br>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <div id="showComfortProgramTemperature#uid#">
             <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"
                 class="classValeur#uid#  history cursor" data-cmd_id="#idComfortProgramTemperature#"></span><img
@@ -233,9 +244,9 @@
                 class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
                 src="plugins/viessmannIot/core/img/crayon.svg"></br>
         </div>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <span class="classTitre#uid#">#circuitName#</span></br>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <div id="showTemperaturePiece#uid#">
             <span class="classSousTitre#uid#">Température intérieure</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idRoomTemperature#" id="idTemperaturePiece#uid#"></span></br>
@@ -308,7 +319,7 @@
         </br></br>
         <span class="classTitre#uid#">Températures</span>
         </br>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
         <div id="showDhwTemperature#uid#">
             <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idDhwTemperature#" id="idConsigneEauChaude#uid#"></span><img
@@ -460,17 +471,17 @@
             <img class="classCrayon#uid# cursor" id="idDeActivateLastSchedule#uid#"
                 src="plugins/viessmannIot/core/img/stop.svg"></br>
         </div>
-        <div class="gap-10"></div>
+        <div class="gap-5"></div>
 
         <div id="showHolidayProgram#uid#">
             <span class="classTitre#uid#">Programme vacances</span></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Date début</span>
             <input type="date" id="idStartHoliday#uid#"></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Date fin</span>
             <input type="date" id="idEndHoliday#uid#"></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Statut</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idIsScheduleHolidayProgram#" id="idIsScheduleHolidayProgram#uid#"></span>
             <img class="classCrayon#uid# cursor" id="idScheduleHolidayProgram#uid#"
@@ -480,15 +491,15 @@
         </div>
 
         <div id="showHolidayAtHomeProgram#uid#">
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classTitre#uid#">Programme vacances à la maison</span></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Date début</span>
             <input type="date" id="idStartHolidayAtHome#uid#"></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Date fin</span>
             <input type="date" id="idEndHolidayAtHome#uid#"></br>
-            <div class="gap-10"></div>
+            <div class="gap-5"></div>
             <span class="classSousTitre#uid#">Statut</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idIsScheduleHolidayAtHomeProgram#" id="idIsScheduleHolidayAtHomeProgram#uid#"></span>
             <img class="classCrayon#uid# cursor" id="idScheduleHolidayAtHomeProgram#uid#"
@@ -811,9 +822,9 @@
             color: #808080;
         }
 
-        .gap-10 {
+        .gap-5 {
             width: 100%;
-            height: 10px;
+            height: 5px;
         }
 
         .classFlamme#uid# {
@@ -1556,9 +1567,20 @@
                 $('#showSolarTemperature#uid#').hide();
             } else {
                 $('#idSolarTemperature#uid#').html(_options.display_value + " °C");
+                $('#showSolar#uid#').show();
             }
         }
         jeedom.cmd.update['#idSolarTemperature#']({ display_value: '#solarTemperature#' });
+
+        jeedom.cmd.update['#idSolarDhwTemperature#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showSolarDhwTemperature#uid#').hide();
+            } else {
+                $('#idSolarDhwTemperature#uid#').html(_options.display_value + " °C");
+                $('#showSolar#uid#').show();
+            }
+        }
+        jeedom.cmd.update['#idSolarDhwTemperature#']({ display_value: '#solarDhwTemperature#' });
 
         jeedom.cmd.update['#idCurrentError#'] = function (_options) {
             if (_options.display_value == '') {

@@ -72,6 +72,7 @@
       const HOLIDAY_AT_HOME_PROGRAM =  "heating.operating.programs.holidayAtHome";
       const FORCED_LAST_FROM_SCHEDULE = "operating.programs.forcedLastFromSchedule";
       const SOLAR_TEMPERATURE = "heating.solar.sensors.temperature.collector";       
+      const SOLAR_DHW_TEMPERATURE = "heating.solar.sensors.temperature.dhw";
 
       public static function deamon_info()
       {
@@ -857,6 +858,19 @@
                     $obj->setType('info');
                     $obj->setSubType('numeric');
                     $obj->setLogicalId('solarTemperature');
+                    $obj->save();
+                } elseif ($features["data"][$i]["feature"] == self::SOLAR_DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                    $obj = $this->getCmd(null, 'solarDhwTemperature');
+                    if (!is_object($obj)) {
+                        $obj = new viessmannIotCmd();
+                        $obj->setName(__('Température eau chaude panneaux solaires', __FILE__));
+                        $obj->setIsVisible(1);
+                        $obj->setIsHistorized(0);
+                    }
+                    $obj->setEqLogic_id($this->getId());
+                    $obj->setType('info');
+                    $obj->setSubType('numeric');
+                    $obj->setLogicalId('solarDhwTemperature');
                     $obj->save();
                 } elseif ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                   $obj = $this->getCmd(null, 'totalGazConsumptionDay');
@@ -1795,9 +1809,15 @@
                   if (is_object($obj)) {
                       $obj->event($val);
                   }
-              } elseif ($features["data"][$i]["feature"] == self::SOLAR_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                } elseif ($features["data"][$i]["feature"] == self::SOLAR_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                     $val = $features["data"][$i]["properties"]["value"]["value"];
                     $obj = $this->getCmd(null, 'solarTemperature');
+                    if (is_object($obj)) {
+                        $obj->event($val);
+                    }
+                } elseif ($features["data"][$i]["feature"] == self::SOLAR_DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                    $val = $features["data"][$i]["properties"]["value"]["value"];
+                    $obj = $this->getCmd(null, 'solarDhwTemperature');
                     if (is_object($obj)) {
                         $obj->event($val);
                     }
@@ -3408,8 +3428,8 @@
           $obj->setSubType('string');
           $obj->setLogicalId('currentError');
           $obj->save();
-
-      }
+    
+        }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -3620,6 +3640,15 @@
           } else {
               $replace["#solarTemperature#"] = 99;
               $replace["#idSolarTemperature#"] = "#idSolarTemperature#";
+          }
+  
+          $obj = $this->getCmd(null, 'solarDhwTemperature');
+          if (is_object($obj)) {
+              $replace["#solarDhwTemperature#"] = $obj->execCmd();
+              $replace["#idSolarDhwTemperature#"] = $obj->getId();
+          } else {
+              $replace["#solarDhwTemperature#"] = 99;
+              $replace["#idSolarDhwTemperature#"] = "#idSolarDhwTemperature#";
           }
   
           $obj = $this->getCmd(null, 'lastServiceDate');

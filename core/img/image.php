@@ -65,6 +65,21 @@ function SvgRect($x1, $y1, $x2, $y2, $color)
 HEREDOC;
 }
 
+function SvgRoundRect($x1, $y1, $x2, $y2, $r, $color)
+{
+    $w=$x2-$x1;
+    $h=$y2-$y1;
+    echo <<<HEREDOC
+	<rect x="{$x1}" y="{$y1}"  
+		width="{$w}" 
+		height="{$h}" 
+		rx="{$r}" 
+		ry="{$r}" 
+		fill="{$color}" 
+		stroke="none" />
+HEREDOC;
+}
+
 // debut
 echo <<<HEREDOC
 <?xml version="1.0"?>
@@ -89,7 +104,7 @@ for ($i=0; $i<=24; $i++) {
 }
 
 SvgTxt($titleX, $titleY, $title, $fontSize, $noir, $font, "start");
-SvgRect($offsetGauche, 28, $taille + $offsetGauche, 38, $bleuclair);
+SvgRoundRect($offsetGauche, 28, $taille + $offsetGauche, 38, 4,  $bleuclair);
 
 if ($prog !== '') {
     $progs = explode(",", $prog);
