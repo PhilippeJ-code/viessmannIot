@@ -71,12 +71,9 @@ function viessmannIot_update()
         config::save('functionality::cronHourly::enable', 0, 'viessmannIot');
     }
 
-	log::add('viessmannIot', 'info', 'Update');
-
     foreach (viessmannIot::byType('viessmannIot') as $viessmann) {
 		$viessmann->setConfiguration('createCommands', 'Oui')->save(); 
 		$viessmann->save();
-		log::add('viessmannIot', 'info', 'Update create commands');
     }
 
 	$cron = cron::byClassAndFunction('viessmannIot', 'salsa');
