@@ -2619,7 +2619,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'dhwGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'dhwGazHistorize')->event($gasSummaryDayDhw, $dateVeille);
             }
             $this->setCache('oldConsoDhw', $conso);
 
@@ -2628,7 +2628,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'heatingGazHistorize')->event($gasSummaryDayHeating, $dateVeille);
             }
             $this->setCache('oldConsoHeating', $conso);
 
@@ -2637,7 +2637,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'totalGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'totalGazHistorize')->event($gasSummaryDayTotal, $dateVeille);
             }
             $this->setCache('oldConsoTotal', $conso);
 
@@ -2646,7 +2646,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'dhwPowerHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'dhwPowerHistorize')->event($powerSummaryDayDhw, $dateVeille);
             }
             $this->setCache('oldConsoPowerDhw', $conso);
 
@@ -2655,7 +2655,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'heatingPowerHistorize')->event($powerSummaryDayHeating, $dateVeille);
             }
             $this->setCache('oldConsoPowerHeating', $conso);
 
@@ -2664,7 +2664,7 @@ class viessmannIot extends eqLogic
             if ($oldConso >= $conso) {
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
-                $this->getCmd(null, 'totalGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
+                $this->getCmd(null, 'totalPowerHistorize')->event($powerSummaryDayTotal, $dateVeille);
             }
             $this->setCache('oldConsoPowerTotal', $conso);
 
