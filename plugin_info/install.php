@@ -73,7 +73,7 @@ function viessmannIot_update()
 
 	log::add('viessmannIot', 'info', 'Update');
 
-    foreach (viessmann::byType('viessmannIot') as $viessmann) {
+    foreach (viessmannIot::byType('viessmannIot') as $viessmann) {
 		$viessmann->setConfiguration('createCommands', 'Oui')->save(); 
 		$viessmann->save();
 		log::add('viessmannIot', 'info', 'Update create commands');
