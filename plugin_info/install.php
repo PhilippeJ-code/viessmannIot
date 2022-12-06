@@ -72,7 +72,7 @@ function viessmannIot_update()
     }
 
     foreach (viessmann::byType('viessmannIot') as $viessmann) {
-        $viessmann->save();
+		$viessmann->setConfiguration('createCommands', 'Oui')->save();
     }
 
 	$cron = cron::byClassAndFunction('viessmannIot', 'salsa');
