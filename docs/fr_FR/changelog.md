@@ -1,4 +1,4 @@
-# Changelog plugin terrarium
+# Changelog plugin viessmannIot
 
 >**IMPORTANT**
 >
@@ -31,5 +31,6 @@
 
     Ajout température eau chaude solaire
 
-    
-    
+# 06-12-2022
+
+    Ajout récupération des consommations résumées
