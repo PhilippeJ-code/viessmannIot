@@ -34,3 +34,7 @@
 # 06-12-2022
 
     Ajout récupération des consommations résumées
+
+# 10-02-2023
+
+    Passage en v3 pour l'authentification sur les serveurs Viessmann
