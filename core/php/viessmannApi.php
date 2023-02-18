@@ -14,10 +14,10 @@ class ViessmannApiException extends Exception
 //
 class ViessmannApi
 {
-    const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v2/authorize";
+    const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v3/authorize";
     const CALLBACK_URI = "http://localhost:4200/";
     
-    const TOKEN_URL = "https://iam.viessmann.com/idp/v2/token";
+    const TOKEN_URL = "https://iam.viessmann.com/idp/v3/token";
 
     const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
     
