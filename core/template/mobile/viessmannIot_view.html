@@ -1422,7 +1422,13 @@
             } else if (_options.display_value == 'normal') {
                 $('#idProgrammeActuel#uid#').css("color", "orange");
                 $('#idProgramTemperature#uid#').css("color", "orange");
+            } else if (_options.display_value == 'normalEnergySaving') {
+                $('#idProgrammeActuel#uid#').css("color", "orange");
+                $('#idProgramTemperature#uid#').css("color", "orange");
             } else if (_options.display_value == 'reduced') {
+                $('#idProgrammeActuel#uid#').css("color", "blue");
+                $('#idProgramTemperature#uid#').css("color", "blue");
+            } else if (_options.display_value == 'reducedEnergySaving') {
                 $('#idProgrammeActuel#uid#').css("color", "blue");
                 $('#idProgramTemperature#uid#').css("color", "blue");
             } else if (_options.display_value == 'eco') {

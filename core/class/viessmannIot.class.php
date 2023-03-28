@@ -2883,6 +2883,9 @@ class viessmannIot extends eqLogic
         } elseif ($activeProgram === 'normal') {
             $this->getCmd(null, 'programTemperature')->event($normalProgramTemperature);
             $consigneTemperature = $normalProgramTemperature;
+        } elseif ($activeProgram === 'normalEnergySaving') {
+            $this->getCmd(null, 'programTemperature')->event($normalProgramTemperature);
+            $consigneTemperature = $normalProgramTemperature;
         } else {
             $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
             $consigneTemperature = $reducedProgramTemperature;
