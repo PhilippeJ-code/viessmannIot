@@ -25,8 +25,9 @@ class ViessmannApi
 
     const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
  
-    const EVENTS_URL = "https://api.viessmann.com/iot/v1/events-history/events";
-    
+    const EVENTS_URL_1 = "https://api.viessmann.com/iot/v2/events-history/installations/";
+    const EVENTS_URL_2 = "/events";
+
     // Les paramètres d'accès au serveur
     //
     //   Obligatoires
@@ -484,7 +485,7 @@ class ViessmannApi
     {
         // Lire les données events
         //
-        $url = self::EVENTS_URL . "?gatewaySerial=" . $this->serial . "&limit=1000";
+        $url = self::EVENTS_URL_1 . $this->installationId . self::EVENTS_URL_2 . "?gatewaySerial=" . $this->serial . "&limit=1000";
         $header = array("Authorization: Bearer " . $this->accessToken);
 
         $curloptions = array(
