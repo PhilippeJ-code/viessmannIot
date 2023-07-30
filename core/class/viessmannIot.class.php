@@ -2816,8 +2816,9 @@ class viessmannIot extends eqLogic
 
                     $errorCode = $events["data"][$i]['body']['errorCode'];
                     $errorDescription = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
-                    $errorDescription = str_replace(';', ' ', $errorDescription);
-
+                    $errorDescription = str_replace("'", "\'", $errorDescription);
+                    $errorDescription = str_replace('"', "\"", $errorDescription);
+                
                     if ($nbr < 10) {
                         if ($nbr > 0) {
                             $erreurs .= ';';
