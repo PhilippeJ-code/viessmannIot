@@ -38,3 +38,7 @@
 # 10-02-2023
 
     Passage en v3 pour l'authentification sur les serveurs Viessmann
+
+# 22-10-2023
+
+    Statut chauffage et eau chaude scindés sur les serveurs Viessmann

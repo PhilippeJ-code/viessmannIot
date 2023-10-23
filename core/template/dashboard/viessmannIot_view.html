@@ -146,16 +146,16 @@
             <div class="gap-5"></div>
             <span class="classTitre#uid#">Installation</span></br>
             <div class="gap-5"></div>
-                <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
+            <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
         </div>
 
         <div id="showSolar#uid#" style="display:none;">
-        <div class="gap-5"></div>
-        <span class="classTitre#uid#">Panneaux solaires</span></br>
-        <div class="gap-5"></div>
+            <div class="gap-5"></div>
+            <span class="classTitre#uid#">Panneaux solaires</span></br>
+            <div class="gap-5"></div>
         </div>
-        
+
         <div id="showSolarTemperature#uid#">
             <span class="classSousTitre#uid#">T° collecteur solaire</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idSolarTemperature#" id="idSolarTemperature#uid#"></span></br>
@@ -316,7 +316,15 @@
 
     <div class="classContenant#uid#" id="idEauChaude#uid#" style="display:none;">
 
-        </br></br>
+    </br></br>
+    <div id="showStatutDhw#uid#">
+            <span class="classTitre#uid#">Statut</span></br>
+            <div class="gap-5"></div>
+            <span id="idStatutDhw#uid#" class="classSousTitre#uid#"></span></span><img
+                class="classCrayon#uid# cursor" id="idModifierStatutDhw#uid#"
+                src="plugins/viessmannIot/core/img/crayon.svg"></br>
+            <div class="gap-5"></div>
+        </div>
         <span class="classTitre#uid#">Températures</span>
         </br>
         <div class="gap-5"></div>
@@ -661,25 +669,49 @@
 
             <div class="classModalCorps#uid#">
                 <div id="showModeStandby#uid#">
-                    <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br>
+                    <input type="radio" name="modes" value="standby" id="idModeStandby#uid#"> Arrêt
                 </div>
                 <div id="showModeHeating#uid#">
-                    <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>
+                    <input type="radio" name="modes" value="heating" id="idModeHeating#uid#"> Chauffage
                 </div>
-                <div id="showModeDhw#uid#">
-                    <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>
+                <div id="showModeCooling#uid#" class="classSousTitre#uid#">
+                    <input type="radio" name="modes" value="cooling" id="idModeCooling#uid#"> Refroidissement
                 </div>
-                <div id="showModeDhwAndHeating#uid#">
-                    <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et
-                    eau chaude<br>
+                <div id="showModeHeatingCooling#uid#">
+                    <input type="radio" name="modes" value="heatingCooling" id="idModeHeatingCooling#uid#"> Chauffage et
+                    refroidissement
                 </div>
-                <div id="showModeForcedReduced#uid#">
-                    <input type="radio" name="modes" value="forcedReduced" id="idModeForcedReduced#uid#">Marche réduite
-                    permanente<br>
+                <div id="showModeTestMode#uid#">
+                    <input type="radio" name="modes" value="testMode" id="idModeTestMode#uid#"> Mode test
                 </div>
-                <div id="showModeForcedNormal#uid#">
-                    <input type="radio" name="modes" value="forcedNormal" id="idModeForcedNormal#uid#">Marche normale
-                    permanente<br>
+                <div id="showModeAuto#uid#">
+                    <input type="radio" name="modes" value="auto" id="idModeAuto#uid#"> Mode auto
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="idPopupStatutDhw#uid#" class="classModal#uid#">
+
+        <div class="classModalContenus#uid#">
+            <div class="classModalEntete#uid#">
+                <img class="classModalClose#uid# cursor" src="plugins/viessmannIot/core/img/previous.svg">
+                <span>Statut eau chaude</span>
+            </div>
+
+            <div class="classModalCorps#uid#">
+                <div id="showModeDhwBalanced#uid#">
+                    <input type="radio" name="modesDhw" value="balanced" id="idModeDhwBalanced#uid#"> Activé
+                </div>
+                <div id="showModeDhwComfort#uid#">
+                    <input type="radio" name="modesDhw" value="comfort" id="idModeDhwComfort#uid#"> Comfort
+                </div>
+                <div id="showModeDhwEco#uid#">
+                    <input type="radio" name="modesDhw" value="eco" id="idModeDhwEco#uid#"> Eco
+                </div>
+                <div id="showModeDhwOff#uid#">
+                    <input type="radio" name="modesDhw" value="off" id="idModeDhwOff#uid#"> Arrêt
                 </div>
             </div>
         </div>
@@ -1293,6 +1325,7 @@
             $('#idPopupNormale#uid#').hide();
             $('#idPopupReduite#uid#').hide();
             $('#idPopupStatut#uid#').hide();
+            $('#idPopupStatutDhw#uid#').hide();
             $('#idPopupDhw#uid#').hide();
             $('#idPopupPente#uid#').hide();
             $('#idPopupParallele#uid#').hide();
@@ -1321,17 +1354,30 @@
         if ('#idModeHeating#' == '??') {
             $('#showModeHeating#uid#').hide();
         }
-        if ('#idModeDhw#' == '??') {
-            $('#showModeDhw#uid#').hide();
+        if ('#idModeCooling#' == '??') {
+            $('#showModeCooling#uid#').hide();
         }
-        if ('#idModeDhwAndHeating#' == '??') {
-            $('#showModeDhwAndHeating#uid#').hide();
+        if ('#idModeHeatingCooling#' == '??') {
+            $('#showModeHeatingCooling#uid#').hide();
         }
-        if ('#idModeForcedReduced#' == '??') {
-            $('#showModeForcedReduced#uid#').hide();
+        if ('#idModeTestMode#' == '??') {
+            $('#showModeTestMode#uid#').hide();
         }
-        if ('#idModeForcedNormal#' == '??') {
-            $('#showModeForcedNormal#uid#').hide();
+        if ('#idModeAuto#' == '??') {
+            $('#showModeAuto#uid#').hide();
+        }
+
+        if ('#idModeDhwBalancedStandby#' == '??') {
+            $('#showModeDhwBalanced#uid#').hide();
+        }
+        if ('#idModeDhwComfort#' == '??') {
+            $('#showModeDhwComfort#uid#').hide();
+        }
+        if ('#idModeDhwEco#' == '??') {
+            $('#showModeDhwEco#uid#').hide();
+        }
+        if ('#idModeDhwOff#' == '??') {
+            $('#showModeDhwOff#uid#').hide();
         }
 
         // Tuile titre
@@ -1776,26 +1822,53 @@
                 if (_options.display_value == 'standby') {
                     $('#idStatutChauffage#uid#').html('Arrêt');
                 } else if (_options.display_value == 'heating') {
-                    $('#idStatutChauffage#uid#').html('Chauffage seul activé');
+                    $('#idStatutChauffage#uid#').html('Chauffage Activé');
                     $('#idModeHeating#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhw') {
-                    $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
-                    $('#idModeDhw#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhwAndHeating') {
-                    $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
-                    $('#idModeDhwAndHeating#uid#').prop('checked', true);
-                } else if (_options.display_value == 'forcedReduced') {
-                    $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
-                    $('#idModeForcedReduced#uid#').prop('checked', true);
-                } else if (_options.display_value == 'forcedNormal') {
-                    $('#idStatutChauffage#uid#').html('Mode jour en permanence');
-                    $('#idModeForcedNormal#uid#').prop('checked', true);
+                } else if (_options.display_value == 'cooling') {
+                    $('#idStatutChauffage#uid#').html('Refroidissement activé');
+                    $('#idModeCooling#uid#').prop('checked', true);
+                } else if (_options.display_value == 'heatingCooling') {
+                    $('#idStatutChauffage#uid#').html('Chauffage et refroidissement activés');
+                    $('#idModeHeatingCooling#uid#').prop('checked', true);
+                } else if (_options.display_value == 'testMode') {
+                    $('#idStatutChauffage#uid#').html('Mode test activé');
+                    $('#idModeTestMode#uid#').prop('checked', true);
+                } else if (_options.display_value == 'auto') {
+                    $('#idStatutChauffage#uid#').html('Mode auto activé');
+                    $('#idModeAuto#uid#').prop('checked', true);
                 } else {
                     $('#idStatutChauffage#uid#').html(_options.display_value);
                 }
             }
         }
         jeedom.cmd.update['#idActiveMode#']({ display_value: '#activeMode#' });
+
+        // Tuile options eau chaude
+        //
+        jeedom.cmd.update['#idActiveDhwMode#'] = function (_options) {
+
+            if (_options.display_value == '??') {
+                $('#showStatutDhw#uid#').hide();
+            } else {
+                $('#idModeDhwBalanced#uid#').prop('checked', true);
+
+                if (_options.display_value == 'balanced') {
+                    $('#idStatutDhw#uid#').html('Activé');
+                } else if (_options.display_value == 'comfort') {
+                    $('#idStatutDhw#uid#').html('Confort activé');
+                    $('#idModeDhwComfort#uid#').prop('checked', true);
+                } else if (_options.display_value == 'eco') {
+                    $('#idStatutDhw#uid#').html('Economique activé');
+                    $('#idModeDhwEco#uid#').prop('checked', true);
+                } else if (_options.display_value == 'off') {
+                    $('#idStatutDhw#uid#').html('Arrêt');
+                    $('#idModeDhwOff#uid#').prop('checked', true);
+                } else {
+                    $('#idStatutDhw#uid#').html(_options.display_value);
+                }
+            }
+        }
+        jeedom.cmd.update['#idActiveDhwMode#']({ display_value: '#activeDhwMode#' });
 
         jeedom.cmd.update['#idComfortProgramTemperature#'] = function (_options) {
             if (_options.display_value == 99) {
@@ -3436,35 +3509,73 @@
             });
         });
 
-        // Click pour mode dhw
+        // Click pour mode cooling
         //
-        $('#idModeDhw#uid#').on('click', function () {
+        $('#idModeCooling#uid#').on('click', function () {
             jeedom.cmd.execute({
-                id: '#idModeDhw#'
+                id: '#idModeCooling#'
             });
         });
 
-        // Click pour mode dhw and heating
+        // Click pour mode heating and cooling
         //
-        $('#idModeDhwAndHeating#uid#').on('click', function () {
+        $('#idModeHeatingCooling#uid#').on('click', function () {
             jeedom.cmd.execute({
-                id: '#idModeDhwAndHeating#'
+                id: '#idModeHeatingCooling#'
             });
         });
 
-        // Click pour mode forced reduced
+        // Click pour mode test mode
         //
-        $('#idModeForcedReduced#uid#').on('click', function () {
+        $('#idModeTestMode#uid#').on('click', function () {
             jeedom.cmd.execute({
-                id: '#idModeForcedReduced#'
+                id: '#idModeTestMode#'
             });
         });
 
-        // Click pour mode forced normal
+        // Click pour mode auto
         //
-        $('#idModeForcedNormal#uid#').on('click', function () {
+        $('#idModeAuto#uid#').on('click', function () {
             jeedom.cmd.execute({
-                id: '#idModeForcedNormal#'
+                id: '#idModeAuto#'
+            });
+        });
+
+        // Click pour accès modification statut eau chaude
+        //
+        $('#idModifierStatutDhw#uid#').on('click', function () {
+            $('#idPopupStatutDhw#uid#').show();
+        });
+
+        // Click pour mode balanced
+        //
+        $('#idModeDhwBalanced#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhwBalanced#'
+            });
+        });
+
+        // Click pour mode comfort
+        //
+        $('#idModeDhwComfort#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhwComfort#'
+            });
+        });
+
+        // Click pour mode éco
+        //
+        $('#idModeDhwEco#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhwEco#'
+            });
+        });
+
+        // Click pour mode off
+        //
+        $('#idModeDhwOff#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhwOff#'
             });
         });
 
@@ -3649,12 +3760,12 @@
         });
 
         $(function () {
-            $("#idPopupProgChauffage#uid#").draggable({                
+            $("#idPopupProgChauffage#uid#").draggable({
                 cursor: "crosshair",
                 opacity: 0.9
             });
         });
-        
+
         $('#idPchOk#uid#').on('click', function () {
 
             var val = $("#selectionProgChauffage#uid#").val();
@@ -3697,7 +3808,7 @@
         });
 
         $(function () {
-            $("#idPopupProgEauChaude#uid#").draggable({                
+            $("#idPopupProgEauChaude#uid#").draggable({
                 cursor: "crosshair",
                 opacity: 0.9
             });

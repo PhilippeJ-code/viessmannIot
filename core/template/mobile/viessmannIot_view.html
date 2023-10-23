@@ -661,25 +661,25 @@
 
             <div class="classModalCorps#uid#">
                 <div id="showModeStandby#uid#">
-                    <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br>
+                    <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br></br>
                 </div>
                 <div id="showModeHeating#uid#">
-                    <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>
+                    <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br></br>
                 </div>
                 <div id="showModeDhw#uid#">
-                    <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>
+                    <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br></br>
                 </div>
                 <div id="showModeDhwAndHeating#uid#">
                     <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et
-                    eau chaude<br>
+                    eau chaude<br></br>
                 </div>
                 <div id="showModeForcedReduced#uid#">
                     <input type="radio" name="modes" value="forcedReduced" id="idModeForcedReduced#uid#">Marche réduite
-                    permanente<br>
+                    permanente<br></br>
                 </div>
                 <div id="showModeForcedNormal#uid#">
                     <input type="radio" name="modes" value="forcedNormal" id="idModeForcedNormal#uid#">Marche normale
-                    permanente<br>
+                    permanente<br></br>
                 </div>
             </div>
         </div>
@@ -1776,19 +1776,19 @@
                 if (_options.display_value == 'standby') {
                     $('#idStatutChauffage#uid#').html('Arrêt');
                 } else if (_options.display_value == 'heating') {
-                    $('#idStatutChauffage#uid#').html('Chauffage seul activé');
+                    $('#idStatutChauffage#uid#').html('Chauffage activé');
                     $('#idModeHeating#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhw') {
-                    $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
+                } else if (_options.display_value == 'cooling') {
+                    $('#idStatutChauffage#uid#').html('Refroidissement activé');
                     $('#idModeDhw#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhwAndHeating') {
-                    $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
+                } else if (_options.display_value == 'heatingCooling') {
+                    $('#idStatutChauffage#uid#').html('Chauffage et refroidissement activés');
                     $('#idModeDhwAndHeating#uid#').prop('checked', true);
-                } else if (_options.display_value == 'forcedReduced') {
-                    $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
+                } else if (_options.display_value == 'testMode') {
+                    $('#idStatutChauffage#uid#').html('Mode test activé');
                     $('#idModeForcedReduced#uid#').prop('checked', true);
-                } else if (_options.display_value == 'forcedNormal') {
-                    $('#idStatutChauffage#uid#').html('Mode jour en permanence');
+                } else if (_options.display_value == 'auto') {
+                    $('#idStatutChauffage#uid#').html('Mode auto activé');
                     $('#idModeForcedNormal#uid#').prop('checked', true);
                 } else {
                     $('#idStatutChauffage#uid#').html(_options.display_value);

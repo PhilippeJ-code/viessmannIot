@@ -16,7 +16,7 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__  . '/../../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../../../core/php/core.inc.php';
 include __DIR__ . '/../php/viessmannApi.php';
 
 class viessmannIot extends eqLogic
@@ -33,6 +33,7 @@ class viessmannIot extends eqLogic
     public const HEATING_DHW_SCHEDULE = "heating.dhw.schedule";
 
     public const ACTIVE_MODE = "operating.modes.active";
+    public const ACTIVE_DHW_MODE = "heating.dhw.operating.modes.active";
     public const ACTIVE_PROGRAM = "operating.programs.active";
     public const PUMP_STATUS = "circulation.pump";
     public const HEATING_BOILER_SENSORS_TEMPERATURE = "heating.boiler.sensors.temperature.commonSupply";
@@ -153,7 +154,7 @@ class viessmannIot extends eqLogic
     }
 
     // Supprimer les commandes
-      //
+    //
     public function deleteAllCommands()
     {
         $cmds = $this->getCmd();
@@ -165,14 +166,14 @@ class viessmannIot extends eqLogic
     }
 
     // Créer les commandes
-      //
+    //
     public function createCommands($viessmannApi)
     {
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
         $features = $viessmannApi->getArrayFeatures();
         $n = count($features["data"]);
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'pumpStatus');
                 if (!is_object($obj)) {
@@ -247,8 +248,49 @@ class viessmannIot extends eqLogic
                 $obj->setLogicalId('activeMode');
                 $obj->save();
 
+                $obj = $this->getCmd(null, 'modeStandby');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeHeating');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeDhw');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeDhwAndHeating');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeForcedReduced');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeForcedNormal');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeAuto');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeCooling');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeHeatingCooling');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeTestMode');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+
                 $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
-                for ($j=0; $j<$nc; $j++) {
+                for ($j = 0; $j < $nc; $j++) {
                     if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'standby') {
                         $obj = $this->getCmd(null, 'modeStandby');
                         if (!is_object($obj)) {
@@ -257,6 +299,17 @@ class viessmannIot extends eqLogic
                         }
                         $obj->setEqLogic_id($this->getId());
                         $obj->setLogicalId('modeStandby');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'auto') {
+                        $obj = $this->getCmd(null, 'modeAuto');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode auto', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeAuto');
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
@@ -271,52 +324,121 @@ class viessmannIot extends eqLogic
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
-                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhw') {
-                        $obj = $this->getCmd(null, 'modeDhw');
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'cooling') {
+                        $obj = $this->getCmd(null, 'modeCooling');
                         if (!is_object($obj)) {
                             $obj = new viessmannIotCmd();
-                            $obj->setName(__('Mode eau chaude', __FILE__));
+                            $obj->setName(__('Mode refroidissement', __FILE__));
                         }
                         $obj->setEqLogic_id($this->getId());
-                        $obj->setLogicalId('modeDhw');
+                        $obj->setLogicalId('modeCooling');
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
-                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhwAndHeating') {
-                        $obj = $this->getCmd(null, 'modeDhwAndHeating');
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'heatingCooling') {
+                        $obj = $this->getCmd(null, 'modeHeatingCooling');
                         if (!is_object($obj)) {
                             $obj = new viessmannIotCmd();
-                            $obj->setName(__('Mode chauffage et eau chaude', __FILE__));
+                            $obj->setName(__('Mode chauffage et refroidissement', __FILE__));
                         }
                         $obj->setEqLogic_id($this->getId());
-                        $obj->setLogicalId('modeDhwAndHeating');
+                        $obj->setLogicalId('modeHeatingCooling');
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
-                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'forcedReduced') {
-                        $obj = $this->getCmd(null, 'modeForcedReduced');
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'testMode') {
+                        $obj = $this->getCmd(null, 'modeTestMode');
                         if (!is_object($obj)) {
                             $obj = new viessmannIotCmd();
-                            $obj->setName(__('Marche réduite permanente', __FILE__));
+                            $obj->setName(__('Mode test', __FILE__));
                         }
                         $obj->setEqLogic_id($this->getId());
-                        $obj->setLogicalId('modeForcedReduced');
-                        $obj->setType('action');
-                        $obj->setSubType('other');
-                        $obj->save();
-                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'forcedNormal') {
-                        $obj = $this->getCmd(null, 'modeForcedNormal');
-                        if (!is_object($obj)) {
-                            $obj = new viessmannIotCmd();
-                            $obj->setName(__('Marche normale permanente', __FILE__));
-                        }
-                        $obj->setEqLogic_id($this->getId());
-                        $obj->setLogicalId('modeForcedNormal');
+                        $obj->setLogicalId('modeTestMode');
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
                     }
                 }
+            } elseif ($features["data"][$i]["feature"] == self::ACTIVE_DHW_MODE && $features["data"][$i]["isEnabled"] == true) {
+                $obj = $this->getCmd(null, 'activeDhwMode');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Mode eau chaude activé', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('string');
+                $obj->setLogicalId('activeDhwMode');
+                $obj->save();
+                
+                $obj = $this->getCmd(null, 'modeDhwBalanced');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeDhwComfort');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeDhwEco');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                $obj = $this->getCmd(null, 'modeDhwOff');
+                if (is_object($obj)) {
+                    $obj->remove();
+                }
+                
+                $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
+                for ($j = 0; $j < $nc; $j++) {
+                    if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'balanced') {
+                        $obj = $this->getCmd(null, 'modeDhwBalanced');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode dhw activé', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwBalanced');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'comfort') {
+                        $obj = $this->getCmd(null, 'modeDhwComfort');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode dhw comfort', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwComfort');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'eco') {
+                        $obj = $this->getCmd(null, 'modeDhwEco');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode dhw économique', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwEco');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'off') {
+                        $obj = $this->getCmd(null, 'modeDhwOff');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode dhw arrêt', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwOff');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    }
+                }
+                
             } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'activeProgram');
                 if (!is_object($obj)) {
@@ -881,11 +1003,11 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('solarDhwTemperature');
                 $obj->save();
-            } elseif (($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_DHW||
-            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_DHW||
-            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_HEATING||
-            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_DHW||
-            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_HEATING||
+            } elseif (($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_DHW ||
+            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_DHW ||
+            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_HEATING ||
+            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_DHW ||
+            $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_HEATING ||
             $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_HEATING) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'dhwGazConsumptionDay');
                 if (!is_object($obj)) {
@@ -990,11 +1112,11 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('string');
                 $obj->setLogicalId('heatingGazConsumptionYear');
                 $obj->save();
-            } elseif (($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_DHW||
-            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_DHW||
-            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_HEATING||
-            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_HEATING||
-            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL||
+            } elseif (($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_DHW ||
+            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_DHW ||
+            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_HEATING ||
+            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_HEATING ||
+            $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_TOTAL ||
             $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_TOTAL)
             && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'dhwPowerConsumptionDay');
@@ -1429,7 +1551,7 @@ class viessmannIot extends eqLogic
     }
 
     // Accès au serveur Viessmann
-      //
+    //
     public function getViessmann()
     {
         $clientId = trim($this->getConfiguration('clientId', ''));
@@ -1492,7 +1614,7 @@ class viessmannIot extends eqLogic
             $this->setConfiguration('installationId', $installationId);
             $this->setConfiguration('serial', $serial)->save();
 
-//              $this->deleteAllCommands();
+            //              $this->deleteAllCommands();
             $this->createCommands($viessmannApi);
         }
 
@@ -1543,7 +1665,7 @@ class viessmannIot extends eqLogic
 
         $features = $viessmannApi->getArrayFeatures();
         $nbrFeatures = count($features["data"]);
-        for ($i=0; $i<$nbrFeatures; $i++) {
+        for ($i = 0; $i < $nbrFeatures; $i++) {
             if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $outsideTemperature = $val;
@@ -1701,77 +1823,77 @@ class viessmannIot extends eqLogic
                 $dhwSchedule = '';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['mon']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['tue']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['wed']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['thu']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['fri']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['sat']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
                 $dhwSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['sun']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwSchedule .= 'n,';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['start'] . ',';
                     $dhwSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $dhwSchedule .= ',';
                     }
                 }
@@ -1784,77 +1906,77 @@ class viessmannIot extends eqLogic
                 $heatingSchedule = '';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['mon']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['mon'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['mon'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['tue']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['tue'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['tue'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['wed']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['wed'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['wed'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['thu']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['thu'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['thu'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['fri']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['fri'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['fri'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['sat']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['sat'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sat'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
                 $heatingSchedule .= ';';
 
                 $n = count($features["data"][$i]["properties"]['entries']['value']['sun']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingSchedule .= substr($features["data"][$i]["properties"]['entries']['value']['sun'][$j]['mode'], 0, 1) . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['start'] . ',';
                     $heatingSchedule .= $features["data"][$i]["properties"]['entries']['value']['sun'][$j]['end'];
-                    if ($j < $n-1) {
+                    if ($j < $n - 1) {
                         $heatingSchedule .= ',';
                     }
                 }
@@ -1897,15 +2019,15 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j] * $facteurConversionGaz;
                 }
                 $this->getCmd(null, 'totalGazConsumption')->event($heatingGazConsumptions[0]);
 
                 $conso = $heatingGazConsumptions[0];
                 $oldConso = $this->getCache('oldConsoTotal', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'totalGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
                 }
@@ -1930,8 +2052,8 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $week = '';
@@ -1950,8 +2072,8 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $month = '';
@@ -1970,8 +2092,8 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $year = '';
@@ -1992,15 +2114,15 @@ class viessmannIot extends eqLogic
 
                 $dhwGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j] * $facteurConversionGaz;
                 }
                 $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]);
 
                 $conso = $dhwGazConsumptions[0];
                 $oldConso = $this->getCache('oldConsoDhw', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'dhwGazHistorize')->event($dhwGazConsumptions[1], $dateVeille);
                 }
@@ -2025,8 +2147,8 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
-                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $week = '';
@@ -2045,8 +2167,8 @@ class viessmannIot extends eqLogic
 
                 $dhwGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $month = '';
@@ -2065,8 +2187,8 @@ class viessmannIot extends eqLogic
 
                 $dhwGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $dhwGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $year = '';
@@ -2087,15 +2209,15 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j] * $facteurConversionGaz;
                 }
                 $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]);
 
                 $conso = $heatingGazConsumptions[0];
                 $oldConso = $this->getCache('oldConsoHeating', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1], $dateVeille);
                 }
@@ -2120,8 +2242,8 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $week = '';
@@ -2140,8 +2262,8 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $month = '';
@@ -2160,8 +2282,8 @@ class viessmannIot extends eqLogic
 
                 $heatingGazConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
-                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j]*$facteurConversionGaz;
+                for ($j = 0; $j < $n; $j++) {
+                    $heatingGazConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j] * $facteurConversionGaz;
                 }
 
                 $year = '';
@@ -2182,7 +2304,7 @@ class viessmannIot extends eqLogic
 
                 $totalPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $totalPowerConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j];
                 }
                 $this->getCmd(null, 'totalPowerConsumption')->event($totalPowerConsumptions[0]);
@@ -2190,7 +2312,7 @@ class viessmannIot extends eqLogic
                 $conso = $totalPowerConsumptions[0];
                 $oldConso = $this->getCache('oldConsoPowerTotal', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'totalPowerHistorize')->event($totalPowerConsumptions[1], $dateVeille);
                 }
@@ -2213,7 +2335,7 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $totalPowerConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j];
                 }
                 $week = '';
@@ -2230,7 +2352,7 @@ class viessmannIot extends eqLogic
 
                 $totalPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $totalPowerConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j];
                 }
                 $month = '';
@@ -2247,7 +2369,7 @@ class viessmannIot extends eqLogic
 
                 $totalPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $totalPowerConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j];
                 }
                 $year = '';
@@ -2266,7 +2388,7 @@ class viessmannIot extends eqLogic
 
                 $dhwPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwPowerConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j];
                 }
                 $this->getCmd(null, 'dhwPowerConsumption')->event($dhwPowerConsumptions[0]);
@@ -2274,7 +2396,7 @@ class viessmannIot extends eqLogic
                 $conso = $dhwPowerConsumptions[0];
                 $oldConso = $this->getCache('oldConsoPowerDhw', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'dhwPowerHistorize')->event($dhwPowerConsumptions[1], $dateVeille);
                 }
@@ -2297,7 +2419,7 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwPowerConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j];
                 }
                 $week = '';
@@ -2314,7 +2436,7 @@ class viessmannIot extends eqLogic
 
                 $dhwPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwPowerConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j];
                 }
                 $month = '';
@@ -2331,7 +2453,7 @@ class viessmannIot extends eqLogic
 
                 $dhwPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $dhwPowerConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j];
                 }
                 $year = '';
@@ -2350,7 +2472,7 @@ class viessmannIot extends eqLogic
 
                 $heatingPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['day']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingPowerConsumptions[$j] = $features["data"][$i]["properties"]['day']['value'][$j];
                 }
                 $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
@@ -2358,7 +2480,7 @@ class viessmannIot extends eqLogic
                 $conso = $heatingPowerConsumptions[0];
                 $oldConso = $this->getCache('oldConsoPowerHeating', -1);
                 if ($oldConso >= $conso) {
-                    $dateVeille = time()-24*60*60;
+                    $dateVeille = time() - 24 * 60 * 60;
                     $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                     $this->getCmd(null, 'heatingPowerHistorize')->event($heatingPowerConsumptions[1], $dateVeille);
                 }
@@ -2381,7 +2503,7 @@ class viessmannIot extends eqLogic
                 if ($n > 7) {
                     $n = 7;
                 }
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingPowerConsumptions[$j] = $features["data"][$i]["properties"]['week']['value'][$j];
                 }
                 $week = '';
@@ -2398,7 +2520,7 @@ class viessmannIot extends eqLogic
 
                 $heatingPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['month']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingPowerConsumptions[$j] = $features["data"][$i]["properties"]['month']['value'][$j];
                 }
                 $month = '';
@@ -2415,7 +2537,7 @@ class viessmannIot extends eqLogic
 
                 $heatingPowerConsumptions = array();
                 $n = count($features["data"][$i]["properties"]['year']['value']);
-                for ($j=0; $j<$n; $j++) {
+                for ($j = 0; $j < $n; $j++) {
                     $heatingPowerConsumptions[$j] = $features["data"][$i]["properties"]['year']['value'][$j];
                 }
                 $year = '';
@@ -2524,7 +2646,7 @@ class viessmannIot extends eqLogic
         }
 
         if ($bConsumptionSeen == false) {
-            
+
             $gasSummaryDayTotal = $gasSummaryWeekTotal = $gasSummaryMonthTotal = $gasSummaryYearTotal = 0;
             $gasSummaryDayHeating = $gasSummaryWeekHeating = $gasSummaryMonthHeating = $gasSummaryYearHeating = 0;
             $gasSummaryDayDhw = $gasSummaryWeekDhw = $gasSummaryMonthDhw = $gasSummaryYearDhw = 0;
@@ -2533,7 +2655,7 @@ class viessmannIot extends eqLogic
             $powerSummaryDayHeating = $gasSummaryWeekHeating = $gasSummaryMonthHeating = $gasSummaryYearHeating = 0;
             $powerSummaryDayDhw = $gasSummaryWeekDhw = $gasSummaryMonthDhw = $gasSummaryYearDhw = 0;
 
-            for ($i=0; $i<$nbrFeatures; $i++) {
+            for ($i = 0; $i < $nbrFeatures; $i++) {
                 if ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_TOTAL && $features["data"][$i]["isEnabled"] == true) {
                     $gasSummaryDayTotal = $features["data"][$i]["properties"]['currentDay']['value'];
                     $gasSummaryWeekTotal = $features["data"][$i]["properties"]['lastSevenDays']['value'];
@@ -2617,7 +2739,7 @@ class viessmannIot extends eqLogic
             $conso = $gasSummaryDayDhw;
             $oldConso = $this->getCache('oldConsoDhw', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'dhwGazHistorize')->event($gasSummaryDayDhw, $dateVeille);
             }
@@ -2626,7 +2748,7 @@ class viessmannIot extends eqLogic
             $conso = $gasSummaryDayHeating;
             $oldConso = $this->getCache('oldConsoHeating', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'heatingGazHistorize')->event($gasSummaryDayHeating, $dateVeille);
             }
@@ -2635,7 +2757,7 @@ class viessmannIot extends eqLogic
             $conso = $gasSummaryDayTotal;
             $oldConso = $this->getCache('oldConsoTotal', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'totalGazHistorize')->event($gasSummaryDayTotal, $dateVeille);
             }
@@ -2644,7 +2766,7 @@ class viessmannIot extends eqLogic
             $conso = $powerSummaryDayDhw;
             $oldConso = $this->getCache('oldConsoPowerDhw', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'dhwPowerHistorize')->event($powerSummaryDayDhw, $dateVeille);
             }
@@ -2653,7 +2775,7 @@ class viessmannIot extends eqLogic
             $conso = $powerSummaryDayHeating;
             $oldConso = $this->getCache('oldConsoPowerHeating', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'heatingPowerHistorize')->event($powerSummaryDayHeating, $dateVeille);
             }
@@ -2662,7 +2784,7 @@ class viessmannIot extends eqLogic
             $conso = $powerSummaryDayTotal;
             $oldConso = $this->getCache('oldConsoPowerTotal', -1);
             if ($oldConso >= $conso) {
-                $dateVeille = time()-24*60*60;
+                $dateVeille = time() - 24 * 60 * 60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'totalPowerHistorize')->event($powerSummaryDayTotal, $dateVeille);
             }
@@ -2803,7 +2925,7 @@ class viessmannIot extends eqLogic
             $viessmannApi->getEvents();
             $events = $viessmannApi->getArrayEvents();
             $nbrEvents = count($events["data"]);
-            for ($i=$nbrEvents-1; $i>=0; $i--) {
+            for ($i = $nbrEvents - 1; $i >= 0; $i--) {
                 if ($events["data"][$i]["eventType"] == "device-error") {
                     $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
                     $timeStamp = str_replace('T', ' ', $timeStamp) . ' GMT';
@@ -2818,7 +2940,7 @@ class viessmannIot extends eqLogic
                     $errorDescription = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
                     $errorDescription = str_replace("'", "\'", $errorDescription);
                     $errorDescription = str_replace('"', "\"", $errorDescription);
-                
+
                     if ($nbr < 10) {
                         if ($nbr > 0) {
                             $erreurs .= ';';
@@ -2896,7 +3018,7 @@ class viessmannIot extends eqLogic
             ($slope != 99) &&
             ($shift != 99)) {
             $curve = '';
-            for ($ot=25; $ot>=-20;$ot-=5) {
+            for ($ot = 25; $ot >= -20;$ot -= 5) {
                 $deltaT = $ot - $consigneTemperature;
                 $tempDepart = $consigneTemperature + $shift - $slope * $deltaT * (1.4347 + 0.021 * $deltaT + 247.9 * 0.000001 * $deltaT * $deltaT);
                 if ($curve == '') {
@@ -2911,7 +3033,7 @@ class viessmannIot extends eqLogic
         $now = time();
 
         // Historisation temperatures
-          //
+        //
         $dateCron = time();
         $dateCron = date('Y-m-d H:i:00', $dateCron);
         if (($roomTemperature != 99) &&
@@ -2939,7 +3061,7 @@ class viessmannIot extends eqLogic
         $oldJour = $this->getCache('oldJour', -1);
 
         if ($oldJour != $jour) {
-            $dateVeille = time()-24*60*60;
+            $dateVeille = time() - 24 * 60 * 60;
             $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
 
             if (($heatingBurnerHours != -1) && ($heatingBurnerStarts != -1)) {
@@ -2948,13 +3070,13 @@ class viessmannIot extends eqLogic
                 if ($oldHours != -1) {
                     $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                     if (is_object($obj)) {
-                        $obj->event(round($heatingBurnerHours-$oldHours, 1), $dateVeille);
+                        $obj->event(round($heatingBurnerHours - $oldHours, 1), $dateVeille);
                     }
                 }
                 if ($oldStarts != -1) {
                     $obj = $this->getCmd(null, 'heatingBurnerStartsPerDay');
                     if (is_object($obj)) {
-                        $obj->event($heatingBurnerStarts-$oldStarts, $dateVeille);
+                        $obj->event($heatingBurnerStarts - $oldStarts, $dateVeille);
                     }
                 }
                 $this->setCache('oldHours', $heatingBurnerHours);
@@ -3053,7 +3175,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Dhw Temperature
-      //
+    //
     public function setDhwTemperature($temperature)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3070,7 +3192,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Mode
-      //
+    //
     public function setMode($mode)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3089,8 +3211,26 @@ class viessmannIot extends eqLogic
         $this->getCmd(null, 'activeMode')->event($mode);
     }
 
+    // Set Dhw Mode
+    //
+    public function setDhwMode($mode)
+    {
+        $this->setCache('tempsRestant', self::REFRESH_TIME);
+
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+
+        $data = "{\"mode\":\"" . $mode . "\"}";
+        $viessmannApi->setFeature(self::ACTIVE_DHW_MODE, "setMode", $data);
+        unset($viessmannApi);
+
+        $this->getCmd(null, 'activeDhwMode')->event($mode);
+    }
+
     // Set Comfort Program Temperature
-      //
+    //
     public function setComfortProgramTemperature($temperature)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3118,7 +3258,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Normal Program Temperature
-      //
+    //
     public function setNormalProgramTemperature($temperature)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3146,7 +3286,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Reduced Program Temperature
-      //
+    //
     public function setReducedProgramTemperature($temperature)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3173,7 +3313,7 @@ class viessmannIot extends eqLogic
     }
 
     // Start One Time Dhw Charge
-      //
+    //
     public function startOneTimeDhwCharge()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3191,7 +3331,7 @@ class viessmannIot extends eqLogic
     }
 
     // Stop One Time Dhw Charge
-      //
+    //
     public function stopOneTimeDhwCharge()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3209,7 +3349,7 @@ class viessmannIot extends eqLogic
     }
 
     // Activate Comfort Program
-      //
+    //
     public function activateComfortProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3229,7 +3369,7 @@ class viessmannIot extends eqLogic
     }
 
     // deActivate Comfort Program
-      //
+    //
     public function deActivateComfortProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3249,7 +3389,7 @@ class viessmannIot extends eqLogic
     }
 
     // Activate Eco Program
-      //
+    //
     public function activateEcoProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3269,7 +3409,7 @@ class viessmannIot extends eqLogic
     }
 
     // deActivate Eco Program
-      //
+    //
     public function deActivateEcoProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3289,7 +3429,7 @@ class viessmannIot extends eqLogic
     }
 
     // Activate Last Schedule
-      //
+    //
     public function activateLastSchedule()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3309,7 +3449,7 @@ class viessmannIot extends eqLogic
     }
 
     // deActivate Last Schedule
-      //
+    //
     public function deActivateLastSchedule()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3329,7 +3469,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Slope
-      //
+    //
     public function setSlope($slope)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3351,7 +3491,7 @@ class viessmannIot extends eqLogic
     }
 
     // Set Shift
-      //
+    //
     public function setShift($shift)
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3373,7 +3513,7 @@ class viessmannIot extends eqLogic
     }
 
     // Schedule Holiday Program
-      //
+    //
     public function scheduleHolidayProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3410,7 +3550,7 @@ class viessmannIot extends eqLogic
     }
 
     // Unschedule Holiday Program
-      //
+    //
     public function unscheduleHolidayProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3428,7 +3568,7 @@ class viessmannIot extends eqLogic
     }
 
     // Schedule Holiday At Home Program
-      //
+    //
     public function scheduleHolidayAtHomeProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3465,7 +3605,7 @@ class viessmannIot extends eqLogic
     }
 
     // Unschedule Holiday At Home Program
-      //
+    //
     public function unscheduleHolidayAtHomeProgram()
     {
         $this->setCache('tempsRestant', self::REFRESH_TIME);
@@ -3482,8 +3622,8 @@ class viessmannIot extends eqLogic
         $this->getCmd(null, 'isScheduleHolidayAtHomeProgram')->event(0);
     }
 
-      //
-      //
+    //
+    //
     public function setHeatingSchedule($titre, $message)
     {
         $obj = $this->getCmd(null, 'heatingSchedule');
@@ -3498,7 +3638,7 @@ class viessmannIot extends eqLogic
 
         $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
         $commande = '{"newSchedule": {';
-        for ($i=0; $i<7; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             if ($titre == $jours[$i]) {
                 $subElements = explode(',', $message);
             } else {
@@ -3508,27 +3648,27 @@ class viessmannIot extends eqLogic
             if (($n % 3) != 0) {
                 return('Nombre de sous éléments <> 3');
             }
-            $commande .= '"'.$jours[$i].'": [';
-            for ($j=0; $j<$n; $j+=3) {
+            $commande .= '"' . $jours[$i] . '": [';
+            for ($j = 0; $j < $n; $j += 3) {
                 $mode = $subElements[$j];
-                $start = $subElements[$j+1];
-                $end = $subElements[$j+2];
+                $start = $subElements[$j + 1];
+                $end = $subElements[$j + 2];
                 $commande .= '{';
                 if ($mode == 'n') {
                     $commande .= '"mode": "normal",';
                 } else {
                     $commande .= '"mode": "comfort",';
                 }
-                $commande .= '"start": "'.$start.'",';
-                $commande .= '"end": "'.$end.'",';
-                $commande .= '"position": '.$j/3.;
+                $commande .= '"start": "' . $start . '",';
+                $commande .= '"end": "' . $end . '",';
+                $commande .= '"position": ' . $j / 3.;
                 $commande .= '}';
-                if ($j < $n-3) {
+                if ($j < $n - 3) {
                     $commande .= ',';
                 }
             }
             $commande .= ']';
-            if ($i<6) {
+            if ($i < 6) {
                 $commande .= ',';
             }
         }
@@ -3548,8 +3688,8 @@ class viessmannIot extends eqLogic
         return ($commande);
     }
 
-      //
-      //
+    //
+    //
     public function setDhwSchedule($titre, $message)
     {
         $obj = $this->getCmd(null, 'dhwSchedule');
@@ -3564,7 +3704,7 @@ class viessmannIot extends eqLogic
 
         $jours = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
         $commande = '{"newSchedule": {';
-        for ($i=0; $i<7; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             if ($titre == $jours[$i]) {
                 $subElements = explode(',', $message);
             } else {
@@ -3574,23 +3714,23 @@ class viessmannIot extends eqLogic
             if (($n % 3) != 0) {
                 return('Nombre de sous éléments <> 3');
             }
-            $commande .= '"'.$jours[$i].'": [';
-            for ($j=0; $j<$n; $j+=3) {
+            $commande .= '"' . $jours[$i] . '": [';
+            for ($j = 0; $j < $n; $j += 3) {
                 $mode = $subElements[$j];
-                $start = $subElements[$j+1];
-                $end = $subElements[$j+2];
+                $start = $subElements[$j + 1];
+                $end = $subElements[$j + 2];
                 $commande .= '{';
                 $commande .= '"mode": "on",';
-                $commande .= '"start": "'.$start.'",';
-                $commande .= '"end": "'.$end.'",';
-                $commande .= '"position": '.$j/3.;
+                $commande .= '"start": "' . $start . '",';
+                $commande .= '"end": "' . $end . '",';
+                $commande .= '"position": ' . $j / 3.;
                 $commande .= '}';
-                if ($j < $n-3) {
+                if ($j < $n - 3) {
                     $commande .= ',';
                 }
             }
             $commande .= ']';
-            if ($i<6) {
+            if ($i < 6) {
                 $commande .= ',';
             }
         }
@@ -3645,37 +3785,27 @@ class viessmannIot extends eqLogic
     }
 
     // Fonction exécutée automatiquement avant la création de l'équipement
-      //
-    public function preInsert()
-    {
-    }
+    //
+    public function preInsert() {}
 
     // Fonction exécutée automatiquement après la création de l'équipement
-      //
-    public function postInsert()
-    {
-    }
+    //
+    public function postInsert() {}
 
     // Fonction exécutée automatiquement avant la mise à jour de l'équipement
-      //
-    public function preUpdate()
-    {
-    }
+    //
+    public function preUpdate() {}
 
     // Fonction exécutée automatiquement après la mise à jour de l'équipement
-      //
-    public function postUpdate()
-    {
-    }
+    //
+    public function postUpdate() {}
 
     // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
-      //
-    public function preSave()
-    {
-    }
+    //
+    public function preSave() {}
 
     // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
-      //
+    //
     public function postSave()
     {
         $obj = $this->getCmd(null, 'refresh');
@@ -4007,19 +4137,15 @@ class viessmannIot extends eqLogic
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
-      //
-    public function preRemove()
-    {
-    }
+    //
+    public function preRemove() {}
 
     // Fonction exécutée automatiquement après la suppression de l'équipement
-      //
-    public function postRemove()
-    {
-    }
+    //
+    public function postRemove() {}
 
     // Permet de modifier l'affichage du widget (également utilisable par les commandes)
-      //
+    //
     public function toHtml($_version = 'dashboard')
     {
         $isWidgetPlugin = $this->getConfiguration('isWidgetPlugin');
@@ -4273,39 +4399,73 @@ class viessmannIot extends eqLogic
             } else {
                 $replace["#idModeStandby#"] = '??';
             }
+            $obj = $this->getCmd(null, 'modeAuto');
+            if (is_object($obj)) {
+                $replace["#idModeAuto#"] = $obj->getId();
+            } else {
+                $replace["#idModeAuto#"] = '??';
+            }
             $obj = $this->getCmd(null, 'modeHeating');
             if (is_object($obj)) {
                 $replace["#idModeHeating#"] = $obj->getId();
             } else {
                 $replace["#idModeHeating#"] = '??';
             }
-            $obj = $this->getCmd(null, 'modeDhw');
+            $obj = $this->getCmd(null, 'modeCooling');
             if (is_object($obj)) {
-                $replace["#idModeDhw#"] = $obj->getId();
+                $replace["#idModeCooling#"] = $obj->getId();
             } else {
-                $replace["#idModeDhw#"] = '??';
+                $replace["#idModeCooling#"] = '??';
             }
-            $obj = $this->getCmd(null, 'modeDhwAndHeating');
+            $obj = $this->getCmd(null, 'modeHeatingCooling');
             if (is_object($obj)) {
-                $replace["#idModeDhwAndHeating#"] = $obj->getId();
+                $replace["#idModeHeatingCooling#"] = $obj->getId();
             } else {
-                $replace["#idModeDhwAndHeating#"] = '??';
+                $replace["#idModeHeatingCooling#"] = '??';
             }
-            $obj = $this->getCmd(null, 'modeForcedReduced');
+            $obj = $this->getCmd(null, 'modeTestMode');
             if (is_object($obj)) {
-                $replace["#idModeForcedReduced#"] = $obj->getId();
+                $replace["#idModeTestMode#"] = $obj->getId();
             } else {
-                $replace["#idModeForcedReduced#"] = '??';
-            }
-            $obj = $this->getCmd(null, 'modeForcedNormal');
-            if (is_object($obj)) {
-                $replace["#idModeForcedNormal#"] = $obj->getId();
-            } else {
-                $replace["#idModeForcedNormal#"] = '??';
+                $replace["#idModeTestMode#"] = '??';
             }
         } else {
             $replace["#activeMode#"] = '??';
             $replace["#idActiveMode#"] = "#idActiveMode#";
+        }
+
+        $obj = $this->getCmd(null, 'activeDhwMode');
+        if (is_object($obj)) {
+            $replace["#activeDhwMode#"] = $obj->execCmd();
+            $replace["#idActiveDhwMode#"] = $obj->getId();
+
+            $obj = $this->getCmd(null, 'modeDhwBalanced');
+            if (is_object($obj)) {
+                $replace["#idModeDhwBalanced#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwBalanced#"] = '??';
+            }
+            $obj = $this->getCmd(null, 'modeDhwComfort');
+            if (is_object($obj)) {
+                $replace["#idModeDhwComfort#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwComfort#"] = '??';
+            }
+            $obj = $this->getCmd(null, 'modeDhwEco');
+            if (is_object($obj)) {
+                $replace["#idModeDhwEco#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwEco#"] = '??';
+            }
+            $obj = $this->getCmd(null, 'modeDhwOff');
+            if (is_object($obj)) {
+                $replace["#idModeDhwOff#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwOff#"] = '??';
+            }
+        } else {
+            $replace["#activeDhwMode#"] = '??';
+            $replace["#idActiveDhwMode#"] = "#idActiveDhwMode#";
         }
 
         $obj = $this->getCmd(null, 'comfortProgramTemperature');
@@ -4454,7 +4614,7 @@ class viessmannIot extends eqLogic
         $joursSemaine = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($joursSemaine !== '') {
                 $joursSemaine = ',' . $joursSemaine;
             }
@@ -4500,12 +4660,12 @@ class viessmannIot extends eqLogic
         $semaines = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($semaines !== '') {
                 $semaines = ',' . $semaines;
             }
             $semaines = "'" . $semaine . "'" . $semaines;
-            $maintenant -= 7*24*60*60;
+            $maintenant -= 7 * 24 * 60 * 60;
             $semaine = date("W", $maintenant);
         }
         $replace["#semaines#"] = $semaines;
@@ -4542,11 +4702,11 @@ class viessmannIot extends eqLogic
         $libMois = array("Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc");
 
         $maintenant = time();
-        $mois = date("m", $maintenant)-1;
+        $mois = date("m", $maintenant) - 1;
         $moisS = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($moisS !== '') {
                 $moisS = ',' . $moisS;
             }
@@ -4592,7 +4752,7 @@ class viessmannIot extends eqLogic
         $annees = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($annees !== '') {
                 $annees = ',' . $annees;
             }
@@ -4617,7 +4777,7 @@ class viessmannIot extends eqLogic
         $joursSemaine = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($joursSemaine !== '') {
                 $joursSemaine = ',' . $joursSemaine;
             }
@@ -4645,12 +4805,12 @@ class viessmannIot extends eqLogic
         $semaines = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($semaines !== '') {
                 $semaines = ',' . $semaines;
             }
             $semaines = "'" . $semaine . "'" . $semaines;
-            $maintenant -= 7*24*60*60;
+            $maintenant -= 7 * 24 * 60 * 60;
             $semaine = date("W", $maintenant);
         }
         $replace["#elec_semaines#"] = $semaines;
@@ -4667,11 +4827,11 @@ class viessmannIot extends eqLogic
         }
 
         $maintenant = time();
-        $mois = date("m", $maintenant)-1;
+        $mois = date("m", $maintenant) - 1;
         $moisS = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($moisS !== '') {
                 $moisS = ',' . $moisS;
             }
@@ -4699,7 +4859,7 @@ class viessmannIot extends eqLogic
         $annees = '';
         $n = substr_count($str, ",") + 1;
 
-        for ($i=0; $i<$n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             if ($annees !== '') {
                 $annees = ',' . $annees;
             }
@@ -4827,7 +4987,7 @@ class viessmannIot extends eqLogic
         }
 
         $temp = '';
-        for ($ot=25; $ot>=-20;$ot--) {
+        for ($ot = 25; $ot >= -20;$ot--) {
             if ($temp !== '') {
                 $temp = $temp . ',';
             }
@@ -4840,7 +5000,7 @@ class viessmannIot extends eqLogic
         $replace["#idCurve#"] = $obj->getId();
 
         $temp = '';
-        for ($ot=25; $ot>=-20;$ot-=5) {
+        for ($ot = 25; $ot >= -20;$ot -= 5) {
             if ($temp !== '') {
                 $temp = $temp . ',';
             }
@@ -4848,7 +5008,7 @@ class viessmannIot extends eqLogic
         }
         $replace["#range_temp#"] = $temp;
 
-        $startTime = date("Y-m-d H:i:s", time()-8*24*60*60);
+        $startTime = date("Y-m-d H:i:s", time() - 8 * 24 * 60 * 60);
         $endTime = date("Y-m-d H:i:s", time());
 
         $outsideMinTemperature = $this->getCache('outsideMinTemperature', -1);
@@ -4856,7 +5016,7 @@ class viessmannIot extends eqLogic
 
         $listeMinTemp = array();
         $listeMaxTemp = array();
-        for ($i=0; $i<8; $i++) {
+        for ($i = 0; $i < 8; $i++) {
             $listeMinTemp[] = -99;
             $listeMaxTemp[] = 99;
         }
@@ -4872,7 +5032,7 @@ class viessmannIot extends eqLogic
                 $datetime = $row->getDatetime();
                 $ts = strtotime($datetime);
                 $i = time() - $ts;
-                $i = 7-floor($i / (24*60*60));
+                $i = 7 - floor($i / (24 * 60 * 60));
                 $listeMinTemp[$i] = round($value, 1);
             }
         }
@@ -4884,12 +5044,12 @@ class viessmannIot extends eqLogic
                 $datetime = $row->getDatetime();
                 $ts = strtotime($datetime);
                 $i = time() - $ts;
-                $i = 7-floor($i / (24*60*60));
+                $i = 7 - floor($i / (24 * 60 * 60));
                 $listeMaxTemp[$i] = round($value, 1);
             }
         }
         $datasMinMax = '';
-        for ($i=0; $i < count($listeMinTemp); $i++) {
+        for ($i = 0; $i < count($listeMinTemp); $i++) {
             if ($datasMinMax !== '') {
                 $datasMinMax = ',' . $datasMinMax;
             }
@@ -4903,7 +5063,7 @@ class viessmannIot extends eqLogic
         $jour = date("N", $maintenant) - 1;
         $joursMinMax = '';
 
-        for ($i=0; $i<8; $i++) {
+        for ($i = 0; $i < 8; $i++) {
             if ($jour < 0) {
                 $jour = 6;
             }
@@ -4946,7 +5106,7 @@ class viessmannIot extends eqLogic
     }
 
     // Lire les températures intérieures
-      //
+    //
     public function lireTempInt($startDate, $endDate, $dynamique)
     {
         $array = array();
@@ -4957,7 +5117,7 @@ class viessmannIot extends eqLogic
             $startTime = $startDate . " 00:00:00";
             $endTime = $endDate . " 00:00:00";
         } else {
-            $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+            $startTime = date("Y-m-d H:i:s", time() - 3 * 24 * 60 * 60);
             $endTime = date("Y-m-d H:i:s", time());
         }
 
@@ -4968,16 +5128,16 @@ class viessmannIot extends eqLogic
                 $datetime = $row->getDatetime();
                 $ts = strtotime($datetime);
                 $value = round($row->getValue(), 1);
-                $date = date("Y", $ts).",".(date("m", $ts)-1).","
-                  .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
-                $array[] = array('ts'=>$date,'value'=>$value);
+                $date = date("Y", $ts) . "," . (date("m", $ts) - 1) . ","
+                  . date("d", $ts) . "," . date("H", $ts) . "," . date("i", $ts) . "," . date("s", $ts);
+                $array[] = array('ts' => $date,'value' => $value);
             }
         }
         return ($array);
     }
 
     // Lire les températures extérieures
-      //
+    //
     public function lireTempExt($startDate, $endDate, $dynamique)
     {
         $array = array();
@@ -4988,7 +5148,7 @@ class viessmannIot extends eqLogic
             $startTime = $startDate . " 00:00:00";
             $endTime = $endDate . " 00:00:00";
         } else {
-            $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+            $startTime = date("Y-m-d H:i:s", time() - 3 * 24 * 60 * 60);
             $endTime = date("Y-m-d H:i:s", time());
         }
 
@@ -4999,16 +5159,16 @@ class viessmannIot extends eqLogic
                 $datetime = $row->getDatetime();
                 $ts = strtotime($datetime);
                 $value = round($row->getValue(), 1);
-                $date = date("Y", $ts).",".(date("m", $ts)-1).","
-                  .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
-                $array[] = array('ts'=>$date,'value'=>$value);
+                $date = date("Y", $ts) . "," . (date("m", $ts) - 1) . ","
+                  . date("d", $ts) . "," . date("H", $ts) . "," . date("i", $ts) . "," . date("s", $ts);
+                $array[] = array('ts' => $date,'value' => $value);
             }
         }
         return ($array);
     }
 
     // Lire les températures de consigne
-      //
+    //
     public function lireTempCsg($startDate, $endDate, $dynamique)
     {
         $array = array();
@@ -5019,7 +5179,7 @@ class viessmannIot extends eqLogic
             $startTime = $startDate . " 00:00:00";
             $endTime = $endDate . " 00:00:00";
         } else {
-            $startTime = date("Y-m-d H:i:s", time()-3*24*60*60);
+            $startTime = date("Y-m-d H:i:s", time() - 3 * 24 * 60 * 60);
             $endTime = date("Y-m-d H:i:s", time());
         }
 
@@ -5030,9 +5190,9 @@ class viessmannIot extends eqLogic
                 $datetime = $row->getDatetime();
                 $ts = strtotime($datetime);
                 $value = round($row->getValue(), 1);
-                $date = date("Y", $ts).",".(date("m", $ts)-1).","
-                  .date("d", $ts).",".date("H", $ts).",".date("i", $ts).",".date("s", $ts);
-                $array[] = array('ts'=>$date,'value'=>$value);
+                $date = date("Y", $ts) . "," . (date("m", $ts) - 1) . ","
+                  . date("d", $ts) . "," . date("H", $ts) . "," . date("i", $ts) . "," . date("s", $ts);
+                $array[] = array('ts' => $date,'value' => $value);
             }
         }
         return ($array);
@@ -5043,7 +5203,7 @@ class viessmannIot extends eqLogic
 class viessmannIotCmd extends cmd
 {
     // Exécution d'une commande
-      //
+    //
     public function execute($_options = array())
     {
         $eqlogic = $this->getEqLogic();
@@ -5071,16 +5231,24 @@ class viessmannIotCmd extends cmd
             $eqlogic->deActivateLastSchedule();
         } elseif ($this->getLogicalId() == 'modeStandby') {
             $eqlogic->setMode('standby');
-        } elseif ($this->getLogicalId() == 'modeDhw') {
-            $eqlogic->setMode('dhw');
         } elseif ($this->getLogicalId() == 'modeHeating') {
             $eqlogic->setMode('heating');
-        } elseif ($this->getLogicalId() == 'modeDhwAndHeating') {
-            $eqlogic->setMode('dhwAndHeating');
-        } elseif ($this->getLogicalId() == 'modeForcedReduced') {
-            $eqlogic->setMode('forcedReduced');
-        } elseif ($this->getLogicalId() == 'modeForcedNormal') {
-            $eqlogic->setMode('forcedNormal');
+        } elseif ($this->getLogicalId() == 'modeCooling') {
+            $eqlogic->setMode('cooling');
+        } elseif ($this->getLogicalId() == 'modeHeatingCooling') {
+            $eqlogic->setMode('heatingCooling');
+        } elseif ($this->getLogicalId() == 'modeTestMode') {
+            $eqlogic->setMode('testMode');
+        } elseif ($this->getLogicalId() == 'modeDhwBalanced') {
+            $eqlogic->setDhwMode('balanced');
+        } elseif ($this->getLogicalId() == 'modeDhwComfort') {
+            $eqlogic->setDhwMode('comfort');
+        } elseif ($this->getLogicalId() == 'modeDhwEco') {
+            $eqlogic->setDhwMode('eco');
+        } elseif ($this->getLogicalId() == 'modeDhwOff') {
+            $eqlogic->setDhwMode('off');
+        } elseif ($this->getLogicalId() == 'modeHeatingCooling') {
+            $eqlogic->setMode('heatingCooling');
         } elseif ($this->getLogicalId() == 'scheduleHolidayProgram') {
             $eqlogic->scheduleHolidayProgram();
         } elseif ($this->getLogicalId() == 'unscheduleHolidayProgram') {
