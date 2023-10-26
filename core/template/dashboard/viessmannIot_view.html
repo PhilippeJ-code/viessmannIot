@@ -687,6 +687,12 @@
                 <div id="showModeAuto#uid#">
                     <input type="radio" name="modes" value="auto" id="idModeAuto#uid#"> Mode auto
                 </div>
+                <div id="showModeDhw#uid#">
+                    <input type="radio" name="modes" value="auto" id="idModeDhw#uid#"> Eau chaude
+                </div>
+                <div id="showModeDhwAndHeating#uid#">
+                    <input type="radio" name="modes" value="auto" id="idModeDhwAndHeating#uid#"> Eau chaude et chauffage
+                </div>
             </div>
         </div>
 
@@ -1366,6 +1372,12 @@
         if ('#idModeAuto#' == '??') {
             $('#showModeAuto#uid#').hide();
         }
+        if ('#idModeDhw#' == '??') {
+            $('#showModeDhw#uid#').hide();
+        }
+        if ('#idModeDhwAndHeating#' == '??') {
+            $('#showModeDhwAndHeating#uid#').hide();
+        }
 
         if ('#idModeDhwBalancedStandby#' == '??') {
             $('#showModeDhwBalanced#uid#').hide();
@@ -1836,6 +1848,12 @@
                 } else if (_options.display_value == 'auto') {
                     $('#idStatutChauffage#uid#').html('Mode auto activé');
                     $('#idModeAuto#uid#').prop('checked', true);
+                } else if (_options.display_value == 'dhw') {
+                    $('#idStatutChauffage#uid#').html('Eau chaude activée');
+                    $('#idModeDhw#uid#').prop('checked', true);
+                } else if (_options.display_value == 'dhwAndHeating') {
+                    $('#idStatutChauffage#uid#').html('Eau chaude et chauffage activés');
+                    $('#idModeDhwAndHeating#uid#').prop('checked', true);
                 } else {
                     $('#idStatutChauffage#uid#').html(_options.display_value);
                 }
@@ -3538,6 +3556,22 @@
         $('#idModeAuto#uid#').on('click', function () {
             jeedom.cmd.execute({
                 id: '#idModeAuto#'
+            });
+        });
+
+        // Click pour mode eau chaude
+        //
+        $('#idModeDhw#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhw#'
+            });
+        });
+
+        // Click pour mode eau chaude et chauffage
+        //
+        $('#idModeDhwAndHeating#uid#').on('click', function () {
+            jeedom.cmd.execute({
+                id: '#idModeDhwAndHeating#'
             });
         });
 

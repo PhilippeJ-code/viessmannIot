@@ -37,6 +37,7 @@ class viessmannIot extends eqLogic
     public const ACTIVE_PROGRAM = "operating.programs.active";
     public const PUMP_STATUS = "circulation.pump";
     public const HEATING_BOILER_SENSORS_TEMPERATURE = "heating.boiler.sensors.temperature.commonSupply";
+    public const HEATING_BOILER_SENSORS_TEMPERATURE_MAIN = "heating.boiler.sensors.temperature.main";
 
     public const STANDBY_MODE = "operating.modes.standby";
     public const HEATING_MODE = "operating.modes.heating";
@@ -248,47 +249,6 @@ class viessmannIot extends eqLogic
                 $obj->setLogicalId('activeMode');
                 $obj->save();
 
-                $obj = $this->getCmd(null, 'modeStandby');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeHeating');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeDhw');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeDhwAndHeating');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeForcedReduced');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeForcedNormal');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeAuto');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeCooling');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeHeatingCooling');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeTestMode');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-
                 $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
                 for ($j = 0; $j < $nc; $j++) {
                     if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'standby') {
@@ -357,6 +317,28 @@ class viessmannIot extends eqLogic
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhw') {
+                        $obj = $this->getCmd(null, 'modeDhw');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode eau chaude', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhw');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhwAndHeating') {
+                        $obj = $this->getCmd(null, 'modeDhwAndHeating');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode eau chaude et chauffage', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwAndHeating');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
                     }
                 }
             } elseif ($features["data"][$i]["feature"] == self::ACTIVE_DHW_MODE && $features["data"][$i]["isEnabled"] == true) {
@@ -372,24 +354,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('string');
                 $obj->setLogicalId('activeDhwMode');
                 $obj->save();
-                
-                $obj = $this->getCmd(null, 'modeDhwBalanced');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeDhwComfort');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeDhwEco');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                $obj = $this->getCmd(null, 'modeDhwOff');
-                if (is_object($obj)) {
-                    $obj->remove();
-                }
-                
+                                
                 $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
                 for ($j = 0; $j < $nc; $j++) {
                     if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'balanced') {
@@ -963,6 +928,19 @@ class viessmannIot extends eqLogic
                 $obj->setType('info');
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('boilerTemperature');
+                $obj->save();
+            } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN && $features["data"][$i]["isEnabled"] == true) {
+                $obj = $this->getCmd(null, 'boilerTemperatureMain');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Température chaudière', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('numeric');
+                $obj->setLogicalId('boilerTemperatureMain');
                 $obj->save();
             } elseif ($features["data"][$i]["feature"] == self::PRESSURE_SUPPLY && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'pressureSupply');
@@ -1993,6 +1971,12 @@ class viessmannIot extends eqLogic
             } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $obj = $this->getCmd(null, 'boilerTemperature');
+                if (is_object($obj)) {
+                    $obj->event($val);
+                }
+            } elseif ($features["data"][$i]["feature"] == self::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN && $features["data"][$i]["isEnabled"] == true) {
+                $val = $features["data"][$i]["properties"]["value"]["value"];
+                $obj = $this->getCmd(null, 'boilerTemperatureMain');
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
@@ -4429,6 +4413,18 @@ class viessmannIot extends eqLogic
             } else {
                 $replace["#idModeTestMode#"] = '??';
             }
+            $obj = $this->getCmd(null, 'modeDhw');
+            if (is_object($obj)) {
+                $replace["#idModeDhw#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhw#"] = '??';
+            }
+            $obj = $this->getCmd(null, 'modeDhwAndHeating');
+            if (is_object($obj)) {
+                $replace["#idModeDhwAndHeating#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwAndHeating#"] = '??';
+            }
         } else {
             $replace["#activeMode#"] = '??';
             $replace["#idActiveMode#"] = "#idActiveMode#";
@@ -5239,6 +5235,10 @@ class viessmannIotCmd extends cmd
             $eqlogic->setMode('heatingCooling');
         } elseif ($this->getLogicalId() == 'modeTestMode') {
             $eqlogic->setMode('testMode');
+        } elseif ($this->getLogicalId() == 'modeDhw') {
+            $eqlogic->setMode('dhw');
+        } elseif ($this->getLogicalId() == 'modeDhwAndHeating') {
+            $eqlogic->setMode('dhwAndHeating');
         } elseif ($this->getLogicalId() == 'modeDhwBalanced') {
             $eqlogic->setDhwMode('balanced');
         } elseif ($this->getLogicalId() == 'modeDhwComfort') {
