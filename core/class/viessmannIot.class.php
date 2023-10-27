@@ -4522,6 +4522,15 @@ class viessmannIot extends eqLogic
             $replace["#idBoilerTemperature#"] = "#idBoilerTemperature#";
         }
 
+        $obj = $this->getCmd(null, 'boilerTemperatureMain');
+        if (is_object($obj)) {
+            $replace["#boilerTemperatureMain#"] = $obj->execCmd();
+            $replace["#idBoilerTemperatureMain#"] = $obj->getId();
+        } else {
+            $replace["#boilerTemperatureMain#"] = 99;
+            $replace["#idBoilerTemperatureMain#"] = "#idBoilerTemperatureMain#";
+        }
+
         $obj = $this->getCmd(null, 'frostProtection');
         if (is_object($obj)) {
             $replace["#frostProtection#"] = $obj->execCmd();

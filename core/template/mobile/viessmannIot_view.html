@@ -129,6 +129,11 @@
             <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idHeatingBurnerModulation#" id="idHeatingBurnerModulation#uid#"></span></br>
         </div>
+        <div id="showTemperatureChaudiere#uid#">
+            <span class="classSousTitre#uid#">Température chaudière</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperatureMain#"
+                id="idTemperatureChaudiere#uid#"></span></br>
+        </div>
         <div class="gap-5"></div>
         <span class="classTitre#uid#">Courbes</span></br>
         <div class="gap-5"></div>
@@ -1869,6 +1874,7 @@
                 $('#showStatutDhw#uid#').hide();
             } else {
                 $('#idModeDhwBalanced#uid#').prop('checked', true);
+                $('#idDhwTemperature#uid#').css("color", "black");
 
                 if (_options.display_value == 'balanced') {
                     $('#idStatutDhw#uid#').html('Activé');
@@ -1881,6 +1887,7 @@
                 } else if (_options.display_value == 'off') {
                     $('#idStatutDhw#uid#').html('Arrêt');
                     $('#idModeDhwOff#uid#').prop('checked', true);
+                    $('#idDhwTemperature#uid#').css("color", "gainsboro");
                 } else {
                     $('#idStatutDhw#uid#').html(_options.display_value);
                 }
@@ -1935,6 +1942,15 @@
             }
         }
         jeedom.cmd.update['#idBoilerTemperature#']({ display_value: '#boilerTemperature#' });
+
+        jeedom.cmd.update['#idBoilerTemperatureMain#'] = function (_options) {
+            if (_options.display_value == 99) {
+                $('#showTemperatureChaudiere#uid#').hide();
+            } else {
+                $('#idTemperatureChaudiere#uid#').html(_options.display_value + '°');
+            }
+        }
+        jeedom.cmd.update['#idBoilerTemperatureMain#']({ display_value: '#boilerTemperatureMain#' });
 
         jeedom.cmd.update['#idFrostProtection#'] = function (_options) {
             if (_options.display_value == '??') {
