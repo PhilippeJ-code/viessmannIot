@@ -2999,10 +2999,10 @@ class viessmannIot extends eqLogic
             }
         }
 
-        if ($activeProgram === 'comfort') {
+        if (($activeProgram === 'comfort') || ($activeProgram === 'comfortHeating')){
             $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
             $consigneTemperature = $comfortProgramTemperature;
-        } elseif ($activeProgram === 'normal') {
+        } elseif (($activeProgram === 'normal') || ($activeProgram === 'normalHeating')) {
             $this->getCmd(null, 'programTemperature')->event($normalProgramTemperature);
             $consigneTemperature = $normalProgramTemperature;
         } elseif ($activeProgram === 'normalEnergySaving') {
