@@ -130,9 +130,8 @@
                 data-cmd_id="#idHeatingBurnerModulation#" id="idHeatingBurnerModulation#uid#"></span></br>
         </div>
         <div id="showTemperatureChaudiere#uid#">
-            <span class="classSousTitre#uid#">Température chaudière</span><span
-                class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperatureMain#"
-                id="idTemperatureChaudiere#uid#"></span></br>
+            <span class="classSousTitre#uid#">Température chaudière</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idBoilerTemperatureMain#" id="idTemperatureChaudiere#uid#"></span></br>
         </div>
         <div class="gap-5"></div>
         <span class="classTitre#uid#">Courbes</span></br>
@@ -321,13 +320,12 @@
 
     <div class="classContenant#uid#" id="idEauChaude#uid#" style="display:none;">
 
-    </br></br>
-    <div id="showStatutDhw#uid#">
+        </br></br>
+        <div id="showStatutDhw#uid#">
             <span class="classTitre#uid#">Statut</span></br>
             <div class="gap-5"></div>
-            <span id="idStatutDhw#uid#" class="classSousTitre#uid#"></span></span><img
-                class="classCrayon#uid# cursor" id="idModifierStatutDhw#uid#"
-                src="plugins/viessmannIot/core/img/crayon.svg"></br>
+            <span id="idStatutDhw#uid#" class="classSousTitre#uid#"></span></span><img class="classCrayon#uid# cursor"
+                id="idModifierStatutDhw#uid#" src="plugins/viessmannIot/core/img/crayon.svg"></br>
             <div class="gap-5"></div>
         </div>
         <span class="classTitre#uid#">Températures</span>
@@ -1479,16 +1477,16 @@
         // Tuile chaudière
         //
         jeedom.cmd.update['#idActiveProgram#'] = function (_options) {
-            if (_options.display_value == 'comfort') {
+            if (_options.display_value == 'comfort' || _options.display_value == 'comfortHeating') {
                 $('#idProgrammeActuel#uid#').css("color", "red");
                 $('#idProgramTemperature#uid#').css("color", "red");
-            } else if (_options.display_value == 'normal') {
+            } else if (_options.display_value == 'normal' || _options.display_value == 'normalHeating') {
                 $('#idProgrammeActuel#uid#').css("color", "orange");
                 $('#idProgramTemperature#uid#').css("color", "orange");
             } else if (_options.display_value == 'normalEnergySaving') {
                 $('#idProgrammeActuel#uid#').css("color", "orange");
                 $('#idProgramTemperature#uid#').css("color", "orange");
-            } else if (_options.display_value == 'reduced') {
+            } else if (_options.display_value == 'reduced' || _options.display_value == 'reducedHeating') {
                 $('#idProgrammeActuel#uid#').css("color", "blue");
                 $('#idProgramTemperature#uid#').css("color", "blue");
             } else if (_options.display_value == 'reducedEnergySaving') {
@@ -1504,11 +1502,17 @@
 
             if (_options.display_value == 'comfort')
                 $('#idProgrammeActuel#uid#').html('Confort');
+            else if (_options.display_value == 'comfortHeating')
+                $('#idProgrammeActuel#uid#').html('Confort');
             else if (_options.display_value == 'normal')
+                $('#idProgrammeActuel#uid#').html('Normal');
+            else if (_options.display_value == 'normalHeating')
                 $('#idProgrammeActuel#uid#').html('Normal');
             else if (_options.display_value == 'eco')
                 $('#idProgrammeActuel#uid#').html('Eco');
             else if (_options.display_value == 'reduced')
+                $('#idProgrammeActuel#uid#').html('Réduit');
+            else if (_options.display_value == 'reducedHeating')
                 $('#idProgrammeActuel#uid#').html('Réduit');
             else if (_options.display_value == 'external')
                 $('#idProgrammeActuel#uid#').html('Externe');
