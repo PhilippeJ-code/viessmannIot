@@ -42,3 +42,8 @@
 # 22-10-2023
 
     Statut chauffage et eau chaude scindés sur les serveurs Viessmann
+
+# 14-11-2023
+
+    Ajout consignes PAC
+

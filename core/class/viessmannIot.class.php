@@ -55,6 +55,9 @@ class viessmannIot extends eqLogic
     public const COMFORT_PROGRAM = "operating.programs.comfort";
     public const NORMAL_PROGRAM = "operating.programs.normal";
     public const REDUCED_PROGRAM = "operating.programs.reduced";
+    public const COMFORT_PROGRAM_HEATING = "operating.programs.comfortHeating";
+    public const NORMAL_PROGRAM_HEATING = "operating.programs.normalHeating";
+    public const REDUCED_PROGRAM_HEATING = "operating.programs.reducedHeating";
     public const SENSORS_TEMPERATURE_ROOM = "sensors.temperature.room";
     public const ECO_PROGRAM = "operating.programs.eco";
     public const PRESSURE_SUPPLY = "heating.sensors.pressure.supply";
@@ -354,7 +357,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('string');
                 $obj->setLogicalId('activeDhwMode');
                 $obj->save();
-                                
+
                 $nc = count($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"]);
                 for ($j = 0; $j < $nc; $j++) {
                     if ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'balanced') {
@@ -403,7 +406,7 @@ class viessmannIot extends eqLogic
                         $obj->save();
                     }
                 }
-                
+
             } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'activeProgram');
                 if (!is_object($obj)) {
@@ -548,7 +551,9 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('supplyProgramTemperature');
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) || 
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $objComfort = $this->getCmd(null, 'comfortProgramTemperature');
                 if (!is_object($objComfort)) {
                     $objComfort = new viessmannIotCmd();
@@ -616,7 +621,9 @@ class viessmannIot extends eqLogic
                 $obj->setType('action');
                 $obj->setSubType('other');
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) || 
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $objNormal = $this->getCmd(null, 'normalProgramTemperature');
                 if (!is_object($objNormal)) {
                     $objNormal = new viessmannIotCmd();
@@ -649,7 +656,9 @@ class viessmannIot extends eqLogic
                 $obj->setConfiguration('minValue', 3);
                 $obj->setConfiguration('maxValue', 37);
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) ||
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $objReduced = $this->getCmd(null, 'reducedProgramTemperature');
                 if (!is_object($objReduced)) {
                     $objReduced = new viessmannIotCmd();
@@ -1739,7 +1748,9 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) ||
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["temperature"]["value"];
                 $comfortProgramTemperature = $val;
                 $obj = $this->getCmd(null, 'comfortProgramTemperature');
@@ -1751,14 +1762,18 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) ||
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["temperature"]["value"];
                 $normalProgramTemperature = $val;
                 $obj = $this->getCmd(null, 'normalProgramTemperature');
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) ||
+                       $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM_HEATING))
+                    && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["temperature"]["value"];
                 $reducedProgramTemperature = $val;
                 $obj = $this->getCmd(null, 'reducedProgramTemperature');
