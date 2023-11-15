@@ -79,6 +79,7 @@
             <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
                 <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
                     src="plugins/viessmannIot/core/img/options.svg">
+                <span id="idDhwPowerConsumption#uid#" class="history cursor" data-cmd_id="#idDhwPowerConsumption#"></span>
                 <span id="idHeatingPowerConsumption#uid#" class="history cursor"
                     data-cmd_id="#idHeatingPowerConsumption#"></span>
                 <span class="classLibelleTuile#uid#">Electricité (kWh)</span>
@@ -1020,6 +1021,15 @@
             text-align: center;
             font-size: 35px;
             top: 20px;
+        }
+
+        #idDhwPowerConsumption#uid# {
+            position: absolute;
+            text-align: right;
+            font-size: 14px;
+            top: 3px;
+            right: 3px;
+            color: #808080;
         }
 
         #idHeatingPowerConsumption#uid# {
@@ -2034,11 +2044,7 @@
         jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: '#heatingGazConsumption#' });
 
         jeedom.cmd.update['#idDhwGazConsumption#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#idDhwGazConsumption#uid#').html('--');
-            } else {
-                $('#idDhwGazConsumption#uid#').html(_options.display_value);
-            }
+            $('#idDhwGazConsumption#uid#').html(_options.display_value);   
         }
         jeedom.cmd.update['#idDhwGazConsumption#']({ display_value: '#dhwGazConsumption#' });
 
@@ -2464,6 +2470,11 @@
             $('#idHeatingPowerConsumption#uid#').html(_options.display_value);
         }
         jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
+
+        jeedom.cmd.update['#idDhwPowerConsumption#'] = function (_options) {
+            $('#idDhwPowerConsumption#uid#').html(_options.display_value);           
+        }
+        jeedom.cmd.update['#idDhwPowerConsumption#']({ display_value: '#dhwPowerConsumption#' });
 
         // Click pour accès tuile options électricité
         //

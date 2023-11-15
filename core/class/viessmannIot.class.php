@@ -4243,6 +4243,10 @@ class viessmannIot extends eqLogic
         $replace["#heatingGazConsumption#"] = $obj->execCmd();
         $replace["#idHeatingGazConsumption#"] = $obj->getId();
 
+        $obj = $this->getCmd(null, 'dhwPowerConsumption');
+        $replace["#dhwPowerConsumption#"] = $obj->execCmd();
+        $replace["#idDhwPowerConsumption#"] = $obj->getId();
+
         $obj = $this->getCmd(null, 'heatingPowerConsumption');
         $replace["#heatingPowerConsumption#"] = $obj->execCmd();
         $replace["#idHeatingPowerConsumption#"] = $obj->getId();
