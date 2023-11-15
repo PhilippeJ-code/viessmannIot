@@ -45,5 +45,5 @@
 
 # 14-11-2023
 
-    Ajout consignes PAC
+    Ajout consignes PAC et ajout unités dans le widget
 
