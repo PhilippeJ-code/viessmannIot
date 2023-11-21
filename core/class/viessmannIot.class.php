@@ -174,6 +174,7 @@ class viessmannIot extends eqLogic
     public function createCommands($viessmannApi)
     {
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $deviceId = trim($this->getConfiguration('deviceId', '0'));
 
         $features = $viessmannApi->getArrayFeatures();
         $n = count($features["data"]);
@@ -420,7 +421,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('string');
                 $obj->setLogicalId('activeProgram');
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, '') && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($deviceId, '') && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                 if (!is_object($obj)) {
                     $obj = new viessmannIotCmd();
@@ -551,7 +552,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('supplyProgramTemperature');
                 $obj->save();
-            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) || 
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) ||
                        $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM_HEATING))
                     && $features["data"][$i]["isEnabled"] == true) {
                 $objComfort = $this->getCmd(null, 'comfortProgramTemperature');
@@ -621,7 +622,7 @@ class viessmannIot extends eqLogic
                 $obj->setType('action');
                 $obj->setSubType('other');
                 $obj->save();
-            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) || 
+            } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) ||
                        $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM_HEATING))
                     && $features["data"][$i]["isEnabled"] == true) {
                 $objNormal = $this->getCmd(null, 'normalProgramTemperature');
@@ -1300,7 +1301,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('monthSinceService');
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($deviceId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'heatingBurnerHoursPerDay');
                 if (!is_object($obj)) {
                     $obj = new viessmannIotCmd();
@@ -1352,7 +1353,7 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('heatingBurnerStarts');
                 $obj->save();
-            } elseif ($features["data"][$i]["feature"] ==  $this->buildFeatureBurner($circuitId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] ==  $this->buildFeatureBurner($deviceId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'heatingBurnerModulation');
                 if (!is_object($obj)) {
                     $obj = new viessmannIotCmd();
@@ -1595,12 +1596,13 @@ class viessmannIot extends eqLogic
                 return null;
             }
 
-            $installationId = $viessmannApi->getInstallationId();
-            $serial = $viessmannApi->getSerial();
+            if ((empty($installationId)) || (empty($serial))) {
+                $installationId = $viessmannApi->getInstallationId();
+                $serial = $viessmannApi->getSerial();
 
-            $this->setConfiguration('installationId', $installationId);
-            $this->setConfiguration('serial', $serial)->save();
-
+                $this->setConfiguration('installationId', $installationId);
+                $this->setConfiguration('serial', $serial)->save();
+            }
             //              $this->deleteAllCommands();
             $this->createCommands($viessmannApi);
         }
@@ -1620,6 +1622,8 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', 0);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $deviceId = trim($this->getConfiguration('deviceId', '0'));
+
         $facteurConversionGaz = floatval($this->getConfiguration('facteurConversionGaz', 1));
         if ($facteurConversionGaz == 0) {
             $facteurConversionGaz = 1;
@@ -1688,7 +1692,7 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, '') && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($deviceId, '') && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["active"]["value"];
                 $obj = $this->getCmd(null, 'isHeatingBurnerActive');
                 if (is_object($obj)) {
@@ -2568,7 +2572,7 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($deviceId, self::STATISTICS) && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["hours"]["value"];
                 $heatingBurnerHours = $val;
                 $obj = $this->getCmd(null, 'heatingBurnerHours');
@@ -2581,7 +2585,7 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($circuitId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
+            } elseif ($features["data"][$i]["feature"] == $this->buildFeatureBurner($deviceId, self::MODULATION) && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $obj = $this->getCmd(null, 'heatingBurnerModulation');
                 if (is_object($obj)) {
@@ -2999,7 +3003,7 @@ class viessmannIot extends eqLogic
             }
         }
 
-        if (($activeProgram === 'comfort') || ($activeProgram === 'comfortHeating')){
+        if (($activeProgram === 'comfort') || ($activeProgram === 'comfortHeating')) {
             $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
             $consigneTemperature = $comfortProgramTemperature;
         } elseif (($activeProgram === 'normal') || ($activeProgram === 'normalHeating')) {
@@ -5121,12 +5125,12 @@ class viessmannIot extends eqLogic
         return self::HEATING_CIRCUITS . "." . $circuitId . "." . $feature;
     }
 
-    private function buildFeatureBurner($circuitId, $feature)
+    private function buildFeatureBurner($deviceId, $feature)
     {
         if ($feature == '') {
-            return self::HEATING_BURNERS . "." . $circuitId;
+            return self::HEATING_BURNERS . "." . $deviceId;
         }
-        return self::HEATING_BURNERS . "." . $circuitId . "." . $feature;
+        return self::HEATING_BURNERS . "." . $deviceId . "." . $feature;
     }
 
     // Lire les températures intérieures
