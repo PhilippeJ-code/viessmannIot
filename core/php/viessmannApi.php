@@ -188,8 +188,8 @@ class ViessmannApi
         if (empty($this->installationId) || empty($this->serial)) {
             $this->getGateway();
             $this->getIdentity();
-            $this->installationId = $this->getInstallationId();
-            $this->serial = $this->getSerial();
+            $this->installationId = $this->getInstallationId(0);
+            $this->serial = $this->getSerial(0);
         }
     }
 
@@ -601,16 +601,16 @@ class ViessmannApi
 
     // Lire Installation Id
     //
-    public function getInstallationId()
+    public function getInstallationId($numChaudiere)
     {
-        return $this->gateway["data"][0]["installationId"];
+        return $this->gateway["data"][$numChaudiere]["installationId"];
     }
 
     // Lire Login Id
     //
-    public function getSerial()
+    public function getSerial($numChaudiere)
     {
-        return $this->gateway["data"][0]["serial"];
+        return $this->gateway["data"][$numChaudiere]["serial"];
     }
 
     // Si nouveau token

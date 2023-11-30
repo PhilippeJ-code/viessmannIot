@@ -47,3 +47,7 @@
 
     Ajout consignes PAC et ajout unités dans le widget
 
+# 29-11-2023
+
+    Ajout du numéro de chaudière
+

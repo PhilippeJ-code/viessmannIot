@@ -150,6 +150,14 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-3 control-label">{{Numéro chaudière}}</label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="numChaudiere"
+                  placeholder="Numéro de la chaudière (débute à 0)" />
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-3 control-label">{{Id de l'installation}}</label>
               <div class="col-sm-3">
                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"

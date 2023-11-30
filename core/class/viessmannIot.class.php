@@ -555,6 +555,9 @@ class viessmannIot extends eqLogic
             } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM) ||
                        $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::COMFORT_PROGRAM_HEATING))
                     && $features["data"][$i]["isEnabled"] == true) {
+
+                $this->setConfiguration('comfortProgram', $features["data"][$i]["feature"])->save();
+
                 $objComfort = $this->getCmd(null, 'comfortProgramTemperature');
                 if (!is_object($objComfort)) {
                     $objComfort = new viessmannIotCmd();
@@ -625,6 +628,9 @@ class viessmannIot extends eqLogic
             } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM) ||
                        $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::NORMAL_PROGRAM_HEATING))
                     && $features["data"][$i]["isEnabled"] == true) {
+
+                $this->setConfiguration('normalProgram', $features["data"][$i]["feature"])->save();
+
                 $objNormal = $this->getCmd(null, 'normalProgramTemperature');
                 if (!is_object($objNormal)) {
                     $objNormal = new viessmannIotCmd();
@@ -660,6 +666,9 @@ class viessmannIot extends eqLogic
             } elseif (($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM) ||
                        $features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::REDUCED_PROGRAM_HEATING))
                     && $features["data"][$i]["isEnabled"] == true) {
+
+                $this->setConfiguration('reducedProgram', $features["data"][$i]["feature"])->save();
+
                 $objReduced = $this->getCmd(null, 'reducedProgramTemperature');
                 if (!is_object($objReduced)) {
                     $objReduced = new viessmannIotCmd();
@@ -1548,6 +1557,8 @@ class viessmannIot extends eqLogic
         $userName = trim($this->getConfiguration('userName', ''));
         $password = trim($this->getConfiguration('password', ''));
 
+        $numChaudiere = trim($this->getConfiguration('numChaudiere', '0'));
+
         $installationId = trim($this->getConfiguration('installationId', ''));
         $serial = trim($this->getConfiguration('serial', ''));
 
@@ -1597,8 +1608,8 @@ class viessmannIot extends eqLogic
             }
 
             if ((empty($installationId)) || (empty($serial))) {
-                $installationId = $viessmannApi->getInstallationId();
-                $serial = $viessmannApi->getSerial();
+                $installationId = $viessmannApi->getInstallationId($numChaudiere);
+                $serial = $viessmannApi->getSerial($numChaudiere);
 
                 $this->setConfiguration('installationId', $installationId);
                 $this->setConfiguration('serial', $serial)->save();
@@ -3239,6 +3250,7 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', self::REFRESH_TIME);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $program = $this->getConfiguration('comfortProgram', '');
 
         $viessmannApi = $this->getViessmann();
         if ($viessmannApi == null) {
@@ -3246,7 +3258,7 @@ class viessmannIot extends eqLogic
         }
 
         $data = "{\"targetTemperature\": $temperature}";
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::COMFORT_PROGRAM), "setTemperature", $data);
+        $viessmannApi->setFeature($program, "setTemperature", $data);
 
         unset($viessmannApi);
 
@@ -3267,6 +3279,7 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', self::REFRESH_TIME);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $program = $this->getConfiguration('normalProgram', '');
 
         $viessmannApi = $this->getViessmann();
         if ($viessmannApi == null) {
@@ -3274,7 +3287,7 @@ class viessmannIot extends eqLogic
         }
 
         $data = "{\"targetTemperature\": $temperature}";
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::NORMAL_PROGRAM), "setTemperature", $data);
+        $viessmannApi->setFeature($program, "setTemperature", $data);
 
         unset($viessmannApi);
 
@@ -3295,6 +3308,7 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', self::REFRESH_TIME);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $program = $this->getConfiguration('reducedProgram', '');
 
         $viessmannApi = $this->getViessmann();
         if ($viessmannApi == null) {
@@ -3302,7 +3316,7 @@ class viessmannIot extends eqLogic
         }
 
         $data = "{\"targetTemperature\": $temperature}";
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::REDUCED_PROGRAM), "setTemperature", $data);
+        $viessmannApi->setFeature($program, "setTemperature", $data);
 
         unset($viessmannApi);
         $obj = $this->getCmd(null, 'activeProgram');
@@ -3358,6 +3372,7 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', self::REFRESH_TIME);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $program = $this->getConfiguration('comfortProgram', '');
 
         $viessmannApi = $this->getViessmann();
         if ($viessmannApi == null) {
@@ -3365,7 +3380,7 @@ class viessmannIot extends eqLogic
         }
 
         $data = "{}";
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::COMFORT_PROGRAM), "activate", $data);
+        $viessmannApi->setFeature($program, "activate", $data);
         unset($viessmannApi);
 
         $this->getCmd(null, 'isActivateComfortProgram')->event(1);
@@ -3378,6 +3393,7 @@ class viessmannIot extends eqLogic
         $this->setCache('tempsRestant', self::REFRESH_TIME);
 
         $circuitId = trim($this->getConfiguration('circuitId', '0'));
+        $program = $this->getConfiguration('comfortProgram', '');
 
         $viessmannApi = $this->getViessmann();
         if ($viessmannApi == null) {
@@ -3385,7 +3401,7 @@ class viessmannIot extends eqLogic
         }
 
         $data = "{}";
-        $viessmannApi->setFeature($this->buildFeature($circuitId, self::COMFORT_PROGRAM), "deactivate", $data);
+        $viessmannApi->setFeature($program, "deactivate", $data);
         unset($viessmannApi);
 
         $this->getCmd(null, 'isActivateComfortProgram')->event(0);
