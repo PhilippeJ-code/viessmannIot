@@ -79,7 +79,8 @@
             <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
                 <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
                     src="plugins/viessmannIot/core/img/options.svg">
-                <span id="idDhwPowerConsumption#uid#" class="history cursor" data-cmd_id="#idDhwPowerConsumption#"></span>
+                <span id="idDhwPowerConsumption#uid#" class="history cursor"
+                    data-cmd_id="#idDhwPowerConsumption#"></span>
                 <span id="idHeatingPowerConsumption#uid#" class="history cursor"
                     data-cmd_id="#idHeatingPowerConsumption#"></span>
                 <span class="classLibelleTuile#uid#">Electricité (kWh)</span>
@@ -102,8 +103,11 @@
     <div class="classContenant#uid#" id="idChaudiere#uid#" style="display:none;">
 
         </br></br>
-        <span class="classTitre#uid#">Brûleur</span></br>
-        <div class="gap-5"></div>
+
+        <div id="showBruleur#uid#" style="display:none;">
+            <span class="classTitre#uid#">Brûleur</span></br>
+            <div class="gap-5"></div>
+        </div>
         <div id="showEtatBruleur#uid#">
             <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
                 id="idEtatBruleur#uid#"></span></br>
@@ -134,6 +138,34 @@
             <span class="classSousTitre#uid#">Température chaudière</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idBoilerTemperatureMain#" id="idTemperatureChaudiere#uid#"></span></br>
         </div>
+
+        <div id="showCompresseur#uid#" style="display:none;">
+            <span class="classTitre#uid#">Compresseur</span></br>
+            <div class="gap-5"></div>
+        </div>
+        <div id="showEtatCompresseur#uid#">
+            <span class="classSousTitre#uid#">Etat du compresseur</span><span class="classValeur#uid#"
+                id="idEtatCompresseur#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorHours#uid#">
+            <span class="classSousTitre#uid#">Fonctionnement total</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingCompressorHours#" id="idHeatingCompressorHours#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorHoursPerDay#uid#">
+            <span class="classSousTitre#uid#">Fonctionnement du jour (J-1)</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingCompressorHoursPerDay#"
+                id="idHeatingCompressorHoursPerDay#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorStarts#uid#">
+            <span class="classSousTitre#uid#">Démarrages total</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingCompressorStarts#" id="idHeatingCompressorStarts#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorStartsPerDay#uid#">
+            <span class="classSousTitre#uid#">Démarrages du jour (J-1)</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingCompressorStartsPerDay#"
+                id="idHeatingCompressorStartsPerDay#uid#"></span></br>
+        </div>
+
         <div class="gap-5"></div>
         <span class="classTitre#uid#">Courbes</span></br>
         <div class="gap-5"></div>
@@ -1568,12 +1600,32 @@
             else if (_options.display_value == 1) {
                 $('#idBruleurAllumer#uid#').show();
                 $('#idEtatBruleur#uid#').html('Allumé');
+                $('#showBruleur#uid#').show();
             } else {
                 $('#idBruleurAllumer#uid#').hide();
                 $('#idEtatBruleur#uid#').html('Eteint');
+                $('#showBruleur#uid#').show();
             }
         }
         jeedom.cmd.update['#idIsHeatingBurnerActive#']({ display_value: '#isHeatingBurnerActive#' });
+
+        jeedom.cmd.update['#idIsHeatingCompressorActive#'] = function (_options) {
+
+            if (_options.display_value == -1) {
+                $('#idBruleurAllumer#uid#').hide();
+                $('#showEtatCompresseur#uid#').hide();
+            }
+            else if (_options.display_value == 1) {
+                $('#idBruleurAllumer#uid#').show();
+                $('#idEtatCompresseur#uid#').html('Allumé');
+                $('#showCompresseur#uid#').show();
+            } else {
+                $('#idBruleurAllumer#uid#').hide();
+                $('#idEtatCompresseur#uid#').html('Eteint');
+                $('#showCompresseur#uid#').show();
+            }
+        }
+        jeedom.cmd.update['#idIsHeatingCompressorActive#']({ display_value: '#isHeatingCompressorActive#' });
 
         jeedom.cmd.update['#idHeatingBurnerHours#'] = function (_options) {
             if (_options.display_value == -1) {
@@ -1619,6 +1671,42 @@
             }
         }
         jeedom.cmd.update['#idHeatingBurnerModulation#']({ display_value: '#heatingBurnerModulation#' });
+
+        jeedom.cmd.update['#idHeatingCompressorHours#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingCompressorHours#uid#').hide();
+            } else {
+                $('#idHeatingCompressorHours#uid#').html(_options.display_value + " h");
+            }
+        }
+        jeedom.cmd.update['#idHeatingCompressorHours#']({ display_value: '#heatingCompressorHours#' });
+
+        jeedom.cmd.update['#idHeatingCompressorHoursPerDay#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingCompressorHoursPerDay#uid#').hide();
+            } else {
+                $('#idHeatingCompressorHoursPerDay#uid#').html(_options.display_value + " h");
+            }
+        }
+        jeedom.cmd.update['#idHeatingCompressorHoursPerDay#']({ display_value: '#heatingCompressorHoursPerDay#' });
+
+        jeedom.cmd.update['#idHeatingCompressorStarts#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingCompressorStarts#uid#').hide();
+            } else {
+                $('#idHeatingCompressorStarts#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idHeatingCompressorStarts#']({ display_value: '#heatingCompressorStarts#' });
+
+        jeedom.cmd.update['#idHeatingCompressorStartsPerDay#'] = function (_options) {
+            if (_options.display_value == -1) {
+                $('#showHeatingCompressorStartsPerDay#uid#').hide();
+            } else {
+                $('#idHeatingCompressorStartsPerDay#uid#').html(_options.display_value);
+            }
+        }
+        jeedom.cmd.update['#idHeatingCompressorStartsPerDay#']({ display_value: '#heatingCompressorStartsPerDay#' });
 
         jeedom.cmd.update['#idSlope#'] = function (_options) {
             if (_options.display_value == 99) {
@@ -2044,7 +2132,7 @@
         jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: '#heatingGazConsumption#' });
 
         jeedom.cmd.update['#idDhwGazConsumption#'] = function (_options) {
-            $('#idDhwGazConsumption#uid#').html(_options.display_value);   
+            $('#idDhwGazConsumption#uid#').html(_options.display_value);
         }
         jeedom.cmd.update['#idDhwGazConsumption#']({ display_value: '#dhwGazConsumption#' });
 
@@ -2472,7 +2560,7 @@
         jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
 
         jeedom.cmd.update['#idDhwPowerConsumption#'] = function (_options) {
-            $('#idDhwPowerConsumption#uid#').html(_options.display_value);           
+            $('#idDhwPowerConsumption#uid#').html(_options.display_value);
         }
         jeedom.cmd.update['#idDhwPowerConsumption#']({ display_value: '#dhwPowerConsumption#' });
 
