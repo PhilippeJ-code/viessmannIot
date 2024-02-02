@@ -263,10 +263,12 @@ class ViessmannApi
         //
         $json = json_decode($response, true);
         if (array_key_exists('error', $json)) {
+            log::add('viessmannIot', 'info', 'Erreur GetToken : '.$json['error']);
             return false;
         }
 
         if (!array_key_exists('access_token', $json) || !array_key_exists('expires_in', $json)) {
+            log::add('viessmannIot', 'info', 'Erreur GetToken : Infos manquantes');
             return false;
         }
         $this->accessToken = $json['access_token'];
@@ -275,7 +277,7 @@ class ViessmannApi
             $this->refreshToken = $json['refresh_token'];
         } else {
             $this->refreshToken = '';
-            log::add('viessmannIot', 'debug', 'No Refresh token ');
+            log::add('viessmannIot', 'info', 'Erreur GetToken : Pas de token de rafraichissement');
         }
 
         $this->expires_in = $json['expires_in'];
