@@ -1123,6 +1123,59 @@ class viessmannIot extends eqLogic
                 $obj->setSubType('string');
                 $obj->setLogicalId('heatingGazConsumptionYear');
                 $obj->save();
+
+                $obj = $this->getCmd(null, 'totalGazConsumptionDay');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Consommation totale journalière gaz chauffage', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('string');
+                $obj->setLogicalId('totalGazConsumptionDay');
+                $obj->save();
+
+                $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Consommation totale hebdomadaire gaz chauffage', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('string');
+                $obj->setLogicalId('totalGazConsumptionWeek');
+                $obj->save();
+
+                $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Consommation totale mensuelle gaz chauffage', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('string');
+                $obj->setLogicalId('totalGazConsumptionMonth');
+                $obj->save();
+
+                $obj = $this->getCmd(null, 'totalGazConsumptionYear');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Consommation totale annuelle gaz chauffage', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('string');
+                $obj->setLogicalId('totalGazConsumptionYear');
+                $obj->save();
+
             } elseif (($features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_DHW ||
             $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_SUMMARY_DHW ||
             $features["data"][$i]["feature"] == self::HEATING_POWER_CONSUMPTION_HEATING ||
