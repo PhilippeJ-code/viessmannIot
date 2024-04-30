@@ -38,52 +38,143 @@ if (!isConnect())
 
 <script>
 
-    $("input[data-l1key='functionality::cron::enable']").on('change', function() {
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron5::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron10::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron15::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron30::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cronHourly::enable']").prop("checked", false)
-    });
+// Cron
+//
+function eventCron() {
+  if (this.checked) {
 
-    $("input[data-l1key='functionality::cron5::enable']").on('change', function() {
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron10::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron15::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron30::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cronHourly::enable']").prop("checked", false)
-    });
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
 
-    $("input[data-l1key='functionality::cron10::enable']").on('change', function() {
-      if ($(this).is(':checked')) $("input[data-l1key='functionality::cron::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron5::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron15::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron30::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cronHourly::enable']").prop("checked", false)
-    });
+  }
+}
 
-    $("input[data-l1key='functionality::cron15::enable']").on('change', function() {
-      if ($(this).is(':checked')) $("input[data-l1key='functionality::cron::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron5::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron10::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron30::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cronHourly::enable']").prop("checked", false)
-    });
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) {
+  el.removeEventListener('change', eventCron);
+  el.addEventListener('change', eventCron);
+}
 
-    $("input[data-l1key='functionality::cron30::enable']").on('change', function() {
-      if ($(this).is(':checked')) $("input[data-l1key='functionality::cron::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron5::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron10::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron15::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cronHourly::enable']").prop("checked", false)
-    });
+// Cron 5
+//
+function eventCron5() {
+  if (this.checked) {
 
-    $("input[data-l1key='functionality::cronHourly::enable']").on('change', function() {
-      if ($(this).is(':checked')) $("input[data-l1key='functionality::cron::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron5::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron10::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron15::enable']").prop("checked", false)
-        if ($(this).is(':checked')) $("input[data-l1key='functionality::cron30::enable']").prop("checked", false)
-    });
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
 
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) {
+  el.removeEventListener('change', eventCron5);
+  el.addEventListener('change', eventCron5);
+}
+
+// Cron 10
+//
+function eventCron10() {
+  if (this.checked) {
+
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
+
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) {
+  el.removeEventListener('change', eventCron10);
+  el.addEventListener('change', eventCron10);
+}
+
+// Cron 15
+//
+function eventCron15() {
+  if (this.checked) {
+
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
+
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) {
+  el.removeEventListener('change', eventCron15);
+  el.addEventListener('change', eventCron15);
+}
+
+// Cron 30
+//
+function eventCron30() {
+  if (this.checked) {
+
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
+
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) {
+  el.removeEventListener('change', eventCron30);
+  el.addEventListener('change', eventCron30);
+}
+
+// Cron Hourly
+//
+function eventCronHourly() {
+  if (this.checked) {
+
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) cmd.checked = false;
+
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) {
+  el.removeEventListener('change', eventCronHourly);
+  el.addEventListener('change', eventCronHourly);
+}
+
+// Cron Daily
+//
+function eventCronDaily() {
+  if (this.checked) {
+
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron5::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron10::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron15::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cron30::enable"]'))) cmd.checked = false;
+    if (is_object(cmd = document.querySelector('input[data-l1key="functionality::cronHourly::enable"]'))) cmd.checked = false;
+
+  }
+}
+
+if (is_object(el = document.querySelector('input[data-l1key="functionality::cronDaily::enable"]'))) {
+  el.removeEventListener('change', eventCronDaily);
+  el.addEventListener('change', eventCronDaily);
+}
 </script>

@@ -321,9 +321,12 @@
         <table id="table_cmd" class="table table-bordered table-condensed">
           <thead>
             <tr>
+              <th>{{Id}}</th>
               <th>{{Nom}}</th>
               <th>{{Type}}</th>
-              <th>{{Actions}}</th>
+              <th>{{Paramètres}}</th>
+              <th>{{Etat}}</th>
+              <th>{{Action}}</th>
             </tr>
           </thead>
           <tbody>

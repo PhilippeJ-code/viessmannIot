@@ -79,7 +79,8 @@
             <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
                 <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
                     src="plugins/viessmannIot/core/img/options.svg">
-                <span id="idDhwPowerConsumption#uid#" class="history cursor" data-cmd_id="#idDhwPowerConsumption#"></span>
+                <span id="idDhwPowerConsumption#uid#" class="history cursor"
+                    data-cmd_id="#idDhwPowerConsumption#"></span>
                 <span id="idHeatingPowerConsumption#uid#" class="history cursor"
                     data-cmd_id="#idHeatingPowerConsumption#"></span>
                 <span class="classLibelleTuile#uid#">Electricité (kWh)</span>
@@ -102,8 +103,11 @@
     <div class="classContenant#uid#" id="idChaudiere#uid#" style="display:none;">
 
         </br></br>
-        <span class="classTitre#uid#">Brûleur</span></br>
-        <div class="gap-5"></div>
+
+        <div id="showBruleur#uid#" style="display:none;">
+            <span class="classTitre#uid#">Brûleur</span></br>
+            <div class="gap-5"></div>
+        </div>
         <div id="showEtatBruleur#uid#">
             <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
                 id="idEtatBruleur#uid#"></span></br>
@@ -134,6 +138,34 @@
             <span class="classSousTitre#uid#">Température chaudière</span><span class="classValeur#uid# history cursor"
                 data-cmd_id="#idBoilerTemperatureMain#" id="idTemperatureChaudiere#uid#"></span></br>
         </div>
+
+        <div id="showCompresseur#uid#" style="display:none;">
+            <span class="classTitre#uid#">Compresseur</span></br>
+            <div class="gap-5"></div>
+        </div>
+        <div id="showEtatCompresseur#uid#">
+            <span class="classSousTitre#uid#">Etat du compresseur</span><span class="classValeur#uid#"
+                id="idEtatCompresseur#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorHours#uid#">
+            <span class="classSousTitre#uid#">Fonctionnement total</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingCompressorHours#" id="idHeatingCompressorHours#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorHoursPerDay#uid#">
+            <span class="classSousTitre#uid#">Fonctionnement du jour (J-1)</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingCompressorHoursPerDay#"
+                id="idHeatingCompressorHoursPerDay#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorStarts#uid#">
+            <span class="classSousTitre#uid#">Démarrages total</span><span class="classValeur#uid# history cursor"
+                data-cmd_id="#idHeatingCompressorStarts#" id="idHeatingCompressorStarts#uid#"></span></br>
+        </div>
+        <div id="showHeatingCompressorStartsPerDay#uid#">
+            <span class="classSousTitre#uid#">Démarrages du jour (J-1)</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idHeatingCompressorStartsPerDay#"
+                id="idHeatingCompressorStartsPerDay#uid#"></span></br>
+        </div>
+
         <div class="gap-5"></div>
         <span class="classTitre#uid#">Courbes</span></br>
         <div class="gap-5"></div>
@@ -193,23 +225,23 @@
 
         <span class="classTitre#uid#">Dysfonctionnements</span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_0#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_0#uid#"></span></br></br>
+            id="idErrorCod_0#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_1#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_1#uid#"></span></br></br>
+            id="idErrorCod_1#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_2#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_2#uid#"></span></br></br>
+            id="idErrorCod_2#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_3#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_3#uid#"></span></br></br>
+            id="idErrorCod_3#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_4#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_4#uid#"></span></br></br>
+            id="idErrorCod_4#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_5#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_5#uid#"></span></br></br>
+            id="idErrorCod_5#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_6#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_6#uid#"></span></br></br>
+            id="idErrorCod_6#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_7#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_7#uid#"></span></br></br>
+            id="idErrorCod_7#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_8#uid#"></span></br><span class="classValeurDys#uid#"
-            id="idErrorCod_8#uid#"></span></br></br>
+            id="idErrorCod_8#uid#"></span></br>
         <span class="classSousTitreDys#uid#" id="idErrorDat_9#uid#"></span></br><span class="classValeurDys#uid#"
             id="idErrorCod_9#uid#"></span>
 
@@ -1307,785 +1339,1037 @@
         var histoTemperatureInt = -999;
         var histoTemperatureExt = -999;
 
-        // Affichage initial
+        var initX, initY, firstX, firstY;
+
+        function eventMouseDown(e) {
+            e.preventDefault();
+            initX = this.offsetLeft;
+            initY = this.offsetTop;
+            firstX = e.pageX;
+            firstY = e.pageY;
+
+            var object = this;
+            this.addEventListener('mousemove', dragIt, false);
+            window.addEventListener('mouseup', mouseUp, false); 
+            function mouseUp() {
+                object.removeEventListener('mousemove', dragIt, false);
+                object.dispatchEvent(new Event("finDePositionnement"));
+                window.removeEventListener('mouseup', mouseUp);
+            }
+        }
+        function dragIt(e) {
+            this.style.left = initX + e.pageX - firstX + 'px';
+            this.style.top = initY + e.pageY - firstY + 'px';
+        }
+
+// Affichage initial
         //
-        $('#idResume#uid#').show();
-        $('#idChaudiere#uid#').hide();
-        $('#idErreurs#uid#').hide();
-        $('#idRadiateurs#uid#').hide();
-        $('#idCalRadiateurs#uid#').hide();
-        $('#idEauChaude#uid#').hide();
-        $('#idCalEauChaude#uid#').hide();
-        $('#idGaz#uid#').hide();
-        $('#idElec#uid#').hide();
-        $('#idActions#uid#').hide();
-        $('#idCourbe#uid#').hide();
+        document.getElementById('idResume#uid#').style.display = 'block';
+        document.getElementById('idChaudiere#uid#').style.display = 'none';
+        document.getElementById('idErreurs#uid#').style.display = 'none';
+        document.getElementById('idRadiateurs#uid#').style.display = 'none';
+        document.getElementById('idCalRadiateurs#uid#').style.display = 'none';
+        document.getElementById('idEauChaude#uid#').style.display = 'none';
+        document.getElementById('idCalEauChaude#uid#').style.display = 'none';
+        document.getElementById('idGaz#uid#').style.display = 'none';
+        document.getElementById('idElec#uid#').style.display = 'none';
+        document.getElementById('idActions#uid#').style.display = 'none';
+        document.getElementById('idCourbe#uid#').style.display = 'none';
 
         // Retour sur tuile principale
         //
-        $('.classPrecedent#uid#').on('click', function () {
-            $('#idResume#uid#').show();
-            $('#idChaudiere#uid#').hide();
-            $('#idErreurs#uid#').hide();
-            $('#idRadiateurs#uid#').hide();
-            $('#idCalRadiateurs#uid#').hide();
-            $('#idEauChaude#uid#').hide();
-            $('#idCalEauChaude#uid#').hide();
-            $('#idGaz#uid#').hide();
-            $('#idElec#uid#').hide();
-            $('#idActions#uid#').hide();
-            $('#idCourbe#uid#').hide();
+        els = document.querySelectorAll(".classPrecedent#uid#");
+        els.forEach(function(el) {
+            el.removeEventListener('click', eventPrecedent);
+            el.addEventListener('click', eventPrecedent);
         });
+
+        function eventPrecedent() {
+            document.getElementById('idResume#uid#').style.display = 'block';
+            document.getElementById('idChaudiere#uid#').style.display = 'none';
+            document.getElementById('idErreurs#uid#').style.display = 'none';
+            document.getElementById('idRadiateurs#uid#').style.display = 'none';
+            document.getElementById('idCalRadiateurs#uid#').style.display = 'none';
+            document.getElementById('idEauChaude#uid#').style.display = 'none';
+            document.getElementById('idCalEauChaude#uid#').style.display = 'none';
+            document.getElementById('idGaz#uid#').style.display = 'none';
+            document.getElementById('idElec#uid#').style.display = 'none';
+            document.getElementById('idActions#uid#').style.display = 'none';
+            document.getElementById('idCourbe#uid#').style.display = 'none';
+        };
 
         // Fermer popup
         //
-        $('.classModalClose#uid#').on('click', function () {
-            $('#idPopupConfort#uid#').hide();
-            $('#idPopupNormale#uid#').hide();
-            $('#idPopupReduite#uid#').hide();
-            $('#idPopupStatut#uid#').hide();
-            $('#idPopupStatutDhw#uid#').hide();
-            $('#idPopupDhw#uid#').hide();
-            $('#idPopupPente#uid#').hide();
-            $('#idPopupParallele#uid#').hide();
-            $('#idPopupProgEauChaude#uid#').hide();
-            $('#idPopupProgChauffage#uid#').hide();
+        els = document.querySelectorAll(".classModalClose#uid#");
+        els.forEach(function(el) {
+            el.removeEventListener('click', eventModalClose);
+            el.addEventListener('click', eventModalClose);
         });
 
+        function eventModalClose() {
+            document.getElementById('idPopupConfort#uid#').style.display = 'none';
+            document.getElementById('idPopupNormale#uid#').style.display = 'none';
+            document.getElementById('idPopupReduite#uid#').style.display = 'none';
+            document.getElementById('idPopupStatut#uid#').style.display = 'none';
+            document.getElementById('idPopupStatutDhw#uid#').style.display = 'none';
+            document.getElementById('idPopupDhw#uid#').style.display = 'none';
+            document.getElementById('idPopupPente#uid#').style.display = 'none';
+            document.getElementById('idPopupParallele#uid#').style.display = 'none';
+            document.getElementById('idPopupProgEauChaude#uid#').style.display = 'none';
+            document.getElementById('idPopupProgChauffage#uid#').style.display = 'none';
+        };
+
         if ('#displayWater#' == '1')
-            $('#idTuileEau#uid#').show();
+            document.getElementById('idTuileEau#uid#').style.display = 'block';
         else
-            $('#idTuileEau#uid#').hide();
+            document.getElementById('idTuileEau#uid#').style.display = 'none';
 
         if ('#displayGas#' == '1')
-            $('#idTuileGaz#uid#').show();
+            document.getElementById('idTuileGaz#uid#').style.display = 'block';
         else
-            $('#idTuileGaz#uid#').hide();
+            document.getElementById('idTuileGaz#uid#').style.display = 'none';
 
         if ('#displayPower#' == '1')
-            $('#idTuileElectricite#uid#').show();
+            document.getElementById('idTuileElectricite#uid#').style.display = 'block';
         else
-            $('#idTuileElectricite#uid#').hide();
+            document.getElementById('idTuileElectricite#uid#').style.display = 'none';
 
         if ('#idModeStandby#' == '??') {
-            $('#showModeStandby#uid#').hide();
+            document.getElementById('showModeStandby#uid#').style.display = 'none';
         }
         if ('#idModeHeating#' == '??') {
-            $('#showModeHeating#uid#').hide();
+            document.getElementById('showModeHeating#uid#').style.display = 'none';
         }
         if ('#idModeCooling#' == '??') {
-            $('#showModeCooling#uid#').hide();
+            document.getElementById('showModeCooling#uid#').style.display = 'none';
         }
         if ('#idModeHeatingCooling#' == '??') {
-            $('#showModeHeatingCooling#uid#').hide();
+            document.getElementById('showModeHeatingCooling#uid#').style.display = 'none';
         }
         if ('#idModeTestMode#' == '??') {
-            $('#showModeTestMode#uid#').hide();
+            document.getElementById('showModeTestMode#uid#').style.display = 'none';
         }
         if ('#idModeAuto#' == '??') {
-            $('#showModeAuto#uid#').hide();
+            document.getElementById('showModeAuto#uid#').style.display = 'none';
         }
         if ('#idModeDhw#' == '??') {
-            $('#showModeDhw#uid#').hide();
+            document.getElementById('showModeDhw#uid#').style.display = 'none';
         }
         if ('#idModeDhwAndHeating#' == '??') {
-            $('#showModeDhwAndHeating#uid#').hide();
+            document.getElementById('showModeDhwAndHeating#uid#').style.display = 'none';
         }
 
         if ('#idModeDhwBalancedStandby#' == '??') {
-            $('#showModeDhwBalanced#uid#').hide();
+            document.getElementById('showModeDhwBalanced#uid#').style.display = 'none';
         }
         if ('#idModeDhwComfort#' == '??') {
-            $('#showModeDhwComfort#uid#').hide();
+            document.getElementById('showModeDhwComfort#uid#').style.display = 'none';
         }
         if ('#idModeDhwEco#' == '??') {
-            $('#showModeDhwEco#uid#').hide();
+            document.getElementById('showModeDhwEco#uid#').style.display = 'none';
         }
         if ('#idModeDhwOff#' == '??') {
-            $('#showModeDhwOff#uid#').hide();
+            document.getElementById('showModeDhwOff#uid#').style.display = 'none';
         }
 
         // Tuile titre
         //
 
-        // Click pour rafraichir
-        //
-        //$('#idRafraichir#uid#').on('click', function () {
-        //    jeedom.cmd.execute({
-        //        id: '#idRefresh#'
-        //    });
-        //});
-
         // Programmation
         //
-        jeedom.cmd.update['#idHeatingSchedule#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingSchedule#', Update#uid#idHeatingSchedule);
+        function Update#uid#idHeatingSchedule(_options) {
             var items = _options.display_value.split(';');
-            $('#idHeaSch0#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[0] +
-                "&title=Lun"
-            );
-            $('#idHeaSch1#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[1] +
-                "&title=Mar"
-            );
-            $('#idHeaSch2#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[2] +
-                "&title=Mer"
-            );
-            $('#idHeaSch3#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[3] +
-                "&title=Jeu"
-            );
-            $('#idHeaSch4#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[4] +
-                "&title=Ven"
-            );
-            $('#idHeaSch5#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[5] +
-                "&title=Sam"
-            );
-            $('#idHeaSch6#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[6] +
-                "&title=Dim"
-            );
+            if (is_object(cmd = document.getElementById('idHeaSch0#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[0] +
+                    "&title=Lun"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch1#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[1] +
+                    "&title=Mar"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch2#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[2] +
+                    "&title=Mer"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch3#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[3] +
+                    "&title=Jeu"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch4#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[4] +
+                    "&title=Ven"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch5#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[5] +
+                    "&title=Sam"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idHeaSch6#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[6] +
+                    "&title=Dim"
+                );
+            }
         }
-        jeedom.cmd.update['#idHeatingSchedule#']({ display_value: '#heatingSchedule#' });
-
-        jeedom.cmd.update['#idDhwSchedule#'] = function (_options) {
+        Update#uid#idHeatingSchedule({ display_value: '#heatingSchedule#' });
+        
+        jeedom.cmd.addUpdateFunction('#idDhwSchedule#', Update#uid#idDhwSchedule);
+        function Update#uid#idDhwSchedule(_options) {
             var items = _options.display_value.split(';');
-            $('#idDhwSch0#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[0] +
-                "&title=Lun"
-            );
-            $('#idDhwSch1#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[1] +
-                "&title=Mar"
-            );
-            $('#idDhwSch2#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[2] +
-                "&title=Mer"
-            );
-            $('#idDhwSch3#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[3] +
-                "&title=Jeu"
-            );
-            $('#idDhwSch4#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[4] +
-                "&title=Ven"
-            );
-            $('#idDhwSch5#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[5] +
-                "&title=Sam"
-            );
-            $('#idDhwSch6#uid#').attr('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
-                items[6] +
-                "&title=Dim"
-            );
+            if (is_object(cmd = document.getElementById('idDhwSch0#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[0] +
+                    "&title=Lun"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch1#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[1] +
+                    "&title=Mar"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch2#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[2] +
+                    "&title=Mer"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch3#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[3] +
+                    "&title=Jeu"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch4#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[4] +
+                    "&title=Ven"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch5#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[5] +
+                    "&title=Sam"
+                );
+            }
+            if (is_object(cmd = document.getElementById('idDhwSch6#uid#'))) {
+                cmd.setAttribute('src', "plugins/viessmannIot/core/img/image.php?width=220&height=40&prog=" +
+                    items[6] +
+                    "&title=Dim"
+                );
+            }
         }
-        jeedom.cmd.update['#idDhwSchedule#']({ display_value: '#dhwSchedule#' });
-
+        Update#uid#idDhwSchedule({ display_value: '#dhwSchedule#' });
+        
         // Tuile chaudière
         //
-        jeedom.cmd.update['#idActiveProgram#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idActiveProgram#', Update#uid#idActiveProgram);
+        function Update#uid#idActiveProgram(_options) {
+            if ((is_object(cmd1 = document.getElementById('idProgrammeActuel#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idProgramTemperature#uid#')))) {
+
             if (_options.display_value == 'comfort' || _options.display_value == 'comfortHeating') {
-                $('#idProgrammeActuel#uid#').css("color", "red");
-                $('#idProgramTemperature#uid#').css("color", "red");
+                cmd1.style.color = "red";
+                cmd2.style.color = "red";
             } else if (_options.display_value == 'normal' || _options.display_value == 'normalHeating') {
-                $('#idProgrammeActuel#uid#').css("color", "orange");
-                $('#idProgramTemperature#uid#').css("color", "orange");
+                cmd1.style.color = "orange";
+                cmd2.style.color = "orange";
             } else if (_options.display_value == 'normalEnergySaving') {
-                $('#idProgrammeActuel#uid#').css("color", "orange");
-                $('#idProgramTemperature#uid#').css("color", "orange");
+                cmd1.style.color = "orange";
+                cmd2.style.color = "orange";
             } else if (_options.display_value == 'reduced' || _options.display_value == 'reducedHeating') {
-                $('#idProgrammeActuel#uid#').css("color", "blue");
-                $('#idProgramTemperature#uid#').css("color", "blue");
+                cmd1.style.color = "blue";
+                cmd2.style.color = "blue";
             } else if (_options.display_value == 'reducedEnergySaving') {
-                $('#idProgrammeActuel#uid#').css("color", "blue");
-                $('#idProgramTemperature#uid#').css("color", "blue");
+                cmd1.style.color = "blue";
+                cmd2.style.color = "blue";
             } else if (_options.display_value == 'eco') {
-                $('#idProgrammeActuel#uid#').css("color", "blue");
-                $('#idProgramTemperature#uid#').css("color", "blue");
+                cmd1.style.color = "blue";
+                cmd2.style.color = "blue";
             } else {
-                $('#idProgrammeActuel#uid#').css("color", "#808080");
-                $('#idProgramTemperature#uid#').css("color", "#808080");
+                cmd1.style.color = "#808080";
+                cmd2.style.color = "#808080";
             }
 
             if (_options.display_value == 'comfort')
-                $('#idProgrammeActuel#uid#').html('Confort');
+                cmd1.innerHTML = 'Confort';
             else if (_options.display_value == 'comfortHeating')
-                $('#idProgrammeActuel#uid#').html('Confort');
+                cmd1.innerHTML = 'Confort';
             else if (_options.display_value == 'normal')
-                $('#idProgrammeActuel#uid#').html('Normal');
+                cmd1.innerHTML = 'Normal';
             else if (_options.display_value == 'normalHeating')
-                $('#idProgrammeActuel#uid#').html('Normal');
+                cmd1.innerHTML = 'Normal';
             else if (_options.display_value == 'eco')
-                $('#idProgrammeActuel#uid#').html('Eco');
+                cmd1.innerHTML = 'Eco';
             else if (_options.display_value == 'reduced')
-                $('#idProgrammeActuel#uid#').html('Réduit');
+                cmd1.innerHTML = 'Réduit';
             else if (_options.display_value == 'reducedHeating')
-                $('#idProgrammeActuel#uid#').html('Réduit');
+                cmd1.innerHTML = 'Réduit';
             else if (_options.display_value == 'external')
-                $('#idProgrammeActuel#uid#').html('Externe');
+                cmd1.innerHTML = 'Externe';
             else if (_options.display_value == 'holiday')
-                $('#idProgrammeActuel#uid#').html('Vacances');
+                cmd1.innerHTML = 'Vacances';
             else if (_options.display_value == 'standby')
-                $('#idProgrammeActuel#uid#').html('Veille');
+                cmd1.innerHTML = 'Veille';
             else if (_options.display_value == 'normalEnergySaving')
-                $('#idProgrammeActuel#uid#').html('Economique normal');
+                cmd1.innerHTML = 'Economique normal';
             else if (_options.display_value == 'reducedEnergySaving')
-                $('#idProgrammeActuel#uid#').html('Economique réduit');
+                cmd1.innerHTML = 'Economique réduit';
             else if (_options.display_value == 'summerEco')
-                $('#idProgrammeActuel#uid#').html('Economique été');
+                cmd1.innerHTML = 'Economique été';
             else
-                $('#idProgrammeActuel#uid#').html('Programme inconnu');
+                cmd1.innerHTML = 'Programme inconnu';
         }
-        jeedom.cmd.update['#idActiveProgram#']({ display_value: '#activeProgram#' });
+        }
+        Update#uid#idActiveProgram({ display_value: '#activeProgram#' });
 
-        jeedom.cmd.update['#idOutsideTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#idOutsideTemperature#uid#').html('--');
-            } else {
-                $('#idOutsideTemperature#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idOutsideTemperature#', Update#uid#idOutsideTemperature);
+        function Update#uid#idOutsideTemperature(_options) {
+            if (is_object(cmd = document.getElementById('idOutsideTemperature#uid#'))) {
+                if (_options.display_value == 99) {
+                    cmd.innerHTML = '--';
+                } else {
+                    cmd.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idOutsideTemperature#']({ display_value: '#outsideTemperature#' });
+        Update#uid#idOutsideTemperature({ display_value: '#outsideTemperature#' });
 
         // Click pour accès tuile options chaudière
         //
-        $('#idOptionsChaudiere#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idChaudiere#uid#').show();
-        });
+        el = document.getElementById('idOptionsChaudiere#uid#');
+        el.removeEventListener('click', eventOptionsChaudiere);
+        el.addEventListener('click', eventOptionsChaudiere);
+
+        function eventOptionsChaudiere() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idChaudiere#uid#').style.display = 'block';
+        };
 
         // Tuile options chaudière
         //
-        jeedom.cmd.update['#idIsHeatingBurnerActive#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idIsHeatingBurnerActive#', Update#uid#idIsHeatingBurnerActive);
+        function Update#uid#idIsHeatingBurnerActive(_options) {
 
+            if ((is_object(cmd1 = document.getElementById('idBruleurAllumer#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('showEtatBruleur#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('showBruleur#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idEtatBruleur#uid#')))) {
+
+                if (_options.display_value == -1) {
+                    cmd2.style.display = 'none';
+                }
+                else if (_options.display_value == 1) {
+                    cmd3.style.display = 'block';
+                    cmd4.innerHTML = 'Allumé';
+                } else {
+                    cmd3.style.display = 'block';
+                    cmd4.innerHTML = 'Eteint';
+                }
+            }
+        }
+        Update#uid#idIsHeatingBurnerActive({ display_value: '#isHeatingBurnerActive#' });
+
+        jeedom.cmd.addUpdateFunction('#idIsHeatingCompressorActive#', Update#uid#idIsHeatingCompressorActive);
+        function Update#uid#idIsHeatingCompressorActive(_options) {
+
+            if ((is_object(cmd1 = document.getElementById('showEtatCompresseur#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('showCompresseur#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idEtatCompresseur#uid#')))) {
             if (_options.display_value == -1) {
-                $('#idBruleurAllumer#uid#').hide();
-                $('#showEtatBruleur#uid#').hide();
+                cmd1.style.display = 'none';
             }
             else if (_options.display_value == 1) {
-                $('#idBruleurAllumer#uid#').show();
-                $('#idEtatBruleur#uid#').html('Allumé');
+                cmd3.innerHTML= 'Allumé';
+                cmd2.style.display = 'block';
             } else {
-                $('#idBruleurAllumer#uid#').hide();
-                $('#idEtatBruleur#uid#').html('Eteint');
+                cmd3.innerHTML= 'Eteint';
+                cmd2.style.display = 'block';
             }
         }
-        jeedom.cmd.update['#idIsHeatingBurnerActive#']({ display_value: '#isHeatingBurnerActive#' });
+        }
+        Update#uid#idIsHeatingCompressorActive({ display_value: '#isHeatingCompressorActive#' });
 
-        jeedom.cmd.update['#idHeatingBurnerHours#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHeatingBurnerHours#uid#').hide();
-            } else {
-                $('#idHeatingBurnerHours#uid#').html(_options.display_value + " h");
+        jeedom.cmd.addUpdateFunction('#idHeatingBurnerHours#', Update#uid#idHeatingBurnerHours);
+        function Update#uid#idHeatingBurnerHours(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingBurnerHours#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingBurnerHours#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display= 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + " h";
+                }
             }
         }
-        jeedom.cmd.update['#idHeatingBurnerHours#']({ display_value: '#heatingBurnerHours#' });
+        Update#uid#idHeatingBurnerHours({ display_value: '#heatingBurnerHours#' });
 
-        jeedom.cmd.update['#idHeatingBurnerHoursPerDay#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHeatingBurnerHoursPerDay#uid#').hide();
-            } else {
-                $('#idHeatingBurnerHoursPerDay#uid#').html(_options.display_value + " h");
+        jeedom.cmd.addUpdateFunction('#idHeatingBurnerHoursPerDay#', Update#uid#idHeatingBurnerHoursPerDay);
+        function Update#uid#idHeatingBurnerHoursPerDay(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingBurnerHoursPerDay#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingBurnerHoursPerDay#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display= 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + " h";
+                }
             }
         }
-        jeedom.cmd.update['#idHeatingBurnerHoursPerDay#']({ display_value: '#heatingBurnerHoursPerDay#' });
+        Update#uid#idHeatingBurnerHoursPerDay({ display_value: '#heatingBurnerHoursPerDay#' });
 
-        jeedom.cmd.update['#idHeatingBurnerStarts#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHeatingBurnerStarts#uid#').hide();
-            } else {
-                $('#idHeatingBurnerStarts#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingBurnerStarts#', Update#uid#idHeatingBurnerStarts);
+        function Update#uid#idHeatingBurnerStarts(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingBurnerStarts#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingBurnerStarts#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display= 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idHeatingBurnerStarts#']({ display_value: '#heatingBurnerStarts#' });
+        Update#uid#idHeatingBurnerStarts({ display_value: '#heatingBurnerStarts#' });
 
-        jeedom.cmd.update['#idHeatingBurnerStartsPerDay#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHeatingBurnerStartsPerDay#uid#').hide();
-            } else {
-                $('#idHeatingBurnerStartsPerDay#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingBurnerStartsPerDay#', Update#uid#idHeatingBurnerStartsPerDay);
+        function Update#uid#idHeatingBurnerStartsPerDay(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingBurnerStartsPerDay#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingBurnerStartsPerDay#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display= 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idHeatingBurnerStartsPerDay#']({ display_value: '#heatingBurnerStartsPerDay#' });
+        Update#uid#idHeatingBurnerStartsPerDay({ display_value: '#heatingBurnerStartsPerDay#' });
 
-        jeedom.cmd.update['#idHeatingBurnerModulation#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHeatingBurnerModulation#uid#').hide();
-            } else {
-                $('#idHeatingBurnerModulation#uid#').html(_options.display_value + " %");
+        jeedom.cmd.addUpdateFunction('#idHeatingBurnerModulation#', Update#uid#idHeatingBurnerModulation);
+        function Update#uid#idHeatingBurnerModulation(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingBurnerModulation#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingBurnerModulation#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display= 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + ' %';
+                }
             }
         }
-        jeedom.cmd.update['#idHeatingBurnerModulation#']({ display_value: '#heatingBurnerModulation#' });
+        Update#uid#idHeatingBurnerModulation({ display_value: '#heatingBurnerModulation#' });
 
-        jeedom.cmd.update['#idSlope#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showSlope#uid#').hide();
-            } else {
-                $('#idSlope#uid#').html(_options.display_value);
-                $('#idPenteValeur#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingCompressorHours#', Update#uid#idHeatingCompressorHours);
+        function Update#uid#idHeatingCompressorHours(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingCompressorHours#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingCompressorHours#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + 'h';
+                }
             }
         }
-        jeedom.cmd.update['#idSlope#']({ display_value: '#slope#' });
+        Update#uid#idHeatingCompressorHours({ display_value: '#heatingCompressorHours#' });
 
-        jeedom.cmd.update['#idShift#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showShift#uid#').hide();
-            } else {
-                $('#idShift#uid#').html(_options.display_value);
-                $('#idParalleleValeur#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingCompressorHoursPerDay#', Update#uid#idHeatingCompressorHoursPerDay);
+        function Update#uid#idHeatingCompressorHoursPerDay(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingCompressorHoursPerDay#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingCompressorHoursPerDay#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + 'h';
+                }
             }
         }
-        jeedom.cmd.update['#idShift#']({ display_value: '#shift#' });
+        Update#uid#idHeatingCompressorHoursPerDay({ display_value: '#heatingCompressorHoursPerDay#' });
 
-        jeedom.cmd.update['#idPressureSupply#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showPressureSupply#uid#').hide();
-            } else {
-                $('#idPressureSupply#uid#').html(_options.display_value + " bar");
+        jeedom.cmd.addUpdateFunction('#idHeatingCompressorStarts#', Update#uid#idHeatingCompressorStarts);
+        function Update#uid#idHeatingCompressorStarts(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingCompressorStarts#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingCompressorStarts#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+        Update#uid#idHeatingCompressorStarts({ display_value: '#heatingCompressorStarts#' });
 
-        jeedom.cmd.update['#idSolarTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showSolarTemperature#uid#').hide();
-            } else {
-                $('#idSolarTemperature#uid#').html(_options.display_value + " °C");
-                $('#showSolar#uid#').show();
+        jeedom.cmd.addUpdateFunction('#idHeatingCompressorStartsPerDay#', Update#uid#idHeatingCompressorStartsPerDay);
+        function Update#uid#idHeatingCompressorStartsPerDay(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHeatingCompressorStartsPerDay#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHeatingCompressorStartsPerDay#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idSolarTemperature#']({ display_value: '#solarTemperature#' });
+        Update#uid#idHeatingCompressorStartsPerDay({ display_value: '#heatingCompressorStartsPerDay#' });
 
-        jeedom.cmd.update['#idSolarDhwTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showSolarDhwTemperature#uid#').hide();
-            } else {
-                $('#idSolarDhwTemperature#uid#').html(_options.display_value + " °C");
-                $('#showSolar#uid#').show();
+        jeedom.cmd.addUpdateFunction('#idSlope#', Update#uid#idSlope);
+        function Update#uid#idSlope(_options) {
+            if ((is_object(cmd1 = document.getElementById('showSlope#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idSlope#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idPenteValeur#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                    cmd3.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idSolarDhwTemperature#']({ display_value: '#solarDhwTemperature#' });
+        Update#uid#idSlope({ display_value: '#slope#' });
 
-        jeedom.cmd.update['#idCurrentError#'] = function (_options) {
-            if (_options.display_value == '') {
-                $('#idIconeAlerte#uid#').hide();
-            } else {
-                $('#idIconeAlerte#uid#').show();
+        jeedom.cmd.addUpdateFunction('#idShift#', Update#uid#idShift);
+        function Update#uid#idShift(_options) {
+            if ((is_object(cmd1 = document.getElementById('showShift#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idShift#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idParalleleValeur#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                    cmd3.innerHTML = _options.display_value;
+                }
             }
-            $('#idTexteAlerte#uid#').html(_options.display_value);
         }
-        jeedom.cmd.update['#idCurrentError#']({ display_value: '#currentError#' });
+        Update#uid#idShift({ display_value: '#shift#' });
+
+        jeedom.cmd.addUpdateFunction('#idPressureSupply#', Update#uid#idPressureSupply);
+        function Update#uid#idPressureSupply(_options) {
+            if ((is_object(cmd1 = document.getElementById('showPressureSupply#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idPressureSupply#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '  bar';
+                }
+            }
+        }
+        Update#uid#idPressureSupply({ display_value: '#pressureSupply#' });
+
+        jeedom.cmd.addUpdateFunction('#idSolarTemperature#', Update#uid#idSolarTemperature);
+        function Update#uid#idSolarTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showSolarTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idSolarTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('showSolar#uid#')))) {
+                if (_options.display_value == 99 ) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + ' °C';
+                    cmd3.style.display = 'block';
+                }
+            }
+        }
+        Update#uid#idSolarTemperature({ display_value: '#solarTemperature#'});
+
+        jeedom.cmd.addUpdateFunction('#idSolarDhwTemperature#', Update#uid#idSolarDhwTemperature);
+        function Update#uid#idSolarDhwTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showSolarDhwTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idSolarDhwTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('showSolar#uid#')))) {
+                if (_options.display_value == 99 ) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + ' °C';
+                    cmd3.style.display = 'block';
+                }
+            }
+        }
+        Update#uid#idSolarDhwTemperature({ display_value: '#solarDhwTemperature#' });
+
+        jeedom.cmd.addUpdateFunction('#idCurrentError#', Update#uid#idCurrentError);
+        function Update#uid#idCurrentError(_options) {
+            if ((is_object(cmd1 = document.getElementById('idIconeAlerte#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idTexteAlerte#uid#')))) {
+                if (_options.display_value == '') {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd1.style.display = 'block';                
+                }
+                cmd2.innerHTML = _options.display_value;
+            }
+        }
+        Update#uid#idCurrentError({ display_value: '#currentError#' });
 
         // Click pour accès tuile options erreurs
         //
-        $('#idOptionsErreurs#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idErreurs#uid#').show();
-        });
+        el = document.getElementById('idOptionsErreurs#uid#');
+        el.removeEventListener('click', eventOptionsErreurs);
+        el.addEventListener('click', eventOptionsErreurs);
+
+        function eventOptionsErreurs() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idErreurs#uid#').style.display = 'block';
+        }
 
         // Tuile options erreurs
         //
-        jeedom.cmd.update['#idErrors#'] = function (_options) {
-            $('#idErrorDat_0#uid#').html('');
-            $('#idErrorCod_0#uid#').html('');
-            $('#idErrorDat_1#uid#').html('');
-            $('#idErrorCod_1#uid#').html('');
-            $('#idErrorDat_2#uid#').html('');
-            $('#idErrorCod_2#uid#').html('');
-            $('#idErrorDat_3#uid#').html('');
-            $('#idErrorCod_3#uid#').html('');
-            $('#idErrorDat_4#uid#').html('');
-            $('#idErrorCod_4#uid#').html('');
-            $('#idErrorDat_5#uid#').html('');
-            $('#idErrorCod_5#uid#').html('');
-            $('#idErrorDat_6#uid#').html('');
-            $('#idErrorCod_6#uid#').html('');
-            $('#idErrorDat_7#uid#').html('');
-            $('#idErrorCod_7#uid#').html('');
-            $('#idErrorDat_8#uid#').html('');
-            $('#idErrorCod_8#uid#').html('');
-            $('#idErrorDat_9#uid#').html('');
-            $('#idErrorCod_9#uid#').html('');
+        jeedom.cmd.addUpdateFunction('#idErrors#', Update#uid#idErrors);
+        function Update#uid#idErrors(_options) {
 
-            $('#idErrorCod_0#uid#').css("color", "#808080");
-            $('#idErrorCod_1#uid#').css("color", "#808080");
-            $('#idErrorCod_2#uid#').css("color", "#808080");
-            $('#idErrorCod_3#uid#').css("color", "#808080");
-            $('#idErrorCod_4#uid#').css("color", "#808080");
-            $('#idErrorCod_5#uid#').css("color", "#808080");
-            $('#idErrorCod_6#uid#').css("color", "#808080");
-            $('#idErrorCod_7#uid#').css("color", "#808080");
-            $('#idErrorCod_8#uid#').css("color", "#808080");
-            $('#idErrorCod_9#uid#').css("color", "#808080");
+            var dat = [];
+            var cod = [];
+
+            if (!is_object(dat[0] = document.getElementById('idErrorDat_0#uid#'))) return;
+            if (!is_object(dat[1] = document.getElementById('idErrorDat_1#uid#'))) return;
+            if (!is_object(dat[2] = document.getElementById('idErrorDat_2#uid#'))) return;
+            if (!is_object(dat[3] = document.getElementById('idErrorDat_3#uid#'))) return;
+            if (!is_object(dat[4] = document.getElementById('idErrorDat_4#uid#'))) return;
+            if (!is_object(dat[5] = document.getElementById('idErrorDat_5#uid#'))) return;
+            if (!is_object(dat[6] = document.getElementById('idErrorDat_6#uid#'))) return;
+            if (!is_object(dat[7] = document.getElementById('idErrorDat_7#uid#'))) return;
+            if (!is_object(dat[8] = document.getElementById('idErrorDat_8#uid#'))) return;
+            if (!is_object(dat[9] = document.getElementById('idErrorDat_9#uid#'))) return;
+
+            if (!is_object(cod[0] = document.getElementById('idErrorCod_0#uid#'))) return;
+            if (!is_object(cod[1] = document.getElementById('idErrorCod_1#uid#'))) return;
+            if (!is_object(cod[2] = document.getElementById('idErrorCod_2#uid#'))) return;
+            if (!is_object(cod[3] = document.getElementById('idErrorCod_3#uid#'))) return;
+            if (!is_object(cod[4] = document.getElementById('idErrorCod_4#uid#'))) return;
+            if (!is_object(cod[5] = document.getElementById('idErrorCod_5#uid#'))) return;
+            if (!is_object(cod[6] = document.getElementById('idErrorCod_6#uid#'))) return;
+            if (!is_object(cod[7] = document.getElementById('idErrorCod_7#uid#'))) return;
+            if (!is_object(cod[8] = document.getElementById('idErrorCod_8#uid#'))) return;
+            if (!is_object(cod[9] = document.getElementById('idErrorCod_9#uid#'))) return;
+
+            for (var i = 0; i < 10; i++) {
+                dat[i].innerHTML = '';
+                cod[i].innerHTML = '';
+                cod[i].style.color = '#808080';
+            }
 
             var items = _options.display_value.split(';');
             var n = items.length;
-
-            if (n >= 3) {
-                $('#idErrorDat_0#uid#').html(items[0] + ' ' + items[1]);
-                $('#idErrorCod_0#uid#').html(items[2]);
-                if (items[0] == "AC") {
-                    $('#idErrorCod_0#uid#').css("color", "red");
-                }
-            }
-            if (n >= 6) {
-                $('#idErrorDat_1#uid#').html(items[3] + ' ' + items[4]);
-                $('#idErrorCod_1#uid#').html(items[5]);
-                if (items[3] == "AC") {
-                    $('#idErrorCod_1#uid#').css("color", "red");
-                }
-            }
-            if (n >= 9) {
-                $('#idErrorDat_2#uid#').html(items[6] + ' ' + items[7]);
-                $('#idErrorCod_2#uid#').html(items[8]);
-                if (items[6] == "AC") {
-                    $('#idErrorCod_2#uid#').css("color", "red");
-                }
-            }
-            if (n >= 12) {
-                $('#idErrorDat_3#uid#').html(items[9] + ' ' + items[10]);
-                $('#idErrorCod_3#uid#').html(items[11]);
-                if (items[9] == "AC") {
-                    $('#idErrorCod_3#uid#').css("color", "red");
-                }
-            }
-            if (n >= 15) {
-                $('#idErrorDat_4#uid#').html(items[12] + ' ' + items[13]);
-                $('#idErrorCod_4#uid#').html(items[14]);
-                if (items[12] == "AC") {
-                    $('#idErrorCod_4#uid#').css("color", "red");
-                }
-            }
-            if (n >= 18) {
-                $('#idErrorDat_5#uid#').html(items[15] + ' ' + items[16]);
-                $('#idErrorCod_5#uid#').html(items[17]);
-                if (items[15] == "AC") {
-                    $('#idErrorCod_5#uid#').css("color", "red");
-                }
-            }
-            if (n >= 21) {
-                $('#idErrorDat_6#uid#').html(items[18] + ' ' + items[19]);
-                $('#idErrorCod_6#uid#').html(items[20]);
-                if (items[18] == "AC") {
-                    $('#idErrorCod_6#uid#').css("color", "red");
-                }
-            }
-            if (n >= 24) {
-                $('#idErrorDat_7#uid#').html(items[21] + ' ' + items[22]);
-                $('#idErrorCod_7#uid#').html(items[23]);
-                if (items[21] == "AC") {
-                    $('#idErrorCod_7#uid#').css("color", "red");
-                }
-            }
-            if (n >= 27) {
-                $('#idErrorDat_8#uid#').html(items[24] + ' ' + items[25]);
-                $('#idErrorCod_8#uid#').html(items[26]);
-                if (items[24] == "AC") {
-                    $('#idErrorCod_8#uid#').css("color", "red");
-                }
-            }
-            if (n >= 30) {
-                $('#idErrorDat_9#uid#').html(items[27] + ' ' + items[28]);
-                $('#idErrorCod_9#uid#').html(items[29]);
-                if (items[27] == "AC") {
-                    $('#idErrorCod_9#uid#').css("color", "red");
+            for (var i = 0; i < 10; i++) {
+                var j = i*3;
+                if (n >= j+3) {
+                   dat[i].innerHTML = items[j] + ' ' + items[j+1];
+                    cod[i].innerHTML = items[j+2];
+                    if (items[j] == "AC") {
+                        cod[i].style.color = 'red';
+                    }            
                 }
             }
         }
-        jeedom.cmd.update['#idErrors#']({ display_value: '#errors#' });
+        Update#uid#idErrors({ display_value: '#errors#' });
 
-        jeedom.cmd.update['#idLastServiceDate#'] = function (_options) {
-            $('#idLastServiceDate#uid#').html(_options.display_value);
-        }
-        jeedom.cmd.update['#idLastServiceDate#']({ display_value: '#lastServiceDate#' });
-
-        jeedom.cmd.update['#idServiceInterval#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showEntretien#uid#').hide();
-            } else {
-                $('#idServiceInterval#uid#').html(_options.display_value);
+        // Entretien
+        //
+        jeedom.cmd.addUpdateFunction('#idServiceInterval#', Update#uid#idServiceInternal);
+        function Update#uid#idServiceInternal(_options) {
+            if ((is_object(cmd1 = document.getElementById('showEntretien#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idServiceInterval#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idServiceInterval#']({ display_value: '#serviceInterval#' });
+        Update#uid#idServiceInternal({ display_value: '#serviceInterval#' });
 
-        jeedom.cmd.update['#idMonthSinceService#'] = function (_options) {
-            $('#idMonthSinceService#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idLastServiceDate#', Update#uid#idLastService);
+        function Update#uid#idLastService(_options) {
+            if (is_object(cmd = document.getElementById('idLastServiceDate#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idMonthSinceService#']({ display_value: '#monthSinceService#' });
+        Update#uid#idLastService({ display_value: '#lastServiceDate#' });
+
+        jeedom.cmd.addUpdateFunction('#idMonthSinceService#', Update#uid#idMonthSinceService);
+        function Update#uid#idMonthSinceService(_options) {
+            if (is_object(cmd = document.getElementById('idMonthSinceService#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
+        }
+        Update#uid#idMonthSinceService({ display_value: '#monthSinceService#' });
 
         // Tuile Radiateurs
         //
-        jeedom.cmd.update['#idRoomTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#idRoomTemperature#uid#').html('--');
-                $('#showTemperaturePiece#uid#').hide();
-            } else {
-                $('#idRoomTemperature#uid#').html(_options.display_value + '°');
-                $('#idTemperaturePiece#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idRoomTemperature#', Update#uid#idRoomTemperature);
+        function Update#uid#idRoomTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showTemperaturePiece#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idRoomTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idTemperaturePiece#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display ='none';
+                    cmd2.innerHTML = '--';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idRoomTemperature#']({ display_value: '#roomTemperature#' });
+        Update#uid#idRoomTemperature({ display_value: '#roomTemperature#' });
 
-        jeedom.cmd.update['#idProgramTemperature#'] = function (_options) {
-            $('#idProgramTemperature#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idProgramTemperature#', Update#uid#idProgramTemperature);
+        function Update#uid#idProgramTemperature(_options) {
+            if (is_object(cmd = document.getElementById('idProgramTemperature#uid#')))
+            {
+                cmd.innerHTML = _options.display_value + '°';
+            }
         }
-        jeedom.cmd.update['#idProgramTemperature#']({ display_value: '#programTemperature#' });
+        Update#uid#idProgramTemperature({ display_value: '#programTemperature#' });
 
         // Click pour accès tuile options radiateurs
         //
-        $('#idOptionsRadiateurs#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idRadiateurs#uid#').show();
-        });
+        el = document.getElementById('idOptionsRadiateurs#uid#');
+        el.removeEventListener('click', eventOptionsRadiateurs);
+        el.addEventListener('click', eventOptionsRadiateurs);
+
+        function eventOptionsRadiateurs() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idRadiateurs#uid#').style.display = 'block';
+        }
 
         // Tuile options radiateurs
         //
-        jeedom.cmd.update['#idActiveMode#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idActiveMode#', Update#uid#idActiveMode);
+        function Update#uid#idActiveMode(_options) {
+            if ((is_object(cmd1 = document.getElementById('showStatutChauffage#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idStatutChauffage#uid#')))) {
 
-            if (_options.display_value == '??') {
-                $('#showStatutChauffage#uid#').hide();
-            } else {
-                $('#idModeStandby#uid#').prop('checked', true);
-
-                if (_options.display_value == 'standby') {
-                    $('#idStatutChauffage#uid#').html('Arrêt');
-                } else if (_options.display_value == 'heating') {
-                    $('#idStatutChauffage#uid#').html('Chauffage Activé');
-                    $('#idModeHeating#uid#').prop('checked', true);
-                } else if (_options.display_value == 'cooling') {
-                    $('#idStatutChauffage#uid#').html('Refroidissement activé');
-                    $('#idModeCooling#uid#').prop('checked', true);
-                } else if (_options.display_value == 'heatingCooling') {
-                    $('#idStatutChauffage#uid#').html('Chauffage et refroidissement activés');
-                    $('#idModeHeatingCooling#uid#').prop('checked', true);
-                } else if (_options.display_value == 'testMode') {
-                    $('#idStatutChauffage#uid#').html('Mode test activé');
-                    $('#idModeTestMode#uid#').prop('checked', true);
-                } else if (_options.display_value == 'auto') {
-                    $('#idStatutChauffage#uid#').html('Mode auto activé');
-                    $('#idModeAuto#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhw') {
-                    $('#idStatutChauffage#uid#').html('Eau chaude activée');
-                    $('#idModeDhw#uid#').prop('checked', true);
-                } else if (_options.display_value == 'dhwAndHeating') {
-                    $('#idStatutChauffage#uid#').html('Eau chaude et chauffage activés');
-                    $('#idModeDhwAndHeating#uid#').prop('checked', true);
+                if (_options.display_value == '??') {
+                    cmd1.style.display = 'none';
                 } else {
-                    $('#idStatutChauffage#uid#').html(_options.display_value);
+                    document.getElementById('idModeStandby#uid#').checked = true;
+
+                    if (_options.display_value == 'standby') {
+                        cmd2.innerHTML = 'Arrêt';
+                    } else if (_options.display_value == 'heating') {
+                        cmd2.innerHTML = 'Chauffage Activé';
+                        document.getElementById('idModeHeating#uid#').checked = true;
+                    } else if (_options.display_value == 'cooling') {
+                        cmd2.innerHTML = 'Refroidissement activé';
+                        document.getElementById('idModeCooling#uid#').checked = true;
+                    } else if (_options.display_value == 'heatingCooling') {
+                        cmd2.innerHTML = 'Chauffage et refroidissement activés';
+                        document.getElementById('idModeHeatingCooling#uid#').checked = true;
+                    } else if (_options.display_value == 'testMode') {
+                        cmd2.innerHTML = 'Mode test activé';
+                        document.getElementById('idModeTestMode#uid#').checked = true;
+                    } else if (_options.display_value == 'auto') {
+                        cmd2.innerHTML = 'Mode auto activé';
+                        document.getElementById('idModeAuto#uid#').checked = true;
+                    } else if (_options.display_value == 'dhw') {
+                        cmd2.innerHTML = 'Eau chaude activée';
+                        document.getElementById('idModeDhw#uid#').checked = true;
+                    } else if (_options.display_value == 'dhwAndHeating') {
+                        cmd2.innerHTML = 'Eau chaude et chauffage activés';
+                        document.getElementById('idModeDhwAndHeating#uid#').checked = true;
+                    } else {
+                        cmd2.innerHTML = _options.display_value;
+                    }
                 }
             }
         }
-        jeedom.cmd.update['#idActiveMode#']({ display_value: '#activeMode#' });
+        Update#uid#idActiveMode({ display_value: '#activeMode#' });
 
         // Tuile options eau chaude
         //
-        jeedom.cmd.update['#idActiveDhwMode#'] = function (_options) {
-
-            if (_options.display_value == '??') {
-                $('#showStatutDhw#uid#').hide();
-            } else {
-                $('#idModeDhwBalanced#uid#').prop('checked', true);
-                $('#idDhwTemperature#uid#').css("color", "black");
-
-                if (_options.display_value == 'balanced') {
-                    $('#idStatutDhw#uid#').html('Activé');
-                } else if (_options.display_value == 'comfort') {
-                    $('#idStatutDhw#uid#').html('Confort activé');
-                    $('#idModeDhwComfort#uid#').prop('checked', true);
-                } else if (_options.display_value == 'eco') {
-                    $('#idStatutDhw#uid#').html('Economique activé');
-                    $('#idModeDhwEco#uid#').prop('checked', true);
-                } else if (_options.display_value == 'off') {
-                    $('#idStatutDhw#uid#').html('Arrêt');
-                    $('#idModeDhwOff#uid#').prop('checked', true);
-                    $('#idDhwTemperature#uid#').css("color", "gainsboro");
+        jeedom.cmd.addUpdateFunction('#idActiveDhwMode#', Update#uid#idActiveDhwMode);
+        function Update#uid#idActiveDhwMode(_options) {
+            if ((is_object(cmd1 = document.getElementById('showStatutDhw#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idStatutDhw#uid#')))) {
+ 
+                if (_options.display_value == '??') {
+                    cmd1.style.display = 'none';
                 } else {
-                    $('#idStatutDhw#uid#').html(_options.display_value);
+
+                    document.getElementById('idModeDhwBalanced#uid#').checked = true;
+                    document.getElementById('idDhwTemperature#uid#').style.color = 'black';
+
+                    if (_options.display_value == 'balanced') {
+                        cmd2.innerHTML = 'Activé';
+                    } else if (_options.display_value == 'comfort') {
+                        cmd2.innerHTML = 'Confort activé';
+                        document.getElementById('idModeDhwComfort#uid#').checked = true;
+                    } else if (_options.display_value == 'eco') {
+                        cmd2.innerHTML = 'Economique activé';
+                        document.getElementById('idModeDhwEco#uid#').checked = true;
+                    } else if (_options.display_value == 'off') {
+                        cmd2.innerHTML = 'Arrêt';
+                        document.getElementById('idModeDhwOff#uid#').checked = true;
+                        document.getElementById('idDhwTemperature#uid#').style.color = 'gainsboro';
+                    } else {
+                        cmd2.innerHTML = _options.display_value;
+                    }
                 }
             }
         }
-        jeedom.cmd.update['#idActiveDhwMode#']({ display_value: '#activeDhwMode#' });
+        Update#uid#idActiveDhwMode({ display_value: '#activeDhwMode#' });
 
-        jeedom.cmd.update['#idComfortProgramTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showComfortProgramTemperature#uid#').hide();
-            } else {
-                $('#idComfortProgramTemperature#uid#').html(_options.display_value + '°');
-                $('#idConfortValeur#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idComfortProgramTemperature#', Update#uid#idComfortProgramTemperature);
+        function Update#uid#idComfortProgramTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showComfortProgramTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idComfortProgramTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idConfortValeur#uid#')))) {
+
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {                
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: '#comfortProgramTemperature#' });
+        Update#uid#idComfortProgramTemperature({ display_value: '#comfortProgramTemperature#' });
 
-        jeedom.cmd.update['#idNormalProgramTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showNormalProgramTemperature#uid#').hide();
-            } else {
-                $('#idNormalProgramTemperature#uid#').html(_options.display_value + '°');
-                $('#idNormaleValeur#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idNormalProgramTemperature#', Update#uid#idNormalProgramTemperature);
+        function Update#uid#idNormalProgramTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showNormalProgramTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idNormalProgramTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idNormaleValeur#uid#')))) {
+
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {                
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: '#normalProgramTemperature#' });
+        Update#uid#idNormalProgramTemperature({ display_value: '#normalProgramTemperature#' });
 
-        jeedom.cmd.update['#idReducedProgramTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showReducedProgramTemperature#uid#').hide();
-            } else {
-                $('#idReducedProgramTemperature#uid#').html(_options.display_value + '°');
-                $('#idReduiteValeur#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idReducedProgramTemperature#', Update#uid#idReducedProgramTemperature);
+        function Update#uid#idReducedProgramTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showReducedProgramTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idReducedProgramTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idReduiteValeur#uid#')))) {
+
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {                
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: '#reducedProgramTemperature#' });
+        Update#uid#idReducedProgramTemperature({ display_value: '#reducedProgramTemperature#' });
 
-        jeedom.cmd.update['#idSupplyProgramTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showTemperatureDepart#uid#').hide();
-            } else {
-                $('#idTemperatureDepart#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idSupplyProgramTemperature#', Update#uid#idSupplyProgramTemperature);
+        function Update#uid#idSupplyProgramTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showTemperatureDepart#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idTemperatureDepart#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idSupplyProgramTemperature#']({ display_value: '#supplyProgramTemperature#' });
+        Update#uid#idSupplyProgramTemperature({ display_value: '#supplyProgramTemperature#' });
 
-        jeedom.cmd.update['#idBoilerTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showTemperatureEauRadiateur#uid#').hide();
-            } else {
-                $('#idTemperatureEauRadiateur#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idBoilerTemperature#', Update#uid#idBoilerTemperature);
+        function Update#uid#idBoilerTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showTemperatureEauRadiateur#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idTemperatureEauRadiateur#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idBoilerTemperature#']({ display_value: '#boilerTemperature#' });
+        Update#uid#idBoilerTemperature({ display_value: '#boilerTemperature#' });
 
-        jeedom.cmd.update['#idBoilerTemperatureMain#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#showTemperatureChaudiere#uid#').hide();
-            } else {
-                $('#idTemperatureChaudiere#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idBoilerTemperatureMain#', Update#uid#idBoilerTemperatureMain);
+        function Update#uid#idBoilerTemperatureMain(_options) {
+            if ((is_object(cmd1 = document.getElementById('showTemperatureChaudiere#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idTemperatureChaudiere#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idBoilerTemperatureMain#']({ display_value: '#boilerTemperatureMain#' });
+        Update#uid#idBoilerTemperatureMain({ display_value: '#boilerTemperatureMain#' });
 
-        jeedom.cmd.update['#idFrostProtection#'] = function (_options) {
-            if (_options.display_value == '??') {
-                $('#showFrostProtection#uid#').hide();
-            }
-            else if (_options.display_value == 'off') {
-                $('#idFrostProtection#uid#').html('éteint');
-            } else {
-                $('#idFrostProtection#uid#').html('allumé');
+        jeedom.cmd.addUpdateFunction('#idFrostProtection#', Update#uid#idFrostProtection);
+        function Update#uid#idFrostProtection(_options) {
+            if ((is_object(cmd1 = document.getElementById('showFrostProtection#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idFrostProtection#uid#')))) {
+                if (_options.display_value == '??') {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 'off') {
+                    cmd2.innerHTML = 'éteint';
+                } else {
+                    cmd2.innerHTML = 'allumé';
+                }
             }
         }
-        jeedom.cmd.update['#idFrostProtection#']({ display_value: '#frostProtection#' });
+        Update#uid#idFrostProtection({ display_value: '#frostProtection#' });
 
-        jeedom.cmd.update['#idPumpStatus#'] = function (_options) {
-            if (_options.display_value == '??') {
-                $('#showPumpStatus#uid#').hide();
-            } else {
-                $('#idEtatCirculateur#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idPumpStatus#', Update#uid#idPumpStatus);
+        function Update#uid#idPumpStatus(_options) {
+            if ((is_object(cmd1 = document.getElementById('showPumpStatus#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idEtatCirculateur#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value;
+                }
             }
         }
-        jeedom.cmd.update['#idPumpStatus#']({ display_value: '#pumpStatus#' });
+        Update#uid#idPumpStatus({ display_value: '#pumpStatus#' });
 
         // Click pour accès tuile calendrier radiateurs
         //
-        $('#idOptionsCalRadiateurs#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idCalRadiateurs#uid#').show();
-        });
+        el = document.getElementById('idOptionsCalRadiateurs#uid#');
+        el.removeEventListener('click', eventOptionsCalRadiateurs);
+        el.addEventListener('click', eventOptionsCalRadiateurs);
+
+        function eventOptionsCalRadiateurs() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idCalRadiateurs#uid#').style.display = 'block';
+        };
 
         // Tuile eau chaude
         //
-        jeedom.cmd.update['#idHotWaterStorageTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#idHotWaterStorageTemperature#uid#').html('--');
-                $('showHotWaterStorageTemperature#uid#').hide();
-            } else {
-                $('#idHotWaterStorageTemperature#uid#').html(_options.display_value + '°');
-                $('#idActuelEauChaude#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idHotWaterStorageTemperature#', Update#uid#idHotWaterStorageTemperature);
+        function Update#uid#idHotWaterStorageTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showHotWaterStorageTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idHotWaterStorageTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idActuelEauChaude#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd2.innerHTML = '--';
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idHotWaterStorageTemperature#']({ display_value: '#hotWaterStorageTemperature#' });
+        Update#uid#idHotWaterStorageTemperature({ display_value: '#hotWaterStorageTemperature#' });
 
-        jeedom.cmd.update['#idDhwTemperature#'] = function (_options) {
-            if (_options.display_value == 99) {
-                $('#idDhwTemperature#uid#').html('--');
-                $('#showDhwTemperature#uid#').hide();
-            } else {
-                $('#idDhwTemperature#uid#').html(_options.display_value + '°');
-                $('#idConsigneEauChaude#uid#').html(_options.display_value + '°');
-                $('#idDhwValeur#uid#').html(_options.display_value + '°');
+        jeedom.cmd.addUpdateFunction('#idDhwTemperature#', Update#uid#idDhwTemperature);
+        function Update#uid#idDhwTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showDhwTemperature#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idDhwTemperature#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idConsigneEauChaude#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idDhwValeur#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd2.innerHTML = '--';
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                    cmd3.innerHTML = _options.display_value + '°';
+                    cmd4.innerHTML = _options.display_value + '°';
+                }
             }
         }
-        jeedom.cmd.update['#idDhwTemperature#']({ display_value: '#dhwTemperature#' });
+        Update#uid#idDhwTemperature({ display_value: '#dhwTemperature#' });
 
         // Click accès tuile options eau chaude
         //
-        $('#idOptionsEauChaude#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idEauChaude#uid#').show();
-        });
+        el = document.getElementById('idOptionsEauChaude#uid#');
+        el.removeEventListener('click', eventOptionsEauChaude);
+        el.addEventListener('click', eventOptionsEauChaude);
+
+        function eventOptionsEauChaude() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idEauChaude#uid#').style.display = 'block';
+        };
 
         // Tuile options eau chaude
         //
 
         // Click accès tuile calendrier eau chaude
         //
-        $('#idOptionsCalEauChaude#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idCalEauChaude#uid#').show();
-        });
+        el = document.getElementById('idOptionsCalEauChaude#uid#');
+        el.removeEventListener('click', eventOptionsCalEauChaude);
+        el.addEventListener('click', eventOptionsCalEauChaude);
+
+        function eventOptionsCalEauChaude() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idCalEauChaude#uid#').style.display = 'block';
+        };
 
         // Tuile gaz
         //
-        jeedom.cmd.update['#idHeatingGazConsumption#'] = function (_options) {
-            $('#idHeatingGazConsumption#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingGazConsumption#', Update#uid#idHeatingGazConsumption);
+        function Update#uid#idHeatingGazConsumption(_options) {
+            if (is_object(cmd = document.getElementById('idHeatingGazConsumption#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: '#heatingGazConsumption#' });
+        Update#uid#idHeatingGazConsumption({ display_value: '#heatingGazConsumption#' });
 
-        jeedom.cmd.update['#idDhwGazConsumption#'] = function (_options) {
-            $('#idDhwGazConsumption#uid#').html(_options.display_value);   
+        jeedom.cmd.addUpdateFunction('#idDhwGazConsumption#', Update#uid#idDhwGazConsumption);
+        function Update#uid#idDhwGazConsumption(_options) {
+            if (is_object(cmd = document.getElementById('idDhwGazConsumption#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idDhwGazConsumption#']({ display_value: '#dhwGazConsumption#' });
+        Update#uid#idDhwGazConsumption({ display_value: '#dhwGazConsumption#' });
 
         // Click pour accès options gaz
         //
-        $('#idOptionsGaz#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idGaz#uid#').show();
-        });
+        el = document.getElementById('idOptionsGaz#uid#');
+        el.removeEventListener('click', eventOptionsGaz);
+        el.addEventListener('click', eventOptionsGaz);
+
+        function eventOptionsGaz() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idGaz#uid#').style.display = 'block';
+        };
 
         // Tuile options gaz
         //
 
         // Sélection graphes gaz
         //
-        $('#grapheGazJour#uid#').show();
-        $('#grapheGazSemaine#uid#').hide();
-        $('#grapheGazMois#uid#').hide();
-        $('#grapheGazAnnee#uid#').hide();
+        document.getElementById('grapheGazJour#uid#').style.display = 'block';
+        document.getElementById('grapheGazSemaine#uid#').style.display = 'none';
+        document.getElementById('grapheGazMois#uid#').style.display = 'none';
+        document.getElementById('grapheGazAnnee#uid#').style.display = 'none';
 
-        $("#selectionGrapheGaz#uid#").change(function () {
-            $('#grapheGazJour#uid#').hide();
-            $('#grapheGazSemaine#uid#').hide();
-            $('#grapheGazMois#uid#').hide();
-            $('#grapheGazAnnee#uid#').hide();
+        el = document.getElementById('selectionGrapheGaz#uid#');
+        el.removeEventListener('change', changeGrapheGaz);
+        el.addEventListener('change', changeGrapheGaz);
 
-            if ($(this).value() !== null) {
-                if ($(this).value() === "0") {
-                    $('#grapheGazJour#uid#').show();
+        function changeGrapheGaz() {
+
+            document.getElementById('grapheGazJour#uid#').style.display = 'none';
+            document.getElementById('grapheGazSemaine#uid#').style.display = 'none';
+            document.getElementById('grapheGazMois#uid#').style.display = 'none';
+            document.getElementById('grapheGazAnnee#uid#').style.display = 'none';
+
+            if ( this.value !== null) {
+                if (this.value === "0") {
+                    document.getElementById('grapheGazJour#uid#').style.display = 'block';
                 }
-                else if ($(this).value() === "1") {
-                    $('#grapheGazSemaine#uid#').show();
+                else if (this.value === "1") {
+                    document.getElementById('grapheGazSemaine#uid#').style.display = 'block';
                 }
-                else if ($(this).value() === "2") {
-                    $('#grapheGazMois#uid#').show();
+                else if (this.value === "2") {
+                    document.getElementById('grapheGazMois#uid#').style.display = 'block';
                 }
                 else {
-                    $('#grapheGazAnnee#uid#').show();
+                    document.getElementById('grapheGazAnnee#uid#').style.display = 'block';
                 }
             }
-        });
+        };
 
         // Graphes gaz
         //
@@ -2328,8 +2612,9 @@
         });
 
         // Données graphes gaz
-        //  
-        jeedom.cmd.update['#idHeatingGazConsumptionDay#'] = function (_options) {
+        //
+        jeedom.cmd.addUpdateFunction('#idHeatingGazConsumptionDay#', Update#uid#idDhwGazConsumption);
+        function Update#uid#idHeatingGazConsumptionDay(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2337,9 +2622,10 @@
             });
             chartGazJour#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingGazConsumptionDay#']({ display_value: '#heatingGazConsumptionDay#' });
+        Update#uid#idHeatingGazConsumptionDay({ display_value: '#heatingGazConsumptionDay#' });
 
-        jeedom.cmd.update['#idDhwGazConsumptionDay#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idDhwGazConsumptionDay#', Update#uid#idDhwGazConsumptionDay);
+        function Update#uid#idDhwGazConsumptionDay(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2347,9 +2633,10 @@
             });
             chartGazJour#uid#.series[1].setData(datas);
         }
-        jeedom.cmd.update['#idDhwGazConsumptionDay#']({ display_value: '#dhwGazConsumptionDay#' });
+        Update#uid#idDhwGazConsumptionDay({ display_value: '#dhwGazConsumptionDay#' });
 
-        jeedom.cmd.update['#idTotalGazConsumptionDay#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idTotalGazConsumptionDay#', Update#uid#idTotalGazConsumptionDay);
+        function Update#uid#idTotalGazConsumptionDay(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2357,9 +2644,10 @@
             });
             chartGazJour#uid#.series[2].setData(datas);
         }
-        jeedom.cmd.update['#idTotalGazConsumptionDay#']({ display_value: '#totalGazConsumptionDay#' });
+        Update#uid#idTotalGazConsumptionDay({ display_value: '#totalGazConsumptionDay#' });
 
-        jeedom.cmd.update['#idHeatingGazConsumptionWeek#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingGazConsumptionWeek#', Update#uid#idHeatingGazConsumptionWeek);
+        function Update#uid#idHeatingGazConsumptionWeek(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2367,9 +2655,10 @@
             });
             chartGazSemaine#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingGazConsumptionWeek#']({ display_value: '#heatingGazConsumptionWeek#' });
+        Update#uid#idHeatingGazConsumptionWeek({ display_value: '#heatingGazConsumptionWeek#' });
 
-        jeedom.cmd.update['#idDhwGazConsumptionWeek#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idDhwGazConsumptionWeek#', Update#uid#idDhwGazConsumptionWeek);
+        function Update#uid#idDhwGazConsumptionWeek(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2377,9 +2666,10 @@
             });
             chartGazSemaine#uid#.series[1].setData(datas);
         }
-        jeedom.cmd.update['#idDhwGazConsumptionWeek#']({ display_value: '#dhwGazConsumptionWeek#' });
+        Update#uid#idDhwGazConsumptionWeek({ display_value: '#dhwGazConsumptionWeek#' });
 
-        jeedom.cmd.update['#idTotalGazConsumptionWeek#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idTotalGazConsumptionWeek#', Update#uid#idTotalGazConsumptionWeek);
+        function Update#uid#idTotalGazConsumptionWeek(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2387,9 +2677,10 @@
             });
             chartGazSemaine#uid#.series[2].setData(datas);
         }
-        jeedom.cmd.update['#idTotalGazConsumptionWeek#']({ display_value: '#totalGazConsumptionWeek#' });
+        Update#uid#idTotalGazConsumptionWeek({ display_value: '#totalGazConsumptionWeek#' });
 
-        jeedom.cmd.update['#idHeatingGazConsumptionMonth#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingGazConsumptionMonth#', Update#uid#idHeatingGazConsumptionMonth);
+        function Update#uid#idHeatingGazConsumptionMonth(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2397,9 +2688,10 @@
             });
             chartGazMois#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingGazConsumptionMonth#']({ display_value: '#heatingGazConsumptionMonth#' });
+        Update#uid#idHeatingGazConsumptionMonth({ display_value: '#heatingGazConsumptionMonth#' });
 
-        jeedom.cmd.update['#idDhwGazConsumptionMonth#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idDhwGazConsumptionMonth#', Update#uid#idDhwGazConsumptionMonth);
+        function Update#uid#idDhwGazConsumptionMonth(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2407,9 +2699,10 @@
             });
             chartGazMois#uid#.series[1].setData(datas);
         }
-        jeedom.cmd.update['#idDhwGazConsumptionMonth#']({ display_value: '#dhwGazConsumptionMonth#' });
+        Update#uid#idDhwGazConsumptionMonth({ display_value: '#dhwGazConsumptionMonth#' });
 
-        jeedom.cmd.update['#idTotalGazConsumptionMonth#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idTotalGazConsumptionMonth#', Update#uid#idTotalGazConsumptionMonth);
+        function Update#uid#idTotalGazConsumptionMonth(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2417,9 +2710,10 @@
             });
             chartGazMois#uid#.series[2].setData(datas);
         }
-        jeedom.cmd.update['#idTotalGazConsumptionMonth#']({ display_value: '#totalGazConsumptionMonth#' });
+        Update#uid#idTotalGazConsumptionMonth({ display_value: '#totalGazConsumptionMonth#' });
 
-        jeedom.cmd.update['#idHeatingGazConsumptionYear#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingGazConsumptionYear#', Update#uid#idHeatingGazConsumptionYear);
+        function Update#uid#idHeatingGazConsumptionYear(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2427,9 +2721,10 @@
             });
             chartGazAnnee#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingGazConsumptionYear#']({ display_value: '#heatingGazConsumptionYear#' });
+        Update#uid#idHeatingGazConsumptionYear({ display_value: '#heatingGazConsumptionYear#' });
 
-        jeedom.cmd.update['#idDhwGazConsumptionYear#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idDhwGazConsumptionYear#', Update#uid#idDhwGazConsumptionYear);
+        function Update#uid#idDhwGazConsumptionYear(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2437,9 +2732,10 @@
             });
             chartGazAnnee#uid#.series[1].setData(datas);
         }
-        jeedom.cmd.update['#idDhwGazConsumptionYear#']({ display_value: '#dhwGazConsumptionYear#' });
+        Update#uid#idDhwGazConsumptionYear({ display_value: '#dhwGazConsumptionYear#' });
 
-        jeedom.cmd.update['#idTotalGazConsumptionYear#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idTotalGazConsumptionYear#', Update#uid#idTotalGazConsumptionYear);
+        function Update#uid#idTotalGazConsumptionYear(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2447,73 +2743,98 @@
             });
             chartGazAnnee#uid#.series[2].setData(datas);
         }
-        jeedom.cmd.update['#idTotalGazConsumptionYear#']({ display_value: '#totalGazConsumptionYear#' });
+        Update#uid#idTotalGazConsumptionYear({ display_value: '#totalGazConsumptionYear#' });
 
         // Tuile rafraichir
         //
-        jeedom.cmd.update['#idRefreshDate#'] = function (_options) {
-            $('#idRefreshDate#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idRefreshDate#', Update#uid#idRefreshDate);
+        function Update#uid#idRefreshDate(_options) {
+            if (is_object(cmd = document.getElementById('idRefreshDate#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idRefreshDate#']({ display_value: '#refreshDate#' });
+        Update#uid#idRefreshDate({ display_value: '#refreshDate#' });
 
         // Click pour rafraichir
         //
-        $('#idRafraichir#uid#').on('click', function () {
+        el = document.getElementById('idRafraichir#uid#');
+        el.removeEventListener('click', eventRefresh);
+        el.addEventListener('click', eventRefresh);
+
+        function eventRefresh() {
             jeedom.cmd.execute({
                 id: '#idRefresh#'
             });
-        });
+        }
 
         // Tuile électricité
         //
-        jeedom.cmd.update['#idHeatingPowerConsumption#'] = function (_options) {
-            $('#idHeatingPowerConsumption#uid#').html(_options.display_value);
+        jeedom.cmd.addUpdateFunction('#idHeatingPowerConsumption#', Update#uid#idHeatingPowerConsumption);
+        function Update#uid#idHeatingPowerConsumption(_options) {
+            if (is_object(cmd = document.getElementById('idHeatingPowerConsumption#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idHeatingPowerConsumption#']({ display_value: '#heatingPowerConsumption#' });
+        Update#uid#idHeatingPowerConsumption({ display_value: '#heatingPowerConsumption#' });
 
-        jeedom.cmd.update['#idDhwPowerConsumption#'] = function (_options) {
-            $('#idDhwPowerConsumption#uid#').html(_options.display_value);           
+        jeedom.cmd.addUpdateFunction('#idDhwPowerConsumption#', Update#uid#idDhwPowerConsumption);
+        function Update#uid#idDhwPowerConsumption(_options) {
+            if (is_object(cmd = document.getElementById('idDhwPowerConsumption#uid#')))
+            {
+                cmd.innerHTML = _options.display_value;
+            }
         }
-        jeedom.cmd.update['#idDhwPowerConsumption#']({ display_value: '#dhwPowerConsumption#' });
+        Update#uid#idDhwPowerConsumption({ display_value: '#dhwPowerConsumption#' });
 
         // Click pour accès tuile options électricité
         //
-        $('#idOptionsElectricite#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idElec#uid#').show();
-        });
+        el = document.getElementById('idOptionsElectricite#uid#');
+        el.removeEventListener('click', eventOptionsElectricite);
+        el.addEventListener('click', eventOptionsElectricite);
+
+        function eventOptionsElectricite() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idElec#uid#').style.display = 'block';
+        };
 
         // Tuile options électricité
         //
 
         // Sélection graphes électricité
         //
-        $('#grapheElecJour#uid#').show();
-        $('#grapheElecSemaine#uid#').hide();
-        $('#grapheElecMois#uid#').hide();
-        $('#grapheElecAnnee#uid#').hide();
+        document.getElementById('grapheElecJour#uid#').style.display = 'block';
+        document.getElementById('grapheElecSemaine#uid#').style.display = 'none';
+        document.getElementById('grapheElecMois#uid#').style.display = 'none';
+        document.getElementById('grapheElecAnnee#uid#').style.display = 'none';
 
-        $("#selectionGrapheElec#uid#").change(function () {
-            $('#grapheElecJour#uid#').hide();
-            $('#grapheElecSemaine#uid#').hide();
-            $('#grapheElecMois#uid#').hide();
-            $('#grapheElecAnnee#uid#').hide();
+        el = document.getElementById('selectionGrapheElec#uid#');
+        el.removeEventListener('change', changeGrapheElec);
+        el.addEventListener('change', changeGrapheElec);
 
-            if ($(this).value() !== null) {
-                if ($(this).value() === "0") {
-                    $('#grapheElecJour#uid#').show();
+        function changeGrapheElec() {
+
+            document.getElementById('grapheElecJour#uid#').style.display = 'none';
+            document.getElementById('grapheElecSemaine#uid#').style.display = 'none';
+            document.getElementById('grapheElecMois#uid#').style.display = 'none';
+            document.getElementById('grapheElecAnnee#uid#').style.display = 'none';
+
+            if ( this.value !== null) {
+                if (this.value === "0") {
+                    document.getElementById('grapheElecJour#uid#').style.display = 'block';
                 }
-                else if ($(this).value() === "1") {
-                    $('#grapheElecSemaine#uid#').show();
+                else if (this.value === "1") {
+                    document.getElementById('grapheElecSemaine#uid#').style.display = 'block';
                 }
-                else if ($(this).value() === "2") {
-                    $('#grapheElecMois#uid#').show();
+                else if (this.value === "2") {
+                    document.getElementById('grapheElecMois#uid#').style.display = 'block';
                 }
                 else {
-                    $('#grapheElecAnnee#uid#').show();
+                    document.getElementById('grapheElecAnnee#uid#').style.display = 'block';
                 }
             }
-        });
+        };
 
         // Graphes électricité
         //
@@ -2719,7 +3040,8 @@
 
         // Données graphes électricité
         //
-        jeedom.cmd.update['#idHeatingPowerConsumptionDay#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingPowerConsumptionDay#', Update#uid#idHeatingPowerConsumptionDay);
+        function Update#uid#idHeatingPowerConsumptionDay(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2727,9 +3049,10 @@
             });
             chartElecJour#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingPowerConsumptionDay#']({ display_value: '#heatingPowerConsumptionDay#' });
+        Update#uid#idHeatingPowerConsumptionDay({ display_value: '#heatingPowerConsumptionDay#' });
 
-        jeedom.cmd.update['#idHeatingPowerConsumptionWeek#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingPowerConsumptionWeek#', Update#uid#idHeatingPowerConsumptionWeek);
+        function Update#uid#idHeatingPowerConsumptionWeek(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2737,9 +3060,10 @@
             });
             chartElecSemaine#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingPowerConsumptionWeek#']({ display_value: '#heatingPowerConsumptionWeek#' });
+        Update#uid#idHeatingPowerConsumptionWeek({ display_value: '#heatingPowerConsumptionWeek#' });
 
-        jeedom.cmd.update['#idHeatingPowerConsumptionMonth#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingPowerConsumptionMonth#', Update#uid#idHeatingPowerConsumptionMonth);
+        function Update#uid#idHeatingPowerConsumptionMonth(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2747,9 +3071,10 @@
             });
             chartElecMois#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingPowerConsumptionMonth#']({ display_value: '#heatingPowerConsumptionMonth#' });
+        Update#uid#idHeatingPowerConsumptionMonth({ display_value: '#heatingPowerConsumptionMonth#' });
 
-        jeedom.cmd.update['#idHeatingPowerConsumptionYear#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHeatingPowerConsumptionYear#', Update#uid#idHeatingPowerConsumptionYear);
+        function Update#uid#idHeatingPowerConsumptionYear(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -2757,250 +3082,366 @@
             });
             chartElecAnnee#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idHeatingPowerConsumptionYear#']({ display_value: '#heatingPowerConsumptionYear#' });
-
-        // Tuile rafraichir
-        //
-        jeedom.cmd.update['#idRefreshDate#'] = function (_options) {
-            $('#idRefreshDate#uid#').html(_options.display_value);
-        }
-        jeedom.cmd.update['#idRefreshDate#']({ display_value: '#refreshDate#' });
+        Update#uid#idHeatingPowerConsumptionYear({ display_value: '#heatingPowerConsumptionYear#' });
 
         // Click accès tuile actions
         //
-        $('#idOptionsActions#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idActions#uid#').show();
-        });
+        el = document.getElementById('idOptionsActions#uid#');
+        el.removeEventListener('click', eventOptionsActions);
+        el.addEventListener('click', eventOptionsActions);
 
-        jeedom.cmd.update['#idIsOneTimeDhwCharge#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showOneTimeDhwCharge#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsOneTimeDhwCharge#uid#').html("Activé");
-                $('#idStartOneTimeDhwCharge#uid#').hide();
-                $('#idStopOneTimeDhwCharge#uid#').show();
-            } else {
-                $('#idIsOneTimeDhwCharge#uid#').html("Désactivé");
-                $('#idStartOneTimeDhwCharge#uid#').show();
-                $('#idStopOneTimeDhwCharge#uid#').hide();
+        function eventOptionsActions() {
+            el = document.getElementById('idResume#uid#').style.display = 'none';
+            el = document.getElementById('idActions#uid#').style.display = 'block';
+        };
+
+        jeedom.cmd.addUpdateFunction('#idIsOneTimeDhwCharge#', Update#uid#idIsOneTimeDhwCharge);
+        function Update#uid#idIsOneTimeDhwCharge(_options) {
+            if ((is_object(cmd1 = document.getElementById('showOneTimeDhwCharge#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsOneTimeDhwCharge#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idStartOneTimeDhwCharge#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idStopOneTimeDhwCharge#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
             }
         }
-        jeedom.cmd.update['#idIsOneTimeDhwCharge#']({ display_value: '#isOneTimeDhwCharge#' });
+        Update#uid#idIsOneTimeDhwCharge({ display_value: '#isOneTimeDhwCharge#' });
 
         // Click pour start dhw
         //
-        $('#idStartOneTimeDhwCharge#uid#').on('click', function () {
+        el = document.getElementById('idStartOneTimeDhwCharge#uid#');
+        el.removeEventListener('click', eventStartOneTimeDhwCharge);
+        el.addEventListener('click', eventStartOneTimeDhwCharge);
+
+        function eventStartOneTimeDhwCharge() {
             jeedom.cmd.execute({
                 id: '#idStartOneTimeDhwCharge#'
             });
-        });
+        }
 
         // Click pour stop dhw
         //
-        $('#idStopOneTimeDhwCharge#uid#').on('click', function () {
+        el = document.getElementById('idStopOneTimeDhwCharge#uid#');
+        el.removeEventListener('click', eventStopOneTimeDhwCharge);
+        el.addEventListener('click', eventStopOneTimeDhwCharge);
+
+        function eventStopOneTimeDhwCharge() {
             jeedom.cmd.execute({
                 id: '#idStopOneTimeDhwCharge#'
             });
-        });
+        }
 
-        jeedom.cmd.update['#idIsActivateComfortProgram#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showComfortProgram#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsActivateComfortProgram#uid#').html("Activé");
-                $('#idActivateComfortProgram#uid#').hide();
-                $('#idDeActivateComfortProgram#uid#').show();
-            } else {
-                $('#idIsActivateComfortProgram#uid#').html("Désactivé");
-                $('#idActivateComfortProgram#uid#').show();
-                $('#idDeActivateComfortProgram#uid#').hide();
+        jeedom.cmd.addUpdateFunction('#idIsActivateComfortProgram#', Update#uid#idIsActivateComfortProgram);
+        function Update#uid#idIsActivateComfortProgram(_options) {
+            if ((is_object(cmd1 = document.getElementById('showComfortProgram#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsActivateComfortProgram#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idActivateComfortProgram#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idDeActivateComfortProgram#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
             }
         }
-        jeedom.cmd.update['#idIsActivateComfortProgram#']({ display_value: '#isActivateComfortProgram#' });
+        Update#uid#idIsActivateComfortProgram({ display_value: '#isActivateComfortProgram#' });
 
         // Click pour activer comfort program
         //
-        $('#idActivateComfortProgram#uid#').on('click', function () {
+        el = document.getElementById('idActivateComfortProgram#uid#');
+        el.removeEventListener('click', eventActivateComfortProgram);
+        el.addEventListener('click', eventActivateComfortProgram);
+
+        function eventActivateComfortProgram() {
             jeedom.cmd.execute({
                 id: '#idActivateComfortProgram#'
             });
-        });
+        }
 
         // Click pour désactiver comfort program
         //
-        $('#idDeActivateComfortProgram#uid#').on('click', function () {
+        el = document.getElementById('idDeActivateComfortProgram#uid#');
+        el.removeEventListener('click', eventDeActivateComfortProgram);
+        el.addEventListener('click', eventDeActivateComfortProgram);
+
+        function eventDeActivateComfortProgram() {
             jeedom.cmd.execute({
                 id: '#idDeActivateComfortProgram#'
             });
-        });
+        }
 
-        jeedom.cmd.update['#idIsActivateEcoProgram#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showEcoProgram#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsActivateEcoProgram#uid#').html("Activé");
-                $('#idActivateEcoProgram#uid#').hide();
-                $('#idDeActivateEcoProgram#uid#').show();
-            } else {
-                $('#idIsActivateEcoProgram#uid#').html("Désactivé");
-                $('#idActivateEcoProgram#uid#').show();
-                $('#idDeActivateEcoProgram#uid#').hide();
+        jeedom.cmd.addUpdateFunction('#idIsActivateEcoProgram#', Update#uid#idIsActivateEcoProgram);
+        function Update#uid#idIsActivateEcoProgram(_options) {
+            if ((is_object(cmd1 = document.getElementById('showEcoProgram#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsActivateEcoProgram#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idActivateEcoProgram#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idDeActivateEcoProgram#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
             }
         }
-        jeedom.cmd.update['#idIsActivateEcoProgram#']({ display_value: '#isActivateEcoProgram#' });
-
-        jeedom.cmd.update['#idIsActivateLastSchedule#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showLastSchedule#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsActivateLastSchedule#uid#').html("Activé");
-                $('#idActivateLastSchedule#uid#').hide();
-                $('#idDeActivateLastSchedule#uid#').show();
-            } else {
-                $('#idIsActivateLastSchedule#uid#').html("Désactivé");
-                $('#idActivateLastSchedule#uid#').show();
-                $('#idDeActivateLastSchedule#uid#').hide();
-            }
-        }
-        jeedom.cmd.update['#idIsActivateLastSchedule#']({ display_value: '#isActivateLastSchedule#' });
+        Update#uid#idIsActivateEcoProgram({ display_value: '#isActivateEcoProgram#' });
 
         // Click pour activer eco program
         //
-        $('#idActivateEcoProgram#uid#').on('click', function () {
+        el = document.getElementById('idActivateEcoProgram#uid#');
+        el.removeEventListener('click', eventActivateEcoProgram);
+        el.addEventListener('click', eventActivateEcoProgram);
+
+        function eventActivateEcoProgram() {
             jeedom.cmd.execute({
                 id: '#idActivateEcoProgram#'
             });
-        });
+        }
 
         // Click pour désactiver eco program
         //
-        $('#idDeActivateEcoProgram#uid#').on('click', function () {
+        el = document.getElementById('idDeActivateEcoProgram#uid#');
+        el.removeEventListener('click', eventDeActivateEcoProgram);
+        el.addEventListener('click', eventDeActivateEcoProgram);
+
+        function eventDeActivateEcoProgram() {
             jeedom.cmd.execute({
                 id: '#idDeActivateEcoProgram#'
             });
-        });
+        }
+
+        jeedom.cmd.addUpdateFunction('#idIsActivateLastSchedule#', Update#uid#idIsActivateLastSchedule);
+        function Update#uid#idIsActivateLastSchedule(_options) {
+           if ((is_object(cmd1 = document.getElementById('showLastSchedule#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsActivateLastSchedule#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idActivateLastSchedule#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idDeActivateLastSchedule#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
+            }
+        }
+        Update#uid#idIsActivateLastSchedule({ display_value: '#isActivateLastSchedule#' });
 
         // Click pour activer prolonger programme
         //
-        $('#idActivateLastSchedule#uid#').on('click', function () {
+        el = document.getElementById('idActivateLastSchedule#uid#');
+        el.removeEventListener('click', eventActivateLastSchedule);
+        el.addEventListener('click', eventActivateLastSchedule);
+
+        function eventActivateLastSchedule() {
             jeedom.cmd.execute({
                 id: '#idActivateLastSchedule#'
             });
-        });
+        }
 
         // Click pour désactiver prolonger programme
         //
-        $('#idDeActivateLastSchedule#uid#').on('click', function () {
+        el = document.getElementById('idDeActivateLastSchedule#uid#');
+        el.removeEventListener('click', eventDeActivateLastSchedule);
+        el.addEventListener('click', eventDeActivateLastSchedule);
+
+        function eventDeActivateLastSchedule() {
             jeedom.cmd.execute({
                 id: '#idDeActivateLastSchedule#'
             });
-        });
-
-        jeedom.cmd.update['#idStartHoliday#'] = function (_options) {
-            $('#idStartHoliday#uid#').val(_options.display_value);
         }
-        jeedom.cmd.update['#idStartHoliday#']({ display_value: '#startHoliday#' });
 
-        jeedom.cmd.update['#idEndHoliday#'] = function (_options) {
-            $('#idEndHoliday#uid#').val(_options.display_value);
-        }
-        jeedom.cmd.update['#idEndHoliday#']({ display_value: '#endHoliday#' });
-
-        $('#idStartHoliday#uid#').on('change', function () {
-            jeedom.cmd.execute({ id: '#idStartHolidayText#', value: { text: $('#idStartHoliday#uid#').val() } });
-        });
-
-        $('#idEndHoliday#uid#').on('change', function () {
-            jeedom.cmd.execute({ id: '#idEndHolidayText#', value: { text: $('#idEndHoliday#uid#').val() } });
-        });
-
-        jeedom.cmd.update['#idIsScheduleHolidayProgram#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHolidayProgram#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsScheduleHolidayProgram#uid#').html("Activé");
-                $('#idScheduleHolidayProgram#uid#').hide();
-                $('#idUnscheduleHolidayProgram#uid#').show();
-            } else {
-                $('#idIsScheduleHolidayProgram#uid#').html("Désactivé");
-                $('#idScheduleHolidayProgram#uid#').show();
-                $('#idUnscheduleHolidayProgram#uid#').hide();
+        jeedom.cmd.addUpdateFunction('#idStartHoliday#', Update#uid#idStartHoliday);
+        function Update#uid#idStartHoliday(_options) {
+            if (is_object(cmd = document.getElementById('idStartHoliday#uid#'))) {
+                cmd.value = _options.display_value;
             }
         }
-        jeedom.cmd.update['#idIsScheduleHolidayProgram#']({ display_value: '#isScheduleHolidayProgram#' });
+        Update#uid#idStartHoliday({ display_value: '#startHoliday#' });
+
+        jeedom.cmd.addUpdateFunction('#idEndHoliday#', Update#uid#idEndHoliday);
+        function Update#uid#idEndHoliday(_options) {
+            if (is_object(cmd = document.getElementById('idEndHoliday#uid#'))) {
+                cmd.value = _options.display_value;
+            }
+        }
+        Update#uid#idEndHoliday({ display_value: '#endHoliday#' });
+
+        el = document.getElementById('idStartHoliday#uid#');
+        el.removeEventListener('change', changeStartHoliday);
+        el.addEventListener('change', changeStartHoliday);
+
+        function changeStartHoliday() {
+            cmd = document.getElementById('idStartHoliday#uid#');
+            jeedom.cmd.execute({ id: '#idStartHolidayText#', value: { text: cmd.value } });
+        }
+
+        el = document.getElementById('idEndHoliday#uid#');
+        el.removeEventListener('change', changeEndHoliday);
+        el.addEventListener('change', changeEndHoliday);
+
+        function changeEndHoliday() {
+            cmd = document.getElementById('idEndHoliday#uid#');
+            jeedom.cmd.execute({ id: '#idEndHolidayText#', value: { text: cmd.value } });
+        }
+
+        jeedom.cmd.addUpdateFunction('#idIsScheduleHolidayProgram#', Update#uid#idIsScheduleHolidayProgram);
+        function Update#uid#idIsScheduleHolidayProgram(_options) {
+           if ((is_object(cmd1 = document.getElementById('showHolidayProgram#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsScheduleHolidayProgram#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idScheduleHolidayProgram#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idUnscheduleHolidayProgram#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
+            }
+        }
+        Update#uid#idIsScheduleHolidayProgram({ display_value: '#isScheduleHolidayProgram#' });
 
         // Click pour activer holiday program
         //
-        $('#idScheduleHolidayProgram#uid#').on('click', function () {
+        el = document.getElementById('idScheduleHolidayProgram#uid#');
+        el.removeEventListener('click', eventScheduleHolidayProgram);
+        el.addEventListener('click', eventScheduleHolidayProgram);
+
+        function eventScheduleHolidayProgram() {
             jeedom.cmd.execute({
                 id: '#idScheduleHolidayProgram#'
             });
-        });
+        }
 
         // Click pour désactiver holiday program
         //
-        $('#idUnscheduleHolidayProgram#uid#').on('click', function () {
+        el = document.getElementById('idUnscheduleHolidayProgram#uid#');
+        el.removeEventListener('click', eventUnscheduleHolidayProgram);
+        el.addEventListener('click', eventUnscheduleHolidayProgram);
+
+        function eventUnscheduleHolidayProgram() {
             jeedom.cmd.execute({
                 id: '#idUnscheduleHolidayProgram#'
             });
-        });
-
-        jeedom.cmd.update['#idStartHolidayAtHome#'] = function (_options) {
-            $('#idStartHolidayAtHome#uid#').val(_options.display_value);
         }
-        jeedom.cmd.update['#idStartHolidayAtHome#']({ display_value: '#startHolidayAtHome#' });
 
-        jeedom.cmd.update['#idEndHolidayAtHome#'] = function (_options) {
-            $('#idEndHolidayAtHome#uid#').val(_options.display_value);
-        }
-        jeedom.cmd.update['#idEndHolidayAtHome#']({ display_value: '#endHolidayAtHome#' });
-
-        $('#idStartHolidayAtHome#uid#').on('change', function () {
-            jeedom.cmd.execute({ id: '#idStartHolidayAtHomeText#', value: { text: $('#idStartHolidayAtHome#uid#').val() } });
-        });
-
-        $('#idEndHolidayAtHome#uid#').on('change', function () {
-            jeedom.cmd.execute({ id: '#idEndHolidayAtHomeText#', value: { text: $('#idEndHolidayAtHome#uid#').val() } });
-        });
-
-        jeedom.cmd.update['#idIsScheduleHolidayAtHomeProgram#'] = function (_options) {
-            if (_options.display_value == -1) {
-                $('#showHolidayAtHomeProgram#uid#').hide();
-            } else if (_options.display_value == 1) {
-                $('#idIsScheduleHolidayAtHomeProgram#uid#').html("Activé");
-                $('#idScheduleHolidayAtHomeProgram#uid#').hide();
-                $('#idUnscheduleHolidayAtHomeProgram#uid#').show();
-            } else {
-                $('#idIsScheduleHolidayAtHomeProgram#uid#').html("Désactivé");
-                $('#idScheduleHolidayAtHomeProgram#uid#').show();
-                $('#idUnscheduleHolidayAtHomeProgram#uid#').hide();
+        jeedom.cmd.addUpdateFunction('#idStartHolidayAtHome#', Update#uid#idStartHolidayAtHome);
+        function Update#uid#idStartHolidayAtHome(_options) {
+            if (is_object(cmd = document.getElementById('idStartHolidayAtHome#uid#'))) {
+                cmd.value = _options.display_value;
             }
         }
-        jeedom.cmd.update['#idIsScheduleHolidayAtHomeProgram#']({ display_value: '#isScheduleHolidayAtHomeProgram#' });
+        Update#uid#idStartHolidayAtHome({ display_value: '#startHolidayAtHome#' });
 
-        // Click pour activer holiday program at home
+        jeedom.cmd.addUpdateFunction('#idEndHolidayAtHome#', Update#uid#idEndHolidayAtHome);
+        function Update#uid#idEndHolidayAtHome(_options) {
+            if (is_object(cmd = document.getElementById('idEndHolidayAtHome#uid#'))) {
+                cmd.value = _options.display_value;
+            }
+        }
+        Update#uid#idEndHolidayAtHome({ display_value: '#endHolidayAtHome#' });
+
+        el = document.getElementById('idStartHolidayAtHome#uid#');
+        el.removeEventListener('change', changeStartHolidayAtHome);
+        el.addEventListener('change', changeStartHolidayAtHome);
+
+        function changeStartHolidayAtHome() {
+            cmd = document.getElementById('idStartHolidayAtHome#uid#');
+            jeedom.cmd.execute({ id: '#idStartHolidayAtHomeText#', value: { text: cmd.value } });
+        }
+
+        el = document.getElementById('idEndHolidayAtHome#uid#');
+        el.removeEventListener('change', changeEndHolidayAtHome);
+        el.addEventListener('change', changeEndHolidayAtHome);
+
+        function changeEndHolidayAtHome() {
+            cmd = document.getElementById('idEndHolidayAtHome#uid#');
+            jeedom.cmd.execute({ id: '#idEndHolidayAtHomeText#', value: { text: cmd.value } });
+        }
+
+        jeedom.cmd.addUpdateFunction('#idIsScheduleHolidayAtHomeProgram#', Update#uid#idIsScheduleHolidayAtHomeProgram);
+        function Update#uid#idIsScheduleHolidayAtHomeProgram(_options) {
+           if ((is_object(cmd1 = document.getElementById('showHolidayAtHomeProgram#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idIsScheduleHolidayAtHomeProgram#uid#'))) &&
+                (is_object(cmd3 = document.getElementById('idScheduleHolidayAtHomeProgram#uid#'))) &&
+                (is_object(cmd4 = document.getElementById('idUnscheduleHolidayAtHomeProgram#uid#')))) {
+                if (_options.display_value == -1) {
+                    cmd1.style.display = 'none';
+                } else if (_options.display_value == 1) {
+                    cmd2.innerHTML = 'Activé';
+                    cmd3.style.display = 'none';
+                    cmd4.style.display = 'block';
+                } else {
+                    cmd2.innerHTML = 'Désactivé';
+                    cmd3.style.display = 'block';
+                    cmd4.style.display = 'none';
+                }
+            }
+        }
+        Update#uid#idIsScheduleHolidayAtHomeProgram({ display_value: '#isScheduleHolidayAtHomeProgram#' });
+
+        // Click pour activer holiday AtHome program
         //
-        $('#idScheduleHolidayAtHomeProgram#uid#').on('click', function () {
+        el = document.getElementById('idScheduleHolidayAtHomeProgram#uid#');
+        el.removeEventListener('click', eventScheduleHolidayAtHomeProgram);
+        el.addEventListener('click', eventScheduleHolidayAtHomeProgram);
+
+        function eventScheduleHolidayAtHomeProgram() {
             jeedom.cmd.execute({
                 id: '#idScheduleHolidayAtHomeProgram#'
             });
-        });
+        }
 
-        // Click pour désactiver holiday program at home
+        // Click pour désactiver holiday AtHome program
         //
-        $('#idUnscheduleHolidayAtHomeProgram#uid#').on('click', function () {
+        el = document.getElementById('idUnscheduleHolidayAtHomeProgram#uid#');
+        el.removeEventListener('click', eventUnscheduleHolidayAtHomeProgram);
+        el.addEventListener('click', eventUnscheduleHolidayAtHomeProgram);
+
+        function eventUnscheduleHolidayAtHomeProgram() {
             jeedom.cmd.execute({
                 id: '#idUnscheduleHolidayAtHomeProgram#'
             });
-        });
+        }
 
         // Click accès tuile courbe
         //
-        $('#idOptionsCourbe#uid#').on('click', function () {
-            //            $('#idResume#uid#').hide();
-            $('#idCourbe#uid#').show();
-        });
+        el = document.getElementById('idOptionsCourbe#uid#');
+        el.removeEventListener('click', eventOptionsCourbe);
+        el.addEventListener('click', eventOptionsCourbe);
+
+        function eventOptionsCourbe() {
+            el = document.getElementById('idCourbe#uid#').style.display = 'block';
+        };
 
         const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
             chart: {
@@ -3124,9 +3565,11 @@
             if (histoTemperatureExt == -999)
                 return;
 
-            if (!$("#idDynamique#uid#").is(':checked'))
-                return;
-
+            if (is_object(cmd = document.getElementById('idDynamique#uid#'))) {
+//                if ( cmd == null ) return;
+                if (!cmd.checked ) return;
+            }
+ 
             var date = new Date();
             var xDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),
                 date.getHours(), date.getMinutes(), 0);
@@ -3151,23 +3594,23 @@
 
         }
 
-        jeedom.cmd.update['#idHistoTemperatureCsg#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHistoTemperatureCsg#', function (_options) {
             histoTemperatureCsg = parseFloat(_options.display_value);
             histoTemperatureCsg = histoTemperatureCsg.round(1);
             ajouterDonnees#uid#();
-        }
+        });
 
-        jeedom.cmd.update['#idHistoTemperatureInt#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHistoTemperatureInt#', function (_options) {
             histoTemperatureInt = parseFloat(_options.display_value);
             histoTemperatureInt = histoTemperatureInt.round(1);
             ajouterDonnees#uid#();
-        }
+        });
 
-        jeedom.cmd.update['#idHistoTemperatureExt#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idHistoTemperatureExt#', function (_options) {
             histoTemperatureExt = parseFloat(_options.display_value);
             histoTemperatureExt = histoTemperatureExt.round(1);
             ajouterDonnees#uid#();
-        }
+        });
 
         const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
 
@@ -3228,7 +3671,8 @@
 
         });
 
-        jeedom.cmd.update['#idCurve#'] = function (_options) {
+        jeedom.cmd.addUpdateFunction('#idCurve#', Update#uid#idCurve);
+        function Update#uid#idCurve(_options) {
             var items = _options.display_value.split(',');
             var datas = [];
             items.forEach(function (item, itemNo) {
@@ -3236,7 +3680,7 @@
             });
             chartCourbe#uid#.series[0].setData(datas);
         }
-        jeedom.cmd.update['#idCurve#']({ display_value: '#curve#' });
+        Update#uid#idCurve({ display_value: '#curve#' });
 
         const chartMinMax#uid# = Highcharts.chart('grapheMinMax#uid#', {
 
@@ -3294,355 +3738,559 @@
             }]
 
         });
+
+        function trigger(el, eventType) {
+            if (typeof eventType === 'string' && typeof el[eventType] === 'function') {
+                el[eventType]();
+            } else {
+                const event =
+                typeof eventType === 'string'
+                    ? new Event(eventType, {bubbles: true})
+                    : eventType;
+                el.dispatchEvent(event);
+            }
+        }
+
         // Click pour accès modification pente
         //
-        $('#idModifierPente#uid#').on('click', function () {
-            $('#idPopupPente#uid#').show();
-        });
+        el = document.getElementById('idModifierPente#uid#');
+        el.removeEventListener('click', eventModifierPente);
+        el.addEventListener('click', eventModifierPente);
+
+        function eventModifierPente() {
+            el = document.getElementById('idPopupPente#uid#').style.display = 'block';
+        };
 
         // Tuile modification pente
         //
-        $('#idPentePlus#uid#').on('click', function () {
+        el = document.getElementById('idPentePlus#uid#');
+        el.removeEventListener('click', eventPentePlus);
+        el.addEventListener('click', eventPentePlus);
+
+        function eventPentePlus() {
+            if (!is_object(cmd = document.getElementById('idPenteValeur#uid#'))) return;
+
             var max = ('#maxSlope#' == '') ? Number.MAX_VALUE : parseFloat('#maxSlope#');
             var step = (isNaN(parseFloat('#stepSlope#'))) ? 1 : parseFloat('#stepSlope#');
-            if (parseFloat($('#idPenteValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idSlope#']({ display_value: (parseFloat($('#idPenteValeur#uid#').html()) * 10 + step * 10) / 10 });
-                $('#idPenteValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idPenteValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idSlope#']({ display_value: max });
-                $('#idPenteValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idSlope({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idSlope({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idPenteMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idPenteMoins#uid#');
+        el.removeEventListener('click', eventPenteMoins);
+        el.addEventListener('click', eventPenteMoins);
+
+        function eventPenteMoins() {
+            if (!is_object(cmd = document.getElementById('idPenteValeur#uid#'))) return;
+
             var min = ('#minSlope#' == '') ? Number.MIN_VALUE : parseFloat('#minSlope#');
             var step = (isNaN(parseFloat('#stepSlope#'))) ? 1 : parseFloat('#stepSlope#');
-            if (parseFloat($('#idPenteValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idSlope#']({ display_value: (parseFloat($('#idPenteValeur#uid#').html() * 10) - step * 10) / 10 });
-                $('#idPenteValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idPenteValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idSlope#']({ display_value: min });
-                $('#idPenteValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idSlope({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idSlope({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idPenteValeur#uid#').on('change', function () {
-            if (typeof timerPenteValeur#uid# !== 'undefined') {
-            clearTimeout(timerPenteValeur#uid#);
         }
-        timerPenteValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idSlopeSlider#', value: { slider: $('#idPenteValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idPenteValeur#uid#');
+        el.removeEventListener('change', eventPenteChange);
+        el.addEventListener('change', eventPenteChange);
+
+        function eventPenteChange() {
+            if (typeof timerPenteValeur#uid# !== 'undefined') {
+                clearTimeout(timerPenteValeur#uid#);
+            }
+            timerPenteValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idSlopeSlider#', value: { slider: document.getElementById('idPenteValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification parallèle
         //
-        $('#idModifierParallele#uid#').on('click', function () {
-            $('#idPopupParallele#uid#').show();
-        });
+        el = document.getElementById('idModifierParallele#uid#');
+        el.removeEventListener('click', eventModifierParallele);
+        el.addEventListener('click', eventModifierParallele);
 
-        // Tuile modification parallèle
-        //
-        $('#idParallelePlus#uid#').on('click', function () {
+        function eventModifierParallele() {
+            el = document.getElementById('idPopupParallele#uid#').style.display = 'block';
+        };
+
+        el = document.getElementById('idParallelePlus#uid#');
+        el.removeEventListener('click', eventParallelePlus);
+        el.addEventListener('click', eventParallelePlus);
+
+        function eventParallelePlus() {
+            if (!is_object(cmd = document.getElementById('idParalleleValeur#uid#'))) return;
+
             var max = ('#maxShift#' == '') ? Number.MAX_VALUE : parseFloat('#maxShift#');
             var step = (isNaN(parseFloat('#stepShift#'))) ? 1 : parseFloat('#stepShift#');
-            if (parseFloat($('#idParalleleValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idShift#']({ display_value: parseFloat($('#idParalleleValeur#uid#').html()) + step });
-                $('#idParalleleValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idParalleleValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idShift#']({ display_value: max });
-                $('#idParalleleValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idShift({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idShift({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idParalleleMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idParalleleMoins#uid#');
+        el.removeEventListener('click', eventParalleleMoins);
+        el.addEventListener('click', eventParalleleMoins);
+
+        function eventParalleleMoins() {
+            if (!is_object(cmd = document.getElementById('idParalleleValeur#uid#'))) return;
+
             var min = ('#minShift#' == '') ? Number.MIN_VALUE : parseFloat('#minShift#');
             var step = (isNaN(parseFloat('#stepShift#'))) ? 1 : parseFloat('#stepShift#');
-            if (parseFloat($('#idParalleleValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idShift#']({ display_value: parseFloat($('#idParalleleValeur#uid#').html()) - step });
-                $('#idParalleleValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idParalleleValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idShift#']({ display_value: min });
-                $('#idParalleleValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idShift({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idShift({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idParalleleValeur#uid#').on('change', function () {
-            if (typeof timerParalleleValeur#uid# !== 'undefined') {
-            clearTimeout(timerParalleleValeur#uid#);
         }
-        timerParalleleValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idShiftSlider#', value: { slider: $('#idParalleleValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idParalleleValeur#uid#');
+        el.removeEventListener('change', eventParalleleChange);
+        el.addEventListener('change', eventParalleleChange);
+
+        function eventParalleleChange() {
+            if (typeof timerParalleleValeur#uid# !== 'undefined') {
+                clearTimeout(timerParalleleValeur#uid#);
+            }
+            timerParalleleValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idShiftSlider#', value: { slider: document.getElementById('idParalleleValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification température confort
         //
-        $('#idModifierConfort#uid#').on('click', function () {
-            $('#idPopupConfort#uid#').show();
-        });
+        el = document.getElementById('idModifierConfort#uid#');
+        el.removeEventListener('click', eventModifierConfort);
+        el.addEventListener('click', eventModifierConfort);
 
-        // Tuile modification température confort
-        //
-        $('#idConfortPlus#uid#').on('click', function () {
+        function eventModifierConfort() {
+            el = document.getElementById('idPopupConfort#uid#').style.display = 'block';
+        };
+
+        el = document.getElementById('idConfortPlus#uid#');
+        el.removeEventListener('click', eventConfortPlus);
+        el.addEventListener('click', eventConfortPlus);
+
+        function eventConfortPlus() {
+            if (!is_object(cmd = document.getElementById('idConfortValeur#uid#'))) return;
+
             var max = ('#maxComfort#' == '') ? Number.MAX_VALUE : parseFloat('#maxComfort#');
             var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
-            if (parseFloat($('#idConfortValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) + step });
-                $('#idConfortValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idConfortValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: max });
-                $('#idConfortValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idComfortProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idComfortProgramTemperature({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idConfortMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idConfortMoins#uid#');
+        el.removeEventListener('click', eventConfortMoins);
+        el.addEventListener('click', eventConfortMoins);
+
+        function eventConfortMoins() {
+            if (!is_object(cmd = document.getElementById('idConfortValeur#uid#'))) return;
+
             var min = ('#minComfort#' == '') ? Number.MIN_VALUE : parseFloat('#minComfort#');
             var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
-            if (parseFloat($('#idConfortValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) - step });
-                $('#idConfortValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idConfortValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: min });
-                $('#idConfortValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idComfortProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idComfortProgramTemperature({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idConfortValeur#uid#').on('change', function () {
-            if (typeof timerConfortValeur#uid# !== 'undefined') {
-            clearTimeout(timerConfortValeur#uid#);
         }
-        timerConfortValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idComfortProgramSlider#', value: { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idConfortValeur#uid#');
+        el.removeEventListener('change', eventConfortChange);
+        el.addEventListener('change', eventConfortChange);
+
+        function eventConfortChange() {
+            if (typeof timerConfortValeur#uid# !== 'undefined') {
+                clearTimeout(timerConfortValeur#uid#);
+            }
+            timerConfortValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idComfortProgramSlider#', value: { slider: document.getElementById('idConfortValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification température normale
         //
-        $('#idModifierNormale#uid#').on('click', function () {
-            $('#idPopupNormale#uid#').show();
-        });
+        el = document.getElementById('idModifierNormale#uid#');
+        el.removeEventListener('click', eventModifierNormale);
+        el.addEventListener('click', eventModifierNormale);
 
-        // Tuile modification température normale
-        //  
-        $('#idNormalePlus#uid#').on('click', function () {
+        function eventModifierNormale() {
+            el = document.getElementById('idPopupNormale#uid#').style.display = 'block';
+        };
+
+        el = document.getElementById('idNormalePlus#uid#');
+        el.removeEventListener('click', eventNormalePlus);
+        el.addEventListener('click', eventNormalePlus);
+
+        function eventNormalePlus() {
+            if (!is_object(cmd = document.getElementById('idNormaleValeur#uid#'))) return;
+
             var max = ('#maxNormal#' == '') ? Number.MAX_VALUE : parseFloat('#maxNormal#');
             var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
-            if (parseFloat($('#idNormaleValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) + step });
-                $('#idNormaleValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idNormaleValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: max });
-                $('#idNormaleValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idNormalProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idNormalProgramTemperature({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idNormaleMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idNormaleMoins#uid#');
+        el.removeEventListener('click', eventNormaleMoins);
+        el.addEventListener('click', eventNormaleMoins);
+
+        function eventNormaleMoins() {
+            if (!is_object(cmd = document.getElementById('idNormaleValeur#uid#'))) return;
+
             var min = ('#minNormal#' == '') ? Number.MIN_VALUE : parseFloat('#minNormal#');
             var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
-            if (parseFloat($('#idNormaleValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) - step });
-                $('#idNormaleValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idNormaleValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: min });
-                $('#idNormaleValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idNormalProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idNormalProgramTemperature({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idNormaleValeur#uid#').on('change', function () {
-            if (typeof timerNormaleValeur#uid# !== 'undefined') {
-            clearTimeout(timerNormaleValeur#uid#);
         }
-        timerNormaleValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idNormalProgramSlider#', value: { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idNormaleValeur#uid#');
+        el.removeEventListener('change', eventNormaleChange);
+        el.addEventListener('change', eventNormaleChange);
+
+        function eventNormaleChange() {
+            if (typeof timerNormaleValeur#uid# !== 'undefined') {
+                clearTimeout(timerNormaleValeur#uid#);
+            }
+            timerNormaleValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idNormalProgramSlider#', value: { slider: document.getElementById('idNormaleValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification température réduite
         //
-        $('#idModifierReduite#uid#').on('click', function () {
-            $('#idPopupReduite#uid#').show();
-        });
+        el = document.getElementById('idModifierReduite#uid#');
+        el.removeEventListener('click', eventModifierReduite);
+        el.addEventListener('click', eventModifierReduite);
 
-        // Click pour accès tuile calendrier radiateurs
-        //
-        $('#idOptionsCalRadiateurs#uid#').on('click', function () {
-            $('#idResume#uid#').hide();
-            $('#idCalRadiateurs#uid#').show();
-        });
+        function eventModifierReduite() {
+            el = document.getElementById('idPopupReduite#uid#').style.display = 'block';
+        };
 
-        // Tuile modification température réduite
-        //
-        $('#idReduitePlus#uid#').on('click', function () {
+        el = document.getElementById('idReduitePlus#uid#');
+        el.removeEventListener('click', eventReduitePlus);
+        el.addEventListener('click', eventReduitePlus);
+
+        function eventReduitePlus() {
+            if (!is_object(cmd = document.getElementById('idReduiteValeur#uid#'))) return;
+
             var max = ('#maxReduced#' == '') ? Number.MAX_VALUE : parseFloat('#maxReduced#');
             var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
-            if (parseFloat($('#idReduiteValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) + step });
-                $('#idReduiteValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idReduiteValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: max });
-                $('#idReduiteValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idReducedProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idReducedProgramTemperature({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idReduiteMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idReduiteMoins#uid#');
+        el.removeEventListener('click', eventReduiteMoins);
+        el.addEventListener('click', eventReduiteMoins);
+
+        function eventReduiteMoins() {
+            if (!is_object(cmd = document.getElementById('idReduiteValeur#uid#'))) return;
+
             var min = ('#minReduced#' == '') ? Number.MIN_VALUE : parseFloat('#minReduced#');
             var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
-            if (parseFloat($('#idReduiteValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) - step });
-                $('#idReduiteValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idReduiteValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: min });
-                $('#idReduiteValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idReducedProgramTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idReducedProgramTemperature({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idReduiteValeur#uid#').on('change', function () {
-            if (typeof timerReduiteValeur#uid# !== 'undefined') {
-            clearTimeout(timerReduiteValeur#uid#);
         }
-        timerReduiteValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idReducedProgramSlider#', value: { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idReduiteValeur#uid#');
+        el.removeEventListener('change', eventReduiteChange);
+        el.addEventListener('change', eventReduiteChange);
+
+        function eventReduiteChange() {
+            if (typeof timerReduiteValeur#uid# !== 'undefined') {
+                clearTimeout(timerReduiteValeur#uid#);
+            }
+            timerReduiteValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idReducedProgramSlider#', value: { slider: document.getElementById('idReduiteValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification consigne eau chaude
         //
-        $('#idModifierDhw#uid#').on('click', function () {
-            $('#idPopupDhw#uid#').show();
-        });
+        el = document.getElementById('idModifierDhw#uid#');
+        el.removeEventListener('click', eventModifierDhw);
+        el.addEventListener('click', eventModifierDhw);
 
-        // Tuile modification température réduite
-        //
+        function eventModifierDhw() {
+            el = document.getElementById('idPopupDhw#uid#').style.display = 'block';
+        };
 
-        $('#idDhwPlus#uid#').on('click', function () {
+        el = document.getElementById('idDhwPlus#uid#');
+        el.removeEventListener('click', eventDhwPlus);
+        el.addEventListener('click', eventDhwPlus);
+
+        function eventDhwPlus() {
+            if (!is_object(cmd = document.getElementById('idDhwValeur#uid#'))) return;
+
             var max = ('#maxDhw#' == '') ? Number.MAX_VALUE : parseFloat('#maxDhw#');
             var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
-            if (parseFloat($('#idDhwValeur#uid#').html()) <= max - step) {
-                jeedom.cmd.update['#idDhwTemperature#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) + step });
-                $('#idDhwValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idDhwValeur#uid#').html()) < max) {
-                jeedom.cmd.update['#idDhwTemperature#']({ display_value: max });
-                $('#idDhwValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 + step * 10) / 10;
+            if (valeur < max ) {
+                Update#uid#idDhwTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) < max) {
+                Update#uid#idDhwTemperature({ display_value: max });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idDhwMoins#uid#').on('click', function () {
+        }
+
+        el = document.getElementById('idDhwMoins#uid#');
+        el.removeEventListener('click', eventDhwMoins);
+        el.addEventListener('click', eventDhwMoins);
+
+        function eventDhwMoins() {
+            if (!is_object(cmd = document.getElementById('idDhwValeur#uid#'))) return;
+
             var min = ('#minDhw#' == '') ? Number.MIN_VALUE : parseFloat('#minDhw#');
             var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
-            if (parseFloat($('#idDhwValeur#uid#').html()) >= min + step) {
-                jeedom.cmd.update['#idDhwTemperature#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) - step });
-                $('#idDhwValeur#uid#').trigger('change');
-            } else if (parseFloat($('#idDhwValeur#uid#').html()) > min) {
-                jeedom.cmd.update['#idDhwTemperature#']({ display_value: min });
-                $('#idDhwValeur#uid#').trigger('change');
+            var valeur = (parseFloat(cmd.innerHTML) * 10 - step * 10) / 10;
+            if (valeur > min) {
+                Update#uid#idDhwTemperature({ display_value: valeur });
+                trigger(cmd, 'change');
+            } else if (parseFloat(cmd.innerHTML) > min) {
+                Update#uid#idDhwTemperature({ display_value: min });
+                trigger(cmd, 'change');
             }
-        });
-        $('#idDhwValeur#uid#').on('change', function () {
-            if (typeof timerDhwValeur#uid# !== 'undefined') {
-            clearTimeout(timerDhwValeur#uid#);
         }
-        timerDhwValeur#uid# = setTimeout(function () {
-            jeedom.cmd.execute({ id: '#idDhwSlider#', value: { slider: $('#idDhwValeur#uid#').html().replace("°", "").replace(" ", "") } });
-        }, 1000)
-  });
+
+        el = document.getElementById('idDhwValeur#uid#');
+        el.removeEventListener('change', eventDhwChange);
+        el.addEventListener('change', eventDhwChange);
+
+        function eventDhwChange() {
+            if (typeof timerDhwValeur#uid# !== 'undefined') {
+                clearTimeout(timerDhwValeur#uid#);
+            }
+            timerDhwValeur#uid# = setTimeout(function () {
+                jeedom.cmd.execute({ id: '#idDhwSlider#', value: { slider: document.getElementById('idDhwValeur#uid#').innerHTML.replace("°", "").replace(" ", "") } });
+            }, 1000)
+        }
 
         // Click pour accès modification statut chauffage
         //
-        $('#idModifierStatut#uid#').on('click', function () {
-            $('#idPopupStatut#uid#').show();
-        });
+        el = document.getElementById('idModifierStatut#uid#');
+        el.removeEventListener('click', eventModifierStatut);
+        el.addEventListener('click', eventModifierStatut);
+
+        function eventModifierStatut() {
+            document.getElementById('idPopupStatut#uid#').style.display = 'block';
+        }
 
         // Click pour mode standby
         //
-        $('#idModeStandby#uid#').on('click', function () {
+        el = document.getElementById('idModeStandby#uid#');
+        el.removeEventListener('click', eventModeStandby);
+        el.addEventListener('click', eventModeStandby);
+
+        function eventModeStandby() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeStandby#'
             });
-        });
+        }
 
         // Click pour mode heating
         //
-        $('#idModeHeating#uid#').on('click', function () {
+        el = document.getElementById('idModeHeating#uid#');
+        el.removeEventListener('click', eventModeHeating);
+        el.addEventListener('click', eventModeHeating);
+
+        function eventModeHeating() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeHeating#'
             });
-        });
+        }
 
         // Click pour mode cooling
         //
-        $('#idModeCooling#uid#').on('click', function () {
+        el = document.getElementById('idModeCooling#uid#');
+        el.removeEventListener('click', eventModeCooling);
+        el.addEventListener('click', eventModeCooling);
+
+        function eventModeCooling() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeCooling#'
             });
-        });
+        }
 
         // Click pour mode heating and cooling
         //
-        $('#idModeHeatingCooling#uid#').on('click', function () {
+        el = document.getElementById('idModeHeatingCooling#uid#');
+        el.removeEventListener('click', eventModeHeatingCooling);
+        el.addEventListener('click', eventModeHeatingCooling);
+
+        function eventModeHeatingCooling() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeHeatingCooling#'
             });
-        });
+        }
 
         // Click pour mode test mode
         //
-        $('#idModeTestMode#uid#').on('click', function () {
+        el = document.getElementById('idModeTestMode#uid#');
+        el.removeEventListener('click', eventModeTestMode);
+        el.addEventListener('click', eventModeTestMode);
+
+        function eventModeTestMode() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeTestMode#'
             });
-        });
+        }
 
         // Click pour mode auto
         //
-        $('#idModeAuto#uid#').on('click', function () {
+        el = document.getElementById('idModeAuto#uid#');
+        el.removeEventListener('click', eventModeAuto);
+        el.addEventListener('click', eventModeAuto);
+
+        function eventModeAuto() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeAuto#'
             });
-        });
+        }
 
         // Click pour mode eau chaude
         //
-        $('#idModeDhw#uid#').on('click', function () {
+        el = document.getElementById('idModeDhw#uid#');
+        el.removeEventListener('click', eventModeDhw);
+        el.addEventListener('click', eventModeDhw);
+
+        function eventModeDhw() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhw#'
             });
-        });
+        }
 
         // Click pour mode eau chaude et chauffage
         //
-        $('#idModeDhwAndHeating#uid#').on('click', function () {
+        el = document.getElementById('idModeDhwAndHeating#uid#');
+        el.removeEventListener('click', eventModeDhwAndHeating);
+        el.addEventListener('click', eventModeDhwAndHeating);
+
+        function eventModeDhwAndHeating() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhwAndHeating#'
             });
-        });
+        }
 
         // Click pour accès modification statut eau chaude
         //
-        $('#idModifierStatutDhw#uid#').on('click', function () {
-            $('#idPopupStatutDhw#uid#').show();
-        });
+        el = document.getElementById('idModifierStatutDhw#uid#');
+        el.removeEventListener('click', eventModifierStatutDhw);
+        el.addEventListener('click', eventModifierStatutDhw);
+
+        function eventModifierStatutDhw() {
+            document.getElementById('idPopupStatutDhw#uid#').style.display = 'block';
+        }
 
         // Click pour mode balanced
         //
-        $('#idModeDhwBalanced#uid#').on('click', function () {
+        el = document.getElementById('idModeDhwBalanced#uid#');
+        el.removeEventListener('click', eventModeDhwBalanced);
+        el.addEventListener('click', eventModeDhwBalanced);
+
+        function eventModeDhwBalanced() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhwBalanced#'
             });
-        });
+        }
 
         // Click pour mode comfort
         //
-        $('#idModeDhwComfort#uid#').on('click', function () {
+        el = document.getElementById('idModeDhwComfort#uid#');
+        el.removeEventListener('click', eventModeDhwComfort);
+        el.addEventListener('click', eventModeDhwComfort);
+
+        function eventModeDhwComfort() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhwComfort#'
             });
-        });
+        }
 
-        // Click pour mode éco
-        //
-        $('#idModeDhwEco#uid#').on('click', function () {
+        el = document.getElementById('idModeDhwEco#uid#');
+        el.removeEventListener('click', eventModeDhwEco);
+        el.addEventListener('click', eventModeDhwEco);
+
+        function eventModeDhwEco() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhwEco#'
             });
-        });
-
+        }
         // Click pour mode off
         //
-        $('#idModeDhwOff#uid#').on('click', function () {
+        el = document.getElementById('idModeDhwOff#uid#');
+        el.removeEventListener('click', eventModeDhwOff);
+        el.addEventListener('click', eventModeDhwOff);
+
+        function eventModeDhwOff() 
+        {
             jeedom.cmd.execute({
                 id: '#idModeDhwOff#'
             });
-        });
+        }
 
         // Changement courbes
         //
@@ -3653,53 +4301,61 @@
             lstTempCsgDat = [];
             lstTempExt = [];
 
-            $.ajax({
+            domUtils.ajax({
                 type: "POST",
                 url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
                 data: {
                     action: "lireTempInt",
                     id: "#id#",
-                    startDate: $('#idStartDate#uid#').val(),
-                    endDate: $('#idEndDate#uid#').val(),
-                    dynamique: $('#idDynamique#uid#').prop('checked')
+                    startDate: document.getElementById('idStartDate#uid#').value,
+                    endDate: document.getElementById('idEndDate#uid#').value,
+                    dynamique: document.getElementById('idDynamique#uid#').checked
                 },
                 dataType: 'json',
                 global: false,
-                async: false,
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
+                async:false,
+                error: function(error) {
+                    jeedomUtils.showAlert({
+                    message: error.message,
+                    level: 'danger'
+                    })
                 },
-                success: function (data) {
+                success: function(data) {
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-                        return;
+                        jeedomUtils.showAlert({
+                    message: data.result,
+                    level: 'danger'
+                    })
                     }
                     for (var i in data.result) {
                         lstTempInt.push(parseFloat(data.result[i]['value']));
                         lstTempIntDat.push(data.result[i]['ts']);
                     }
-                },
+                }
             });
 
-            $.ajax({
+            domUtils.ajax({
                 type: "POST",
                 url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
                 data: {
                     action: "lireTempCsg",
                     id: "#id#",
-                    startDate: $('#idStartDate#uid#').val(),
-                    endDate: $('#idEndDate#uid#').val(),
-                    dynamique: $('#idDynamique#uid#').prop('checked')
+                    startDate: document.getElementById('idStartDate#uid#').value,
+                    endDate: document.getElementById('idEndDate#uid#').value,
+                    dynamique: document.getElementById('idDynamique#uid#').checked
                 },
                 dataType: 'json',
                 global: false,
                 async: false,
                 error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
+                    jeedomUtils.showAlert({
+                    message: error.message,
+                    level: 'danger'
+                    })
                 },
                 success: function (data) {
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        jeedomUtils.showAlert({ message: data.result, level: 'danger' });
                         return;
                     }
                     for (var i in data.result) {
@@ -3709,25 +4365,28 @@
                 },
             });
 
-            $.ajax({
+            domUtils.ajax({
                 type: "POST",
                 url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
                 data: {
                     action: "lireTempExt",
                     id: "#id#",
-                    startDate: $('#idStartDate#uid#').val(),
-                    endDate: $('#idEndDate#uid#').val(),
-                    dynamique: $('#idDynamique#uid#').prop('checked')
+                    startDate: document.getElementById('idStartDate#uid#').value,
+                    endDate: document.getElementById('idEndDate#uid#').value,
+                    dynamique: document.getElementById('idDynamique#uid#').checked
                 },
                 dataType: 'json',
                 global: false,
                 async: false,
                 error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
+                    jeedomUtils.showAlert({
+                    message: error.message,
+                    level: 'danger'
+                    })
                 },
                 success: function (data) {
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
+                        jeedomUtils.showAlert({ message: data.result, level: 'danger' });
                         return;
                     }
                     for (var i in data.result) {
@@ -3765,75 +4424,84 @@
 
         // Click pour chargement courbes
         //
-        $('#idEnvoyer#uid#').on('click', function () {
+        el = document.getElementById('idEnvoyer#uid#');
+        el.removeEventListener('click', eventEnvoyer);
+        el.addEventListener('click', eventEnvoyer);
 
+        function eventEnvoyer() {
             Charger#uid#();
-
-        });
+        }
 
         // Click pour dynamique
         //
-        $('#idDynamique#uid#').on('click', function () {
-            if ($("#idDynamique#uid#").is(':checked')) {
+        el = document.getElementById('idDynamique#uid#');
+        el.removeEventListener('click', eventDynamique);
+        el.addEventListener('click', eventDynamique);
+
+        function eventDynamique() {
+            if (document.getElementById('idDynamique#uid#').checked ) {
                 Charger#uid#();
-            }
-        });
+            }            
+        }
 
         Charger#uid#();
 
-        $(function () {
-            $("#idCourbe#uid#").draggable({
-                cancel: "#statsTemperature#uid#",
-                cursor: "crosshair",
-                opacity: 0.9
-            });
-        });
+        el = document.getElementById('idCourbe#uid#');
+        el.removeEventListener('mousedown', eventMouseDown, false);
+        el.removeEventListener('finDePositionnement', eventDragStop, false);
+        el.addEventListener('mousedown', eventMouseDown, false); 
+        el.addEventListener('finDePositionnement', eventDragStop, false); 
 
-        $("#idCourbe#uid#").on("dragstop", function (event, ui) {
+        function eventDragStop(e) {
 
-            $.ajax({
+            domUtils.ajax({
                 type: "POST",
                 url: "plugins/viessmannIot/core/ajax/viessmannIot.ajax.php",
                 data: {
                     action: "topLeft",
                     id: "#id#",
-                    top: $('#idCourbe#uid#').css('top'),
-                    left: $('#idCourbe#uid#').css('left')
+                    top: document.getElementById('idCourbe#uid#').style.top,
+                    left: document.getElementById('idCourbe#uid#').style.left
                 },
                 dataType: 'json',
                 global: false,
                 async: false,
                 error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
+                    jeedomUtils.showAlert({
+                    message: error.message,
+                    level: 'danger'
+                    })
                 },
                 success: function (data) {
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-                        return;
+                        jeedomUtils.showAlert({
+                        message: data.result,
+                        level: 'danger'
+                        })
                     }
                 },
             });
 
-        });
-
+        }
+        
         // Click pour modification programmation chauffage
         //
-        $('#idModifierProgChauffage#uid#').on('click', function () {
+        el = document.getElementById('idModifierProgChauffage#uid#');
+        el.removeEventListener('click', eventModifierProgChauffage);
+        el.addEventListener('click', eventModifierProgChauffage);
 
-            $('#idPopupProgChauffage#uid#').show();
+        function eventModifierProgChauffage() {
+            document.getElementById('idPopupProgChauffage#uid#').style.display = 'block';
+        }
+        document.getElementById('idPopupProgChauffage#uid#').addEventListener('mousedown', eventMouseDown, false); 
 
-        });
+        el = document.getElementById('idPchOk#uid#');
+        el.removeEventListener('click', eventModifierProgChauffageOk);
+        el.addEventListener('click', eventModifierProgChauffageOk);
 
-        $(function () {
-            $("#idPopupProgChauffage#uid#").draggable({
-                cursor: "crosshair",
-                opacity: 0.9
-            });
-        });
+        function eventModifierProgChauffageOk() {
 
-        $('#idPchOk#uid#').on('click', function () {
-
-            var val = $("#selectionProgChauffage#uid#").val();
+            var val = document.getElementById('selectionProgChauffage#uid#').value;
             var jour = '';
             if (val === "0")
                 jour = 'mon';
@@ -3852,36 +4520,36 @@
             else
                 return;
 
-            var start = $('#pch_start-time#uid#').val();
+            var start = document.getElementById('pch_start-time#uid#').value;
             start = start.substr(0, 4) + "0";
-            var end = $('#pch_end-time#uid#').val();
+            var end = document.getElementById('pch_end-time#uid#').value;
             end = end.substr(0, 4) + "0";
 
             var message = 'n,' + start + ',' + end;
 
             jeedom.cmd.execute({ id: '#idSetHeatingSchedule#', value: { title: jour, message: message } });
-            $('#idPopupProgChauffage#uid#').hide();
+            document.getElementById('idPopupProgChauffage#uid#').style.display ='none';
 
-        });
+        }
 
         // Click pour modification programmation eau chaude
         //
-        $('#idModifierProgEauChaude#uid#').on('click', function () {
+        el = document.getElementById('idModifierProgEauChaude#uid#');
+        el.removeEventListener('click', eventModifierProgEauChaude);
+        el.addEventListener('click', eventModifierProgEauChaude);
 
-            $('#idPopupProgEauChaude#uid#').show();
+        function eventModifierProgEauChaude() {
+            document.getElementById('idPopupProgEauChaude#uid#').style.display = 'block';
+        }
+        document.getElementById('idPopupProgEauChaude#uid#').addEventListener('mousedown', eventMouseDown, false); 
+            
+        el = document.getElementById('idPecOk#uid#');
+        el.removeEventListener('click', eventModifierProgEauChaudeOk);
+        el.addEventListener('click', eventModifierProgEauChaudeOk);
 
-        });
+        function eventModifierProgEauChaudeOk() {
 
-        $(function () {
-            $("#idPopupProgEauChaude#uid#").draggable({
-                cursor: "crosshair",
-                opacity: 0.9
-            });
-        });
-
-        $('#idPecOk#uid#').on('click', function () {
-
-            var val = $("#selectionProgEauChaude#uid#").val();
+            var val = document.getElementById('selectionProgEauChaude#uid#').value;
             var jour = '';
             if (val === "0")
                 jour = 'mon';
@@ -3900,18 +4568,18 @@
             else
                 return;
 
-            var start = $('#pec_start-time#uid#').val();
+            var start = document.getElementById('pec_start-time#uid#').value;
             start = start.substr(0, 4) + "0";
-            var end = $('#pec_end-time#uid#').val();
+            var end = document.getElementById('pec_end-time#uid#').value;
             end = end.substr(0, 4) + "0";
 
             var message = 'n,' + start + ',' + end;
 
             jeedom.cmd.execute({ id: '#idSetDhwSchedule#', value: { title: jour, message: message } });
 
-            $('#idPopupProgEauChaude#uid#').hide();
+            document.getElementById('idPopupProgEauChaude#uid#').style.display = 'none';
 
-        });
+        }
 
     </script>
 
