@@ -41,6 +41,14 @@ function viessmannIot_install()
 		$cron->save();
 	}
 	$cron->start();
+
+    if (version_compare(jeedom::version(), '4.4', '<')) {
+        event::add('jeedom::alert', array(
+            'level' => 'danger',
+            'title' => __('Plugin Terrarium Version Jeedom', __FILE__),
+            'message' => __('Le plugin Terrarium ne supporte pas les versions de Jeedom < v4.4', __FILE__),
+        ));
+    }
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
@@ -89,6 +97,14 @@ function viessmannIot_update()
 		$cron->save();
 	}
 	$cron->start();
+
+    if (version_compare(jeedom::version(), '4.4', '<')) {
+        event::add('jeedom::alert', array(
+            'level' => 'danger',
+            'title' => __('Plugin Terrarium Version Jeedom', __FILE__),
+            'message' => __('Le plugin Terrarium ne supporte plus les versions de Jeedom < v4.4', __FILE__),
+        ));
+    }
 
 }
 
