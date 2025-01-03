@@ -46,7 +46,7 @@ function viessmannIot_install()
         event::add('jeedom::alert', array(
             'level' => 'danger',
             'title' => __('Plugin ViessmannIot Version Jeedom', __FILE__),
-            'message' => __('Le plugin Terrarium ne supporte pas les versions de Jeedom < v4.4', __FILE__),
+            'message' => __('Le plugin ViessmannIot ne supporte pas les versions de Jeedom < v4.4', __FILE__),
         ));
     }
 }
@@ -102,7 +102,7 @@ function viessmannIot_update()
         event::add('jeedom::alert', array(
             'level' => 'danger',
             'title' => __('Plugin ViessmannIot Version Jeedom', __FILE__),
-            'message' => __('Le plugin Terrarium ne supporte plus les versions de Jeedom < v4.4', __FILE__),
+            'message' => __('Le plugin ViessmannIot ne supporte plus les versions de Jeedom < v4.4', __FILE__),
         ));
     }
 
