@@ -88,6 +88,7 @@ class viessmannIot extends eqLogic
     public const FORCED_LAST_FROM_SCHEDULE = "operating.programs.forcedLastFromSchedule";
     public const SOLAR_TEMPERATURE = "heating.solar.sensors.temperature.collector";
     public const SOLAR_DHW_TEMPERATURE = "heating.solar.sensors.temperature.dhw";
+    public const VOLUMETRIC_FLOW = "heating.sensors.volumetricFlow.allengra";
 
     public static function deamon_info()
     {
@@ -1013,6 +1014,19 @@ class viessmannIot extends eqLogic
                 $obj->setType('info');
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('solarDhwTemperature');
+                $obj->save();
+            } elseif ($features["data"][$i]["feature"] == self::VOLUMETRIC_FLOW && $features["data"][$i]["isEnabled"] == true) {
+                $obj = $this->getCmd(null, 'volumetricFlow');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Débit volumétrique', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('numeric');
+                $obj->setLogicalId('volumetricFlow');
                 $obj->save();
             } elseif (($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_DHW ||
             $features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_DHW ||
@@ -2153,6 +2167,12 @@ class viessmannIot extends eqLogic
             } elseif ($features["data"][$i]["feature"] == self::SOLAR_DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $obj = $this->getCmd(null, 'solarDhwTemperature');
+                if (is_object($obj)) {
+                    $obj->event($val);
+                }
+            } elseif ($features["data"][$i]["feature"] == self::VOLUMETRIC_FLOW && $features["data"][$i]["isEnabled"] == true) {
+                $val = $features["data"][$i]["properties"]["value"]["value"];
+                $obj = $this->getCmd(null, 'volumetricFlow');
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
@@ -4578,6 +4598,15 @@ class viessmannIot extends eqLogic
         } else {
             $replace["#solarDhwTemperature#"] = 99;
             $replace["#idSolarDhwTemperature#"] = "#idSolarDhwTemperature#";
+        }
+
+        $obj = $this->getCmd(null, 'volumetricFlow');
+        if (is_object($obj)) {
+            $replace["#volumetricFlow#"] = $obj->execCmd();
+            $replace["#idVolumetricFlow#"] = $obj->getId();
+        } else {
+            $replace["#volumetricFlow#"] = 99999;
+            $replace["#idVolumetricFlow#"] = "#idVolumetricFlow#";
         }
 
         $obj = $this->getCmd(null, 'lastServiceDate');

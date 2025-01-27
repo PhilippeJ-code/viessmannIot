@@ -305,6 +305,11 @@
             <span class="classSousTitre#uid#">Etat circulateur</span><span class="classValeur#uid#"
                 id="idEtatCirculateur#uid#"></span></br>
         </div>
+        <div id="showDebitVolumique#uid#">
+            <span class="classSousTitre#uid#">Débit volumique</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idVolumetricFlow#"
+                id="idDebitVolumique#uid#"></span></br>
+        </div>
 
         <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/core/img/previous.svg">
         <span class="classTitreTuile#uid#">#circuitName#</span></br>
@@ -2234,6 +2239,19 @@
             }
         }
         Update#uid#idPumpStatus({ display_value: '#pumpStatus#' });
+
+        jeedom.cmd.addUpdateFunction('#idVolumetricFlow#', Update#uid#idVolumetricFlow);
+        function Update#uid#idVolumetricFlow(_options) {
+            if ((is_object(cmd1 = document.getElementById('showDebitVolumique#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idDebitVolumique#uid#')))) {
+                if (_options.display_value == 99999) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + ' l/h';
+                }
+            }
+        }
+        Update#uid#idVolumetricFlow({ display_value: '#volumetricFlow#' });
 
         // Click pour accès tuile calendrier radiateurs
         //
