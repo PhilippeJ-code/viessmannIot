@@ -1802,7 +1802,12 @@ class viessmannIot extends eqLogic
         $bConsumptionSeen = false;
 
         $features = $viessmannApi->getArrayFeatures();
-        $nbrFeatures = count($features["data"]);
+        if ( is_array($features["data"])) {
+            $nbrFeatures = count($features["data"]);
+        } else {
+            log::add('viessmannIot', 'warning', 'No data available');
+            $nbrFeatures = 0;
+        }
         for ($i = 0; $i < $nbrFeatures; $i++) {
             if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
@@ -2826,9 +2831,9 @@ class viessmannIot extends eqLogic
             $gasSummaryDayHeating = $gasSummaryWeekHeating = $gasSummaryMonthHeating = $gasSummaryYearHeating = 0;
             $gasSummaryDayDhw = $gasSummaryWeekDhw = $gasSummaryMonthDhw = $gasSummaryYearDhw = 0;
 
-            $powerSummaryDayTotal = $gasSummaryWeekTotal = $gasSummaryMonthTotal = $gasSummaryYearTotal = 0;
-            $powerSummaryDayHeating = $gasSummaryWeekHeating = $gasSummaryMonthHeating = $gasSummaryYearHeating = 0;
-            $powerSummaryDayDhw = $gasSummaryWeekDhw = $gasSummaryMonthDhw = $gasSummaryYearDhw = 0;
+            $powerSummaryDayTotal = $powerSummaryWeekTotal = $powerSummaryMonthTotal = $powerSummaryYearTotal = 0;
+            $powerSummaryDayHeating = $powerSummaryWeekHeating = $powerSummaryMonthHeating = $powerSummaryYearHeating = 0;
+            $powerSummaryDayDhw = $powerSummaryWeekDhw = $powerSummaryMonthDhw = $powerSummaryYearDhw = 0;
 
             for ($i = 0; $i < $nbrFeatures; $i++) {
                 if ($features["data"][$i]["feature"] == self::HEATING_GAS_CONSUMPTION_SUMMARY_TOTAL && $features["data"][$i]["isEnabled"] == true) {
@@ -2889,7 +2894,7 @@ class viessmannIot extends eqLogic
             }
 
             if ($powerSummaryMonthTotal == 0) {
-                $powerSummaryMonthTotal = $powerSummarMonthDhw + $powerSummaryMonthHeating;
+                $powerSummaryMonthTotal = $powerSummaryMonthDhw + $powerSummaryMonthHeating;
             }
 
             if ($powerSummaryYearTotal == 0) {
