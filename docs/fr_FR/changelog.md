@@ -59,5 +59,7 @@
 
     Débit volumique
 
+# 05-03-2025
 
+    Passage en v2 pour l'acquisition des données sur les serveurs Viessmann
 

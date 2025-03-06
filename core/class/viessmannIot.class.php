@@ -28,7 +28,7 @@ class viessmannIot extends eqLogic
     public const HEATING_COMPRESSORS = "heating.compressors";
 
     public const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
-    public const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.hotWaterStorage";
+    public const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.dhwCylinder";
     public const DHW_TEMPERATURE = "heating.dhw.temperature.main";
     public const HEATING_DHW_ONETIMECHARGE = "heating.dhw.oneTimeCharge";
     public const HEATING_DHW_SCHEDULE = "heating.dhw.schedule";

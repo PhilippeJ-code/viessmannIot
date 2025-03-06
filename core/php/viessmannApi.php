@@ -21,9 +21,9 @@ class ViessmannApi
 
     const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
     
-    const GATEWAY_URL = "https://api.viessmann.com/iot/v1/equipment/gateways";
+    const GATEWAY_URL = "https://api.viessmann.com/iot/v2/features/gateways";
 
-    const FEATURES_URL = "https://api.viessmann.com/iot/v1/equipment";
+    const FEATURES_URL = "https://api.viessmann.com/iot/v2/features";
  
     const EVENTS_URL_1 = "https://api.viessmann.com/iot/v2/events-history/installations/";
     const EVENTS_URL_2 = "/events";
