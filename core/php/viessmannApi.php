@@ -21,7 +21,7 @@ class ViessmannApi
 
     const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
     
-    const GATEWAY_URL = "https://api.viessmann.com/iot/v2/features/gateways";
+    const GATEWAY_URL = "https://api.viessmann.com/iot/v2/equipment/gateways";
 
     const FEATURES_URL = "https://api.viessmann.com/iot/v2/features";
  
