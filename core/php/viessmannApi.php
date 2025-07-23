@@ -14,18 +14,18 @@ class ViessmannApiException extends Exception
 //
 class ViessmannApi
 {
-    const AUTHORIZE_URL = "https://iam.viessmann.com/idp/v3/authorize";
+    const AUTHORIZE_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/authorize";
     const CALLBACK_URI = "http://localhost:4200/";
     
-    const TOKEN_URL = "https://iam.viessmann.com/idp/v3/token";
+    const TOKEN_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/token";
 
-    const IDENTITY_URL = "https://api.viessmann.com/users/v1/users/me?sections=identity";
+    const IDENTITY_URL = "https://api.viessmann-climatesolutions.com/users/v1/users/me?sections=identity";
     
-    const GATEWAY_URL = "https://api.viessmann.com/iot/v2/equipment/gateways";
+    const GATEWAY_URL = "https://api.viessmann-climatesolutions.com/iot/v2/equipment/gateways";
 
-    const FEATURES_URL = "https://api.viessmann.com/iot/v2/features";
+    const FEATURES_URL = "https://api.viessmann-climatesolutions.com/iot/v2/features";
  
-    const EVENTS_URL_1 = "https://api.viessmann.com/iot/v2/events-history/installations/";
+    const EVENTS_URL_1 = "https://api.viessmann-climatesolutions.com/iot/v2/events-history/installations/";
     const EVENTS_URL_2 = "/events";
 
     // Les paramètres d'accès au serveur
