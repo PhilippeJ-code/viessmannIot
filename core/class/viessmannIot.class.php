@@ -179,7 +179,11 @@ class viessmannIot extends eqLogic
         $deviceId = trim($this->getConfiguration('deviceId', '0'));
 
         $features = $viessmannApi->getArrayFeatures();
-        $n = count($features["data"]);
+        if (array_key_exists("data", $features)) {
+            $n = count($features["data"]);
+        } else {
+            $n = 0;
+        }
         for ($i = 0; $i < $n; $i++) {
             if ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'pumpStatus');
@@ -1802,7 +1806,7 @@ class viessmannIot extends eqLogic
         $bConsumptionSeen = false;
 
         $features = $viessmannApi->getArrayFeatures();
-        if ( is_array($features["data"])) {
+        if (array_key_exists("data", $features)) {
             $nbrFeatures = count($features["data"]);
         } else {
             log::add('viessmannIot', 'warning', 'No data available');
@@ -3990,23 +3994,33 @@ class viessmannIot extends eqLogic
 
     // Fonction exécutée automatiquement avant la création de l'équipement
     //
-    public function preInsert() {}
+    public function preInsert()
+    {
+    }
 
     // Fonction exécutée automatiquement après la création de l'équipement
     //
-    public function postInsert() {}
+    public function postInsert()
+    {
+    }
 
     // Fonction exécutée automatiquement avant la mise à jour de l'équipement
     //
-    public function preUpdate() {}
+    public function preUpdate()
+    {
+    }
 
     // Fonction exécutée automatiquement après la mise à jour de l'équipement
     //
-    public function postUpdate() {}
+    public function postUpdate()
+    {
+    }
 
     // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
     //
-    public function preSave() {}
+    public function preSave()
+    {
+    }
 
     // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
     //
@@ -4342,11 +4356,15 @@ class viessmannIot extends eqLogic
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
     //
-    public function preRemove() {}
+    public function preRemove()
+    {
+    }
 
     // Fonction exécutée automatiquement après la suppression de l'équipement
     //
-    public function postRemove() {}
+    public function postRemove()
+    {
+    }
 
     // Permet de modifier l'affichage du widget (également utilisable par les commandes)
     //
