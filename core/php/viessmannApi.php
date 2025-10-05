@@ -503,51 +503,12 @@ class ViessmannApi
         curl_setopt_array($curl, $curloptions);
         $response = curl_exec($curl);
         curl_close($curl);
-/*
-        $response = '{
-            "data": [        
-                
-        {
-            "eventType": "device-error",
-            "gatewaySerial": "XXXXXXXXXXXXXXXX",
-            "body": {
-                "errorCode": "80",
-                "deviceId": "0",
-                "modelId": "VScotHO1_200_11",
-                "active": false,
-                "equipmentType": "Boiler",
-                "errorEventType": "Error",
-                "errorDescription": "No flame formation – gas pressure absent/low"
-            },
-            "createdAt": "2021-08-23T21:39:26.498Z",
-            "eventTimestamp": "2021-08-23T21:38:56.000Z",
-            "editedBy": "system",
-            "origin": "system"
-        },
-        
-        {
-            "eventType": "device-error",
-            "gatewaySerial": "XXXXXXXXXXXXXXXX",
-            "body": {
-                "errorCode": "80",
-                "deviceId": "0",
-                "modelId": "VScotHO1_200_11",
-                "active": true,
-                "equipmentType": "Boiler",
-                "errorEventType": "Error",
-                "errorDescription": "No flame formation – gas pressure absent/low"
-            },
-            "createdAt": "2021-08-23T21:38:47.061Z",
-            "eventTimestamp": "2021-08-23T21:28:45.000Z",
-            "editedBy": "system",
-            "origin": "system"
-        }
-    ],
-    "cursor": {
-        "next": ""
-    }
-}';
-*/
+
+        // Pour test
+        //
+        // $json_file = __DIR__ . '/../../data/testevents.json';
+        // $response = file_get_contents($json_file);
+       
         $this->events = json_decode($response, true);
 
         if ($this->logFeatures == 'Oui') {

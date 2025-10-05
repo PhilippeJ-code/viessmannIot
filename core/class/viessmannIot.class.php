@@ -179,9 +179,14 @@ class viessmannIot extends eqLogic
         $deviceId = trim($this->getConfiguration('deviceId', '0'));
 
         $features = $viessmannApi->getArrayFeatures();
-        if (array_key_exists("data", $features)) {
+        if ( $features == null )
+        {
+            log::add('viessmannIot', 'warning', 'Data is null');
+            $n = 0;
+        } else if (array_key_exists("data", $features)) {
             $n = count($features["data"]);
         } else {
+            log::add('viessmannIot', 'warning', 'No data available');
             $n = 0;
         }
         for ($i = 0; $i < $n; $i++) {
@@ -1806,7 +1811,11 @@ class viessmannIot extends eqLogic
         $bConsumptionSeen = false;
 
         $features = $viessmannApi->getArrayFeatures();
-        if (array_key_exists("data", $features)) {
+        if ( $features == null )
+        {
+            log::add('viessmannIot', 'warning', 'Data is null');
+            $nbrFeatures = 0;
+        } else if (array_key_exists("data", $features)) {
             $nbrFeatures = count($features["data"]);
         } else {
             log::add('viessmannIot', 'warning', 'No data available');
@@ -1834,7 +1843,6 @@ class viessmannIot extends eqLogic
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
-                $this->getCmd(null, 'dhwTemperature')->event($val);
             } elseif ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::ACTIVE_MODE) && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $obj = $this->getCmd(null, 'activeMode');
@@ -3109,7 +3117,7 @@ class viessmannIot extends eqLogic
             $viessmannApi->getEvents();
             $events = $viessmannApi->getArrayEvents();
             $nbrEvents = count($events["data"]);
-            for ($i = $nbrEvents - 1; $i >= 0; $i--) {
+            for ($i = 0; $i < $nbrEvents; $i++) {
                 if ($events["data"][$i]["eventType"] == "device-error") {
                     $timeStamp = substr($events["data"][$i]['eventTimestamp'], 0, 19);
                     $timeStamp = str_replace('T', ' ', $timeStamp) . ' GMT';
@@ -3121,9 +3129,9 @@ class viessmannIot extends eqLogic
                     $timeStamp = $dateTime->format('d/m/Y H:i:s');
 
                     $errorCode = $events["data"][$i]['body']['errorCode'];
-                    $errorDescription = $events["data"][$i]['body']['equipmentType'] . ':' . $events["data"][$i]['body']['errorDescription'];
-                    $errorDescription = str_replace("'", "\'", $errorDescription);
-                    $errorDescription = str_replace('"', "\"", $errorDescription);
+                    $errorDescription = $events["data"][$i]['body']['equipmentType'] . ' : ' . $events["data"][$i]['body']['errorCode'];
+                    $errorDescription = str_replace("'", " ", $errorDescription);
+                    $errorDescription = str_replace('"', " ", $errorDescription);
 
                     if ($nbr < 10) {
                         if ($nbr > 0) {
@@ -3131,12 +3139,11 @@ class viessmannIot extends eqLogic
                         }
                         if ($events["data"][$i]['body']['active'] == true) {
                             $erreurs .= 'AC;' . $timeStamp . ';' . $errorDescription;
-                            $erreurCourante = $errorCode;
+                            if ($nbr == 0) {
+                                $erreurCourante = $errorCode;
+                            }
                         } else {
                             $erreurs .= 'IN;' . $timeStamp . ';' . $errorDescription;
-                            if ($erreurCourante == $errorCode) {
-                                $erreurCourante = '';
-                            }
                         }
                         $nbr++;
                     }
