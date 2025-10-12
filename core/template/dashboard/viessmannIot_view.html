@@ -297,6 +297,11 @@
                 class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperature#"
                 id="idTemperatureEauRadiateur#uid#"></span></br>
         </div>
+        <div id="showTemperatureRetour#uid#">
+            <span class="classSousTitre#uid#">Température retour</span><span
+                class="classValeur#uid# history cursor" data-cmd_id="#idReturnTemperature#"
+                id="idTemperatureRetour#uid#"></span></br>
+        </div>
         <div id="showFrostProtection#uid#">
             <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
                 id="idFrostProtection#uid#"></span></br>
@@ -2198,6 +2203,19 @@
             }
         }
         Update#uid#idBoilerTemperature({ display_value: '#boilerTemperature#' });
+
+        jeedom.cmd.addUpdateFunction('#idReturnTemperature#', Update#uid#idReturnTemperature);
+        function Update#uid#idReturnTemperature(_options) {
+            if ((is_object(cmd1 = document.getElementById('showTemperatureRetour#uid#'))) &&
+                (is_object(cmd2 = document.getElementById('idTemperatureRetour#uid#')))) {
+                if (_options.display_value == 99) {
+                    cmd1.style.display = 'none';
+                } else {
+                    cmd2.innerHTML = _options.display_value + '°';
+                }
+            }
+        }
+        Update#uid#idReturnTemperature({ display_value: '#returnTemperature#' });
 
         jeedom.cmd.addUpdateFunction('#idBoilerTemperatureMain#', Update#uid#idBoilerTemperatureMain);
         function Update#uid#idBoilerTemperatureMain(_options) {

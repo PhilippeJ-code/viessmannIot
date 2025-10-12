@@ -29,6 +29,7 @@ class viessmannIot extends eqLogic
 
     public const OUTSIDE_TEMPERATURE = "heating.sensors.temperature.outside";
     public const HOT_WATER_STORAGE_TEMPERATURE = "heating.dhw.sensors.temperature.dhwCylinder";
+    public const RETURN_TEMPERATURE = "heating.sensors.temperature.return";
     public const DHW_TEMPERATURE = "heating.dhw.temperature.main";
     public const HEATING_DHW_ONETIMECHARGE = "heating.dhw.oneTimeCharge";
     public const HEATING_DHW_SCHEDULE = "heating.dhw.schedule";
@@ -215,6 +216,19 @@ class viessmannIot extends eqLogic
                 $obj->setType('info');
                 $obj->setSubType('numeric');
                 $obj->setLogicalId('hotWaterStorageTemperature');
+                $obj->save();
+            } elseif ($features["data"][$i]["feature"] == self::RETURN_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                $obj = $this->getCmd(null, 'returnTemperature');
+                if (!is_object($obj)) {
+                    $obj = new viessmannIotCmd();
+                    $obj->setName(__('Température retour', __FILE__));
+                    $obj->setIsVisible(1);
+                    $obj->setIsHistorized(0);
+                }
+                $obj->setEqLogic_id($this->getId());
+                $obj->setType('info');
+                $obj->setSubType('numeric');
+                $obj->setLogicalId('returnTemperature');
                 $obj->save();
             } elseif ($features["data"][$i]["feature"] == self::DHW_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $objDhw = $this->getCmd(null, 'dhwTemperature');
@@ -1834,6 +1848,12 @@ class viessmannIot extends eqLogic
             } elseif ($features["data"][$i]["feature"] == self::HOT_WATER_STORAGE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
+                if (is_object($obj)) {
+                    $obj->event($val);
+                }
+            } elseif ($features["data"][$i]["feature"] == self::RETURN_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
+                $val = $features["data"][$i]["properties"]["value"]["value"];
+                $obj = $this->getCmd(null, 'returnTemperature');
                 if (is_object($obj)) {
                     $obj->event($val);
                 }
@@ -4458,6 +4478,15 @@ class viessmannIot extends eqLogic
         } else {
             $replace["#hotWaterStorageTemperature#"] = 99;
             $replace["#idHotWaterStorageTemperature#"] = "#idHotWaterStorageTemperature#";
+        }
+
+        $obj = $this->getCmd(null, 'returnTemperature');
+        if (is_object($obj)) {
+            $replace["#returnTemperature#"] = $obj->execCmd();
+            $replace["#idReturnTemperature#"] = $obj->getId();
+        } else {
+            $replace["#returnTemperature#"] = 99;
+            $replace["#idReturnTemperature#"] = "#idReturnTemperature#";
         }
 
         $obj = $this->getCmd(null, 'dhwTemperature');
