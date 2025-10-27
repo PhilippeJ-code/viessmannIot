@@ -91,6 +91,23 @@ class viessmannIot extends eqLogic
     public const SOLAR_DHW_TEMPERATURE = "heating.solar.sensors.temperature.dhw";
     public const VOLUMETRIC_FLOW = "heating.sensors.volumetricFlow.allengra";
 
+    public static $commandes = [
+    [
+        "logicalId"=>"fourThreeWay_position",
+        "name"=>"Position vanne 4/3 voies",
+        "subType"=>"other",
+        "unite"=>"",
+        "feature"=>"heating.valves.fourThreeWay.position",
+        "property"=>"value"
+    ],[
+        "logicalId"=>"tcu_wifi_strength",
+        "name"=>"TCU Wi-Fi (dBm)",
+        "subType"=>"numeric",
+        "unite"=>"dBm",
+        "feature"=>"tcu.wifi",
+        "property"=>"strength"
+    ]];
+
     public static function deamon_info()
     {
         $return = array();
@@ -180,17 +197,35 @@ class viessmannIot extends eqLogic
         $deviceId = trim($this->getConfiguration('deviceId', '0'));
 
         $features = $viessmannApi->getArrayFeatures();
-        if ( $features == null )
-        {
+        if ($features == null) {
             log::add('viessmannIot', 'warning', 'Data is null');
             $n = 0;
-        } else if (array_key_exists("data", $features)) {
+        } elseif (array_key_exists("data", $features)) {
             $n = count($features["data"]);
         } else {
             log::add('viessmannIot', 'warning', 'No data available');
             $n = 0;
         }
         for ($i = 0; $i < $n; $i++) {
+
+            foreach (self::$commandes as $commande) {
+                if ($features["data"][$i]["feature"] == $commande["feature"] && $features["data"][$i]["isEnabled"] == true) {
+                    $obj = $this->getCmd(null, $commande["logicalId"]);
+                    if (!is_object($obj)) {
+                        $obj = new viessmannIotCmd();
+                        $obj->setName($commande["name"]);
+                        $obj->setIsVisible(1);
+                        $obj->setIsHistorized(0);
+                    }
+                    $obj->setEqLogic_id($this->getId());
+                    $obj->setType('info');
+                    $obj->setUnite($commande["unite"]);
+                    $obj->setSubType($commande["subType"]);
+                    $obj->setLogicalId($commande["logicalId"]);
+                    $obj->save();
+                }
+            }
+
             if ($features["data"][$i]["feature"] == $this->buildFeature($circuitId, self::PUMP_STATUS) && $features["data"][$i]["isEnabled"] == true) {
                 $obj = $this->getCmd(null, 'pumpStatus');
                 if (!is_object($obj)) {
@@ -1825,17 +1860,28 @@ class viessmannIot extends eqLogic
         $bConsumptionSeen = false;
 
         $features = $viessmannApi->getArrayFeatures();
-        if ( $features == null )
-        {
+        if ($features == null) {
             log::add('viessmannIot', 'warning', 'Data is null');
             $nbrFeatures = 0;
-        } else if (array_key_exists("data", $features)) {
+        } elseif (array_key_exists("data", $features)) {
             $nbrFeatures = count($features["data"]);
         } else {
             log::add('viessmannIot', 'warning', 'No data available');
             $nbrFeatures = 0;
         }
+
         for ($i = 0; $i < $nbrFeatures; $i++) {
+    
+            foreach (self::$commandes as $commande) {
+                if ($features["data"][$i]["feature"] == $commande["feature"] && $features["data"][$i]["isEnabled"] == true) {
+                    $val = $features["data"][$i]["properties"][$commande["property"]]["value"];
+                    $obj = $this->getCmd(null, $commande["logicalId"]);
+                    if (is_object($obj)) {
+                        $obj->event($val);
+                    }
+                }
+            }
+
             if ($features["data"][$i]["feature"] == self::OUTSIDE_TEMPERATURE && $features["data"][$i]["isEnabled"] == true) {
                 $val = $features["data"][$i]["properties"]["value"]["value"];
                 $outsideTemperature = $val;
