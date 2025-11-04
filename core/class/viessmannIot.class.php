@@ -92,21 +92,356 @@ class viessmannIot extends eqLogic
     public const VOLUMETRIC_FLOW = "heating.sensors.volumetricFlow.allengra";
 
     public static $commandes = [
-    [
-        "logicalId"=>"fourThreeWay_position",
-        "name"=>"Position vanne 4/3 voies",
-        "subType"=>"other",
-        "unite"=>"",
-        "feature"=>"heating.valves.fourThreeWay.position",
-        "property"=>"value"
-    ],[
-        "logicalId"=>"tcu_wifi_strength",
-        "name"=>"TCU Wi-Fi (dBm)",
-        "subType"=>"numeric",
-        "unite"=>"dBm",
-        "feature"=>"tcu.wifi",
-        "property"=>"strength"
-    ]];
+[
+    "logicalId"=>"fourThreeWay_position",
+    "name"=>"Position vanne 4/3 voies",
+    "subType"=>"other",
+    "unite"=>"",
+    "feature"=>"heating.valves.fourThreeWay.position",
+    "property"=>"value"
+],[
+    "logicalId"=>"internalPump_status",
+    "name"=>"Pompe interne - statut",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"heating.boiler.pumps.internal",
+    "property"=>"status"
+],[
+    "logicalId"=>"internalPump_targetPct",
+    "name"=>"Pompe interne - cible (%)",
+    "subType"=>"numeric",
+    "unite"=>"%",
+    "feature"=>"heating.boiler.pumps.internal.target",
+    "property"=>"value"
+],[
+    "logicalId"=>"internalPump_currentPct",
+    "name"=>"Pompe interne - actuel (%)",
+    "subType"=>"numeric",
+    "unite"=>"%",
+    "feature"=>"heating.boiler.pumps.internal.current",
+    "property"=>"value"
+],[
+    "logicalId"=>"dhw_oneTime_active",
+    "name"=>"ECS - charge ponctuelle active",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"heating.dhw.oneTimeCharge",
+    "property"=>"active"
+],[
+    "logicalId"=>"dhw_hygiene_enabled",
+    "name"=>"Hygiène ECS - activé",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"heating.dhw.hygiene",
+    "property"=>"enabled"
+],[
+    "logicalId"=>"dhw_hyst_value",
+    "name"=>"ECS - hystérésis",
+    "subType"=>"numeric",
+    "unite"=>"K",
+    "feature"=>"heating.dhw.temperature.hysteresis",
+    "property"=>"value"
+],[
+    "logicalId"=>"dhw_hyst_switchOn",
+    "name"=>"ECS - seuil marche",
+    "subType"=>"numeric",
+    "unite"=>"K",
+    "feature"=>"heating.dhw.temperature.hysteresis",
+    "property"=>"switchOnValue"
+],[
+    "logicalId"=>"dhw_hyst_switchOff",
+    "name"=>"ECS - seuil arrêt",
+    "subType"=>"numeric",
+    "unite"=>"K",
+    "feature"=>"heating.dhw.temperature.hysteresis",
+    "property"=>"switchOffValue"
+],[
+    "logicalId"=>"dhw_schedule_active",
+    "name"=>"Programmation ECS - active",
+    "subType"=>"binary",
+    "unite"=>"",
+    "isHistorized"=>0,
+    "feature"=>"heating.dhw.schedule",
+    "property"=>"active"
+],[
+    "logicalId"=>"circuit0_temp_min",
+    "name"=>"Départ mini (°C)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.circuits.0.temperature.levels",
+    "property"=>"min"
+],[
+    "logicalId"=>"circuit0_temp_max",
+    "name"=>"Départ maxi (°C)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.circuits.0.temperature.levels",
+    "property"=>"max"
+],[
+    "logicalId"=>"prod_heating_day",
+    "name"=>"Chaleur - jour (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.heating",
+    "property"=>"currentDay"
+],[
+    "logicalId"=>"prod_heating_7d",
+    "name"=>"Chaleur - 7 jours (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.heating",
+    "property"=>"lastSevenDays"
+],[
+    "logicalId"=>"prod_heating_month",
+    "name"=>"Chaleur - mois (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.heating",
+    "property"=>"currentMonth"
+],[
+    "logicalId"=>"prod_heating_year",
+    "name"=>"Chaleur - année (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.heating",
+    "property"=>"currentYear"
+],[
+    "logicalId"=>"prod_dhw_day",
+    "name"=>"ECS (Chaleur) - jour (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.dhw",
+    "property"=>"currentDay"
+],[
+    "logicalId"=>"prod_dhw_7d",
+    "name"=>"ECS (Chaleur) - 7 jours (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.dhw",
+    "property"=>"lastSevenDays"
+],[
+    "logicalId"=>"prod_dhw_month",
+    "name"=>"ECS (Chaleur) - mois (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.dhw",
+    "property"=>"currentMonth"
+],[
+    "logicalId"=>"prod_dhw_year",
+    "name"=>"ECS (Chaleur) - année (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heat.production.summary.dhw",
+    "property"=>"currentYear"
+],[
+    "logicalId"=>"spf_heating",
+    "name"=>"SPF chauffage",
+    "subType"=>"numeric",
+    "unite"=>"",
+    "feature"=>"heating.spf.heating",
+    "property"=>"value"
+],[
+    "logicalId"=>"spf_dhw",
+    "name"=>"SPF ECS",
+    "subType"=>"numeric",
+    "unite"=>"",
+    "feature"=>"heating.spf.dhw",
+    "property"=>"value"
+],[
+    "logicalId"=>"spf_total",
+    "name"=>"SPF total",
+    "subType"=>"numeric",
+    "unite"=>"",
+    "feature"=>"heating.spf.total",
+    "property"=>"value"
+],[
+    "logicalId"=>"heatingRod_starts",
+    "name"=>"Appoint - démarrages",
+    "subType"=>"numeric",
+    "unite"=>"",
+    "feature"=>"heating.heatingRod.statistics",
+    "property"=>"starts"
+],[
+    "logicalId"=>"heatingRod_hours",
+    "name"=>"Appoint - heures",
+    "subType"=>"numeric",
+    "unite"=>"h",
+    "feature"=>"heating.heatingRod.statistics",
+    "property"=>"hours"
+],[
+    "logicalId"=>"rod_heating_day",
+    "name"=>"Appoint chauffage - jour (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.heating",
+    "property"=>"currentDay"
+],[
+    "logicalId"=>"rod_heating_7d",
+    "name"=>"Appoint chauffage - 7 jours (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.heating",
+    "property"=>"lastSevenDays"
+],[
+    "logicalId"=>"rod_heating_month",
+    "name"=>"Appoint chauffage - mois (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.heating",
+    "property"=>"currentMonth"
+],[
+    "logicalId"=>"rod_heating_year",
+    "name"=>"Appoint chauffage - année (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.heating",
+    "property"=>"currentYear"
+],[
+    "logicalId"=>"rod_dhw_day",
+    "name"=>"Appoint ECS - jour (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
+    "property"=>"currentDay"
+],[
+    "logicalId"=>"rod_dhw_7d",
+    "name"=>"Appoint ECS - 7 jours (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
+    "property"=>"lastSevenDays"
+],[
+    "logicalId"=>"rod_dhw_month",
+    "name"=>"Appoint ECS - mois (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
+    "property"=>"currentMonth"
+],[
+    "logicalId"=>"rod_dhw_year",
+    "name"=>"Appoint ECS - année (kWh)",
+    "subType"=>"numeric",
+    "unite"=>"kWh",
+    "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
+    "property"=>"currentYear"
+],[
+    "logicalId"=>"summerEco_active",
+    "name"=>"Summer Eco - actif",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"heating.circuits.0.configuration.summerEco.absolute",
+    "property"=>"active"
+],[
+    "logicalId"=>"summerEco_threshold",
+    "name"=>"Seuil été (°C ext.)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.circuits.0.configuration.summerEco.absolute",
+    "property"=>"threshold"
+],[
+    "logicalId"=>"outside_damping",
+    "name"=>"Amortissement T° ext. (min)",
+    "subType"=>"numeric",
+    "unite"=>"min",
+    "isHistorized"=>0,
+    "feature"=>"heating.configuration.temperature.outside.DampingFactor",
+    "property"=>"value"
+],[
+    "logicalId"=>"tcu_wifi_strength",
+    "name"=>"TCU Wi-Fi (dBm)",
+    "subType"=>"numeric",
+    "unite"=>"dBm",
+    "feature"=>"tcu.wifi",
+    "property"=>"strength"
+],[
+    "logicalId"=>"device_messages_info",
+    "name"=>"Messages info (brut)",
+    "subType"=>"other",
+    "unite"=>"",
+    "isHistorized"=>0,
+    "feature"=>"device.messages.info.raw",
+    "property"=>"entries"
+],[
+    "logicalId"=>"device_messages_service",
+    "name"=>"Messages service (brut)",
+    "subType"=>"other",
+    "unite"=>"",
+    "isHistorized"=>0,
+    "feature"=>"device.messages.service.raw",
+    "property"=>"entries"
+],[
+    "logicalId"=>"device_messages_status",
+    "name"=>"Messages statut (brut)",
+    "subType"=>"other",
+    "unite"=>"",
+    "isHistorized"=>0,
+    "feature"=>"device.messages.status.raw",
+    "property"=>"entries"
+],[
+    "logicalId"=>"device_lock_malfunction",
+    "name"=>"Verrouillage défaut actif",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"device.lock.malfunction",
+    "property"=>"active"
+],[
+    "logicalId"=>"inverter_power_currentA",
+    "name"=>"Onduleur - intensité (A)",
+    "subType"=>"numeric",
+    "unite"=>"A",
+    "feature"=>"heating.inverters.0.sensors.power.current",
+    "property"=>"value"
+],[
+    "logicalId"=>"inverter_power_outputW",
+    "name"=>"Onduleur - puissance (W)",
+    "subType"=>"numeric",
+    "unite"=>"W",
+    "feature"=>"heating.inverters.0.sensors.power.output",
+    "property"=>"value"
+],[
+    "logicalId"=>"inverter_temp_module",
+    "name"=>"Onduleur - T° module (°C)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.inverters.0.sensors.temperature.powerModule",
+    "property"=>"value"
+],[
+    "logicalId"=>"compressor_inlet_pressure",
+    "name"=>"Compresseur - pression entrée (bar)",
+    "subType"=>"numeric",
+    "unite"=>"bar",
+    "feature"=>"heating.compressors.0.sensors.pressure.inlet",
+    "property"=>"value"
+],[
+    "logicalId"=>"compressor_temp_inlet",
+    "name"=>"Compresseur - T° entrée (°C)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.compressors.0.sensors.temperature.inlet",
+    "property"=>"value"
+],[
+    "logicalId"=>"compressor_temp_outlet",
+    "name"=>"Compresseur - T° sortie (°C)",
+    "subType"=>"numeric",
+    "unite"=>"°C",
+    "feature"=>"heating.compressors.0.sensors.temperature.outlet",
+    "property"=>"value"
+],[
+    "logicalId"=>"compressor_speed",
+    "name"=>"Compresseur - vitesse (Hz)",
+    "subType"=>"numeric",
+    "unite"=>"Hz",
+    "feature"=>"heating.compressors.0.speed.current",
+    "property"=>"value"
+],[
+    "logicalId"=>"compressor_crankcase_heater",
+    "name"=>"Chauffe-carter compresseur",
+    "subType"=>"binary",
+    "unite"=>"",
+    "feature"=>"heating.compressors.0.heater.crankcase",
+    "property"=>"active"
+]];
+
 
     public static function deamon_info()
     {
