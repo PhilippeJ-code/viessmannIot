@@ -91,7 +91,7 @@ class viessmannIot extends eqLogic
     public const SOLAR_DHW_TEMPERATURE = "heating.solar.sensors.temperature.dhw";
     public const VOLUMETRIC_FLOW = "heating.sensors.volumetricFlow.allengra";
 
-    public static $commandes = [
+    public static $_commandes = [
 [
     "logicalId"=>"fourThreeWay_position",
     "name"=>"Position vanne 4/3 voies",
@@ -108,14 +108,14 @@ class viessmannIot extends eqLogic
     "property"=>"status"
 ],[
     "logicalId"=>"internalPump_targetPct",
-    "name"=>"Pompe interne - cible (%)",
+    "name"=>"Pompe interne - cible",
     "subType"=>"numeric",
     "unite"=>"%",
     "feature"=>"heating.boiler.pumps.internal.target",
     "property"=>"value"
 ],[
     "logicalId"=>"internalPump_currentPct",
-    "name"=>"Pompe interne - actuel (%)",
+    "name"=>"Pompe interne - actuel",
     "subType"=>"numeric",
     "unite"=>"%",
     "feature"=>"heating.boiler.pumps.internal.current",
@@ -165,70 +165,70 @@ class viessmannIot extends eqLogic
     "property"=>"active"
 ],[
     "logicalId"=>"circuit0_temp_min",
-    "name"=>"Départ mini (°C)",
+    "name"=>"Départ mini",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.circuits.0.temperature.levels",
     "property"=>"min"
 ],[
     "logicalId"=>"circuit0_temp_max",
-    "name"=>"Départ maxi (°C)",
+    "name"=>"Départ maxi",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.circuits.0.temperature.levels",
     "property"=>"max"
 ],[
     "logicalId"=>"prod_heating_day",
-    "name"=>"Chaleur - jour (kWh)",
+    "name"=>"Chaleur - jour",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.heating",
     "property"=>"currentDay"
 ],[
     "logicalId"=>"prod_heating_7d",
-    "name"=>"Chaleur - 7 jours (kWh)",
+    "name"=>"Chaleur - 7 jours",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.heating",
     "property"=>"lastSevenDays"
 ],[
     "logicalId"=>"prod_heating_month",
-    "name"=>"Chaleur - mois (kWh)",
+    "name"=>"Chaleur - mois",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.heating",
     "property"=>"currentMonth"
 ],[
     "logicalId"=>"prod_heating_year",
-    "name"=>"Chaleur - année (kWh)",
+    "name"=>"Chaleur - année",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.heating",
     "property"=>"currentYear"
 ],[
     "logicalId"=>"prod_dhw_day",
-    "name"=>"ECS (Chaleur) - jour (kWh)",
+    "name"=>"ECS (Chaleur) - jour",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.dhw",
     "property"=>"currentDay"
 ],[
     "logicalId"=>"prod_dhw_7d",
-    "name"=>"ECS (Chaleur) - 7 jours (kWh)",
+    "name"=>"ECS (Chaleur) - 7 jours",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.dhw",
     "property"=>"lastSevenDays"
 ],[
     "logicalId"=>"prod_dhw_month",
-    "name"=>"ECS (Chaleur) - mois (kWh)",
+    "name"=>"ECS (Chaleur) - mois",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.dhw",
     "property"=>"currentMonth"
 ],[
     "logicalId"=>"prod_dhw_year",
-    "name"=>"ECS (Chaleur) - année (kWh)",
+    "name"=>"ECS (Chaleur) - année",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heat.production.summary.dhw",
@@ -270,56 +270,56 @@ class viessmannIot extends eqLogic
     "property"=>"hours"
 ],[
     "logicalId"=>"rod_heating_day",
-    "name"=>"Appoint chauffage - jour (kWh)",
+    "name"=>"Appoint chauffage - jour",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.heating",
     "property"=>"currentDay"
 ],[
     "logicalId"=>"rod_heating_7d",
-    "name"=>"Appoint chauffage - 7 jours (kWh)",
+    "name"=>"Appoint chauffage - 7 jours",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.heating",
     "property"=>"lastSevenDays"
 ],[
     "logicalId"=>"rod_heating_month",
-    "name"=>"Appoint chauffage - mois (kWh)",
+    "name"=>"Appoint chauffage - mois",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.heating",
     "property"=>"currentMonth"
 ],[
     "logicalId"=>"rod_heating_year",
-    "name"=>"Appoint chauffage - année (kWh)",
+    "name"=>"Appoint chauffage - année",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.heating",
     "property"=>"currentYear"
 ],[
     "logicalId"=>"rod_dhw_day",
-    "name"=>"Appoint ECS - jour (kWh)",
+    "name"=>"Appoint ECS - jour",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
     "property"=>"currentDay"
 ],[
     "logicalId"=>"rod_dhw_7d",
-    "name"=>"Appoint ECS - 7 jours (kWh)",
+    "name"=>"Appoint ECS - 7 jours",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
     "property"=>"lastSevenDays"
 ],[
     "logicalId"=>"rod_dhw_month",
-    "name"=>"Appoint ECS - mois (kWh)",
+    "name"=>"Appoint ECS - mois",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
     "property"=>"currentMonth"
 ],[
     "logicalId"=>"rod_dhw_year",
-    "name"=>"Appoint ECS - année (kWh)",
+    "name"=>"Appoint ECS - année",
     "subType"=>"numeric",
     "unite"=>"kWh",
     "feature"=>"heating.heatingRod.power.consumption.summary.dhw",
@@ -333,7 +333,7 @@ class viessmannIot extends eqLogic
     "property"=>"active"
 ],[
     "logicalId"=>"summerEco_threshold",
-    "name"=>"Seuil été (°C ext.)",
+    "name"=>"Seuil été",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.circuits.0.configuration.summerEco.absolute",
@@ -348,7 +348,7 @@ class viessmannIot extends eqLogic
     "property"=>"value"
 ],[
     "logicalId"=>"tcu_wifi_strength",
-    "name"=>"TCU Wi-Fi (dBm)",
+    "name"=>"TCU Wi-Fi",
     "subType"=>"numeric",
     "unite"=>"dBm",
     "feature"=>"tcu.wifi",
@@ -386,49 +386,49 @@ class viessmannIot extends eqLogic
     "property"=>"active"
 ],[
     "logicalId"=>"inverter_power_currentA",
-    "name"=>"Onduleur - intensité (A)",
+    "name"=>"Onduleur - intensité",
     "subType"=>"numeric",
     "unite"=>"A",
     "feature"=>"heating.inverters.0.sensors.power.current",
     "property"=>"value"
 ],[
     "logicalId"=>"inverter_power_outputW",
-    "name"=>"Onduleur - puissance (W)",
+    "name"=>"Onduleur - puissance",
     "subType"=>"numeric",
     "unite"=>"W",
     "feature"=>"heating.inverters.0.sensors.power.output",
     "property"=>"value"
 ],[
     "logicalId"=>"inverter_temp_module",
-    "name"=>"Onduleur - T° module (°C)",
+    "name"=>"Onduleur - T° module",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.inverters.0.sensors.temperature.powerModule",
     "property"=>"value"
 ],[
     "logicalId"=>"compressor_inlet_pressure",
-    "name"=>"Compresseur - pression entrée (bar)",
+    "name"=>"Compresseur - pression entrée",
     "subType"=>"numeric",
     "unite"=>"bar",
     "feature"=>"heating.compressors.0.sensors.pressure.inlet",
     "property"=>"value"
 ],[
     "logicalId"=>"compressor_temp_inlet",
-    "name"=>"Compresseur - T° entrée (°C)",
+    "name"=>"Compresseur - T° entrée",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.compressors.0.sensors.temperature.inlet",
     "property"=>"value"
 ],[
     "logicalId"=>"compressor_temp_outlet",
-    "name"=>"Compresseur - T° sortie (°C)",
+    "name"=>"Compresseur - T° sortie",
     "subType"=>"numeric",
     "unite"=>"°C",
     "feature"=>"heating.compressors.0.sensors.temperature.outlet",
     "property"=>"value"
 ],[
     "logicalId"=>"compressor_speed",
-    "name"=>"Compresseur - vitesse (Hz)",
+    "name"=>"Compresseur - vitesse",
     "subType"=>"numeric",
     "unite"=>"Hz",
     "feature"=>"heating.compressors.0.speed.current",
@@ -543,7 +543,7 @@ class viessmannIot extends eqLogic
         }
         for ($i = 0; $i < $n; $i++) {
 
-            foreach (self::$commandes as $commande) {
+            foreach (self::$_commandes as $commande) {
                 if ($features["data"][$i]["feature"] == $commande["feature"] && $features["data"][$i]["isEnabled"] == true) {
                     $obj = $this->getCmd(null, $commande["logicalId"]);
                     if (!is_object($obj)) {
@@ -2207,7 +2207,7 @@ class viessmannIot extends eqLogic
 
         for ($i = 0; $i < $nbrFeatures; $i++) {
     
-            foreach (self::$commandes as $commande) {
+            foreach (self::$_commandes as $commande) {
                 if ($features["data"][$i]["feature"] == $commande["feature"] && $features["data"][$i]["isEnabled"] == true) {
                     $val = $features["data"][$i]["properties"][$commande["property"]]["value"];
                     $obj = $this->getCmd(null, $commande["logicalId"]);
@@ -4277,7 +4277,7 @@ class viessmannIot extends eqLogic
                 }
                 $commande .= '"start": "' . $start . '",';
                 $commande .= '"end": "' . $end . '",';
-                $commande .= '"position": ' . $j / 3.;
+                $commande .= '"position": ' . (int)($j / 3);
                 $commande .= '}';
                 if ($j < $n - 3) {
                     $commande .= ',';
@@ -5923,8 +5923,30 @@ class viessmannIot extends eqLogic
         }
         return ($array);
     }
-}
 
+
+    // Trier les commandes par ordre alphabétique
+    //
+    public function sortCmds()
+    {
+        
+        $array = array();
+
+        $cmds = $this->getCmd();
+        usort($cmds, function ($a, $b) {
+            return strcmp($a->getName(), $b->getName());
+        });
+
+        $i=0;
+        foreach ($cmds as $cmd) {
+            $cmd->setOrder($i++);
+            $cmd->save();
+        }
+
+        return ($array);
+        
+    }
+}
 
 class viessmannIotCmd extends cmd
 {

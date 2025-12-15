@@ -14,19 +14,19 @@ class ViessmannApiException extends Exception
 //
 class ViessmannApi
 {
-    const AUTHORIZE_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/authorize";
-    const CALLBACK_URI = "http://localhost:4200/";
-    
-    const TOKEN_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/token";
+    public const AUTHORIZE_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/authorize";
+    public const CALLBACK_URI = "http://localhost:4200/";
 
-    const IDENTITY_URL = "https://api.viessmann-climatesolutions.com/users/v1/users/me?sections=identity";
-    
-    const GATEWAY_URL = "https://api.viessmann-climatesolutions.com/iot/v2/equipment/gateways";
+    public const TOKEN_URL = "https://iam.viessmann-climatesolutions.com/idp/v3/token";
 
-    const FEATURES_URL = "https://api.viessmann-climatesolutions.com/iot/v2/features";
- 
-    const EVENTS_URL_1 = "https://api.viessmann-climatesolutions.com/iot/v2/events-history/installations/";
-    const EVENTS_URL_2 = "/events";
+    public const IDENTITY_URL = "https://api.viessmann-climatesolutions.com/users/v1/users/me?sections=identity";
+
+    public const GATEWAY_URL = "https://api.viessmann-climatesolutions.com/iot/v2/equipment/gateways";
+
+    public const FEATURES_URL = "https://api.viessmann-climatesolutions.com/iot/v2/features";
+
+    public const EVENTS_URL_1 = "https://api.viessmann-climatesolutions.com/iot/v2/events-history/installations/";
+    public const EVENTS_URL_2 = "/events";
 
     // Les paramètres d'accès au serveur
     //
@@ -61,7 +61,7 @@ class ViessmannApi
     private $events;
 
     private $logFeatures;
- 
+
     // Constructeur
     //
     public function __construct($params)
@@ -87,7 +87,7 @@ class ViessmannApi
             return;
         }
         $this->codeChallenge = $params['codeChallenge'];
-            
+
         if (!array_key_exists('user', $params)) {
             throw new ViessmannApiException('Nom utilisateur obligatoire', 2);
             return;
@@ -155,12 +155,12 @@ class ViessmannApi
         } else {
             $this->logFeatures = $params['logFeatures'];
         }
-            
+
         $this->identity = array();
         $this->gateway = array();
         $this->features = array();
         $this->events = array();
-        
+
         // Si c'est possible on réutilise l'ancien token
         //
         $this->if_new_token = false;
@@ -175,12 +175,12 @@ class ViessmannApi
             if ($code == false) {
                 throw new ViessmannApiException("Erreur acquisition code sur le serveur Viessmann", 2);
             }
-        
+
             $return = $this->getToken($code);
             if ($return == false) {
                 throw new ViessmannApiException("Erreur acquisition token sur le serveur Viessmann", 2);
             }
-        }   
+        }
 
         $this->if_new_token = true;
 
@@ -200,7 +200,7 @@ class ViessmannApi
         //
         $url = self::AUTHORIZE_URL . "?client_id=" . $this->clientId . "&code_challenge=" . $this->codeChallenge . "&scope=IoT%20User%20offline_access&redirect_uri=" .
         self::CALLBACK_URI . "&response_type=code";
-        
+
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -239,7 +239,7 @@ class ViessmannApi
         //
         $url = self::TOKEN_URL . "?grant_type=authorization_code&code_verifier=" . $this->codeChallenge . "&client_id=" .
         $this->clientId . "&redirect_uri=" . self::CALLBACK_URI . "&code=" . $code;
-        
+
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -261,6 +261,10 @@ class ViessmannApi
         // Extraction Token
         //
         $json = json_decode($response, true);
+        if ($json == null) {
+            log::add('viessmannIot', 'warning', 'Erreur GetToken : Réponse non JSON');
+            return false;
+        }
         if (array_key_exists('error', $json)) {
             log::add('viessmannIot', 'warning', 'Erreur GetToken : '.$json['error']);
             return false;
@@ -284,11 +288,11 @@ class ViessmannApi
         return true;
     }
 
-    // Rafraichir le token d'accès au serveur Viessmann 
+    // Rafraichir le token d'accès au serveur Viessmann
     //
     private function refreshToken()
     {
-        if ( $this->refreshToken == '' ) {
+        if ($this->refreshToken == '') {
             return false;
         }
 
@@ -296,7 +300,7 @@ class ViessmannApi
         //
         $url = self::TOKEN_URL . "?grant_type=refresh_token&refresh_token=" . $this->refreshToken . "&client_id=" .
         $this->clientId;
-        
+
         $header = array("Content-Type: application/x-www-form-urlencoded");
 
         $curloptions = array(
@@ -318,6 +322,10 @@ class ViessmannApi
         // Extraction Token
         //
         $json = json_decode($response, true);
+        if ($json == null) {
+            log::add('viessmannIot', 'debug', 'Refresh token response non JSON');
+            return false;
+        }
         if (array_key_exists('error', $json)) {
             log::add('viessmannIot', 'debug', 'Refresh token error');
             return false;
@@ -411,11 +419,10 @@ class ViessmannApi
             file_put_contents($json_file, $response);
 
             return $this->gateway["message"];
-
         }
 
         return true;
-        
+
     }
 
     // Lire les features
@@ -450,23 +457,23 @@ class ViessmannApi
             $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
             file_put_contents($json_file, $response);
         }
-        
-        if (array_key_exists('statusCode', $this->features)) {
-            $json_file = __DIR__ . '/../../data/erreur.json';
-            $response = str_replace($this->installationId, 'XXXXXX', $response);
-            $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
-            file_put_contents($json_file, $response);
 
-            $message = $this->features["message"];
-            if (array_key_exists('extendedPayload', $this->features)) {
-                $array = $this->features["extendedPayload"];
-                if (array_key_exists('details', $array)) {
-                    $message .= ' ( ' . $array['details'] . ' ) ';
+        if ($this->features != null) {
+            if (array_key_exists('statusCode', $this->features)) {
+                $json_file = __DIR__ . '/../../data/erreur.json';
+                $response = str_replace($this->installationId, 'XXXXXX', $response);
+                $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
+                file_put_contents($json_file, $response);
+
+                $message = $this->features["message"];
+                if (array_key_exists('extendedPayload', $this->features)) {
+                    $array = $this->features["extendedPayload"];
+                    if (array_key_exists('details', $array)) {
+                        $message .= ' ( ' . $array['details'] . ' ) ';
+                    }
                 }
             }
-
             return $message;
-
         }
 
         return true;
@@ -508,7 +515,7 @@ class ViessmannApi
         //
         // $json_file = __DIR__ . '/../../data/testevents.json';
         // $response = file_get_contents($json_file);
-       
+
         $this->events = json_decode($response, true);
 
         if ($this->logFeatures == 'Oui') {
@@ -516,10 +523,6 @@ class ViessmannApi
             $response = str_replace($this->installationId, 'XXXXXX', $response);
             $response = str_replace($this->serial, 'XXXXXXXXXXXXXXXX', $response);
             file_put_contents($json_file, $response);
-        }
-        
-        if (array_key_exists('statusCode', $this->features)) {
-            throw new ViessmannApiException($this->features["message"], 2);
         }
     }
 
@@ -536,7 +539,7 @@ class ViessmannApi
             "Content-Type: application/json",
             "Accept : application/vnd.siren+json",
             "Authorization: Bearer " . $this->accessToken);
- 
+
         $curloptions = array(
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => $header,
@@ -556,6 +559,9 @@ class ViessmannApi
 
         $features = json_decode($response, true);
 
+        if ($features == null) {
+            throw new ViessmannApiException('Erreur SetFeature : Réponse non JSON', 2);
+        }
         if (array_key_exists('statusCode', $features)) {
             throw new ViessmannApiException($features["message"], 2);
         }

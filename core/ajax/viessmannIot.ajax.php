@@ -67,6 +67,15 @@ try
       }
     }
 
+    if (init('action') == 'sortCmds') {
+        $eqLogic = viessmannIot::byId(init('id'));
+        if (!is_object($eqLogic)) {
+            throw new Exception(__('Equipement non trouvé : ', __FILE__) . init('id'));
+        } else {
+            ajax::success($eqLogic->sortCmds());
+        }
+    }
+
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
 
 } 
