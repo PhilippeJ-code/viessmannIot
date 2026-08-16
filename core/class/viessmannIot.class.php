@@ -738,6 +738,17 @@ class viessmannIot extends eqLogic
                         $obj->setType('action');
                         $obj->setSubType('other');
                         $obj->save();
+                    } elseif ($features["data"][$i]["commands"]["setMode"]["params"]["mode"]["constraints"]["enum"][$j] == 'dhwAndHeatingCooling') {
+                        $obj = $this->getCmd(null, 'modeDhwAndHeatingCooling');
+                        if (!is_object($obj)) {
+                            $obj = new viessmannIotCmd();
+                            $obj->setName(__('Mode eau chaude, chauffage et refroidissement', __FILE__));
+                        }
+                        $obj->setEqLogic_id($this->getId());
+                        $obj->setLogicalId('modeDhwAndHeatingCooling');
+                        $obj->setType('action');
+                        $obj->setSubType('other');
+                        $obj->save();
                     }
                 }
             } elseif ($features["data"][$i]["feature"] == self::ACTIVE_DHW_MODE && $features["data"][$i]["isEnabled"] == true) {
@@ -5138,6 +5149,12 @@ class viessmannIot extends eqLogic
             } else {
                 $replace["#idModeDhwAndHeating#"] = '??';
             }
+            $obj = $this->getCmd(null, 'modeDhwAndHeatingCooling');
+            if (is_object($obj)) {
+                $replace["#idModeDhwAndHeatingCooling#"] = $obj->getId();
+            } else {
+                $replace["#idModeDhwAndHeatingCooling#"] = '??';
+            }
         } else {
             $replace["#activeMode#"] = '??';
             $replace["#idActiveMode#"] = "#idActiveMode#";
@@ -5991,6 +6008,8 @@ class viessmannIotCmd extends cmd
             $eqlogic->setMode('dhw');
         } elseif ($this->getLogicalId() == 'modeDhwAndHeating') {
             $eqlogic->setMode('dhwAndHeating');
+        } elseif ($this->getLogicalId() == 'modeDhwAndHeatingCooling') {
+            $eqlogic->setMode('dhwAndHeatingCooling');
         } elseif ($this->getLogicalId() == 'modeDhwBalanced') {
             $eqlogic->setDhwMode('balanced');
         } elseif ($this->getLogicalId() == 'modeDhwComfort') {
