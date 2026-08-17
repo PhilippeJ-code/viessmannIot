@@ -739,6 +739,9 @@
                 <div id="showModeDhwAndHeating#uid#">
                     <input type="radio" name="modes" value="auto" id="idModeDhwAndHeating#uid#"> Eau chaude et chauffage
                 </div>
+                <div id="showModeDhwAndHeatingCooling#uid#">
+                    <input type="radio" name="modes" value="auto" id="idModeDhwAndHeatingCooling#uid#"> Eau chaude, chauffage et refroidissement
+                </div>
             </div>
         </div>
 
@@ -1468,6 +1471,9 @@
         if ('#idModeDhwAndHeating#' == '??') {
             document.getElementById('showModeDhwAndHeating#uid#').style.display = 'none';
         }
+        if ('#idModeDhwAndHeatingCooling#' == '??') {
+            document.getElementById('showModeDhwAndHeatingCooling#uid#').style.display = 'none';
+        }
 
         if ('#idModeDhwBalancedStandby#' == '??') {
             document.getElementById('showModeDhwBalanced#uid#').style.display = 'none';
@@ -2088,6 +2094,9 @@
                     } else if (_options.display_value == 'dhwAndHeating') {
                         cmd2.innerHTML = 'Eau chaude et chauffage activés';
                         document.getElementById('idModeDhwAndHeating#uid#').checked = true;
+                    } else if (_options.display_value == 'dhwAndHeatingCooling') {
+                        cmd2.innerHTML = 'Eau chaude, chauffage et refroidissement activés';
+                        document.getElementById('idModeDhwAndHeatingCooling#uid#').checked = true;
                     } else {
                         cmd2.innerHTML = _options.display_value;
                     }
@@ -4270,6 +4279,19 @@
         {
             jeedom.cmd.execute({
                 id: '#idModeDhwAndHeating#'
+            });
+        }
+
+        // Click pour mode eau chaude, chauffage et refroidissement
+        //
+        el = document.getElementById('idModeDhwAndHeatingCooling#uid#');
+        el.removeEventListener('click', eventModeDhwAndHeatingCooling);
+        el.addEventListener('click', eventModeDhwAndHeatingCooling);
+
+        function eventModeDhwAndHeatingCooling() 
+        {
+            jeedom.cmd.execute({
+                id: '#idModeDhwAndHeatingCooling#'
             });
         }
 
