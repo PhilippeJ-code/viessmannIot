@@ -472,8 +472,10 @@ class ViessmannApi
                         $message .= ' ( ' . $array['details'] . ' ) ';
                     }
                 }
+                return $message;
             }
-            return $message;
+        } else {
+            return "Erreur GetFeatures : Réponse non JSON";
         }
 
         return true;
